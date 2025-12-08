@@ -78,11 +78,6 @@ export default function Home() {
                                     เข้าสู่ระบบ
                                 </button>
                             </SignInButton>
-                            <SignUpButton forceRedirectUrl="/?loggedIn=true">
-                                <button className="w-full sm:w-auto px-8 py-3 text-lg font-semibold text-blue-600 bg-white border-2 border-blue-100 rounded-full hover:bg-blue-50 hover:border-blue-200 transition-all shadow-sm">
-                                    ลงทะเบียน
-                                </button>
-                            </SignUpButton>
                         </div>
                     </SignedOut>
                 </div>

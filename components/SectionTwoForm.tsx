@@ -171,7 +171,7 @@ export default function SectionTwoForm({
                     {/* Name */}
                     <div className="space-y-2">
                         <label className="font-semibold block">
-                            ชื่อผู้ทำแบบสอบถาม
+                            ชื่อผู้ให้ข้อมูล
                         </label>
                         <input
                             type="text"

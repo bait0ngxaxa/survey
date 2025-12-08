@@ -1,51 +1,58 @@
-# docker-compose.yml  (Compose V2 ไม่ต้องใส่ version แล้ว)
 services:
-    mysql:
-        image: mysql:8.0
-        container_name: db-mysql
+    app:
+        container_name: survey-app
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-surveydb}
+                NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-}
+                CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-}
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-            MYSQL_DATABASE: ${MYSQL_DATABASE}
-            MYSQL_USER: ${MYSQL_USER}
-            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            # อ้างอิง DB host เป็นชื่อ service "db"
+            DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-surveydb}
+            NEXT_PUBLIC_API_URL: http://localhost:3000
+            # Clerk Authentication
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+            CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+        ports:
+            - "3000:3000"
+        depends_on:
+            - db
+        networks:
+            - app-network
+
+    db:
+        image: postgres:15-alpine
+        container_name: survey-db
+        restart: always
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-user}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+            POSTGRES_DB: ${POSTGRES_DB:-surveydb}
             TZ: Asia/Bangkok
         ports:
-            - "3306:3306"
+            # Bind port 5432 เฉพาะ 127.0.0.1 เท่านั้น ทำให้คนภายนอกเข้าไม่ได้
+            # แต่เราสามารถเข้าผ่าน SSH tunnel หรือ local connection ได้
+            - "127.0.0.1:5432:5432"
         volumes:
-            - mysql-data:/var/lib/mysql
+            - postgres-data:/var/lib/postgresql/data
         networks:
-            - grant-online-network
+            - app-network
         healthcheck:
             test:
                 [
                     "CMD-SHELL",
-                    "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} || exit 1",
+                    "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-surveydb}",
                 ]
             interval: 10s
             timeout: 5s
             retries: 5
 
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        container_name: db-phpmyadmin
-        restart: always
-        environment:
-            PMA_HOST: mysql
-            PMA_PORT: 3306
-            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-            TZ: Asia/Bangkok
-        ports:
-            - "8080:80"
-        depends_on:
-            mysql:
-                condition: service_healthy
-        networks:
-            - grant-online-network
-
 networks:
-    grant-online-network:
+    app-network:
         driver: bridge
 
 volumes:
-    mysql-data:
+    postgres-data:

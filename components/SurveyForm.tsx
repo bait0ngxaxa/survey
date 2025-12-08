@@ -8,6 +8,7 @@ import AlertModal from "@/components/AlertModal";
 import SectionTwoForm from "./SectionTwoForm";
 import MedicalRecordForm from "./MedicalRecordForm";
 import SectionFourForm from "./SectionFourForm";
+import Introduction from "./Introduction"; // Import
 import { SurveyConfig } from "@/config/surveyData";
 
 interface SurveyFormProps {
@@ -15,7 +16,7 @@ interface SurveyFormProps {
 }
 
 export default function SurveyForm({ config }: SurveyFormProps) {
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0); // Start at 0
     const [bloodSugarKnown, setBloodSugarKnown] = useState<string>("");
     const [fastingLevel, setFastingLevel] = useState<string>("");
     const [hba1cLevel, setHba1cLevel] = useState<string>("");
@@ -30,7 +31,7 @@ export default function SurveyForm({ config }: SurveyFormProps) {
     }, [step]);
 
     const handleNext = () => {
-        // Validation
+        // Validation for Part 1 (now effectively step 1)
         if (!bloodSugarKnown) {
             setAlertMessage("กรุณาระบุว่าท่านทราบผลการตรวจระดับน้ำตาลหรือไม่");
             setIsAlertOpen(true);
@@ -68,7 +69,9 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                 message={alertMessage}
             />
             <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-                {step === 1 ? (
+                {step === 0 ? (
+                    <Introduction onStart={() => setStep(1)} />
+                ) : step === 1 ? (
                     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
                         {/* Header */}
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
