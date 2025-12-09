@@ -22,7 +22,9 @@ export default async function DashboardPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">
                         ยินดีต้อนรับสู่ระบบแบบสอบถาม
+                        <br />
                         การรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
+                        <br />
                         โดยผู้ป่วยเป็นคนรายงาน
                     </h1>
                     <p className="text-lg text-gray-600">

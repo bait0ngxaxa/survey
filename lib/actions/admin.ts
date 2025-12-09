@@ -47,21 +47,28 @@ export async function getAdminStats() {
     };
 }
 
-export async function getSubmissions(page = 1, pageSize = 20) {
+export async function getSubmissions(
+    page = 1,
+    pageSize = 10,
+    regionFilter = ""
+) {
     await checkAdmin();
 
     const skip = (page - 1) * pageSize;
+
+    const where = regionFilter ? { region: regionFilter } : {};
 
     const [submissions, total] = await Promise.all([
         prisma.surveySubmission.findMany({
             skip,
             take: pageSize,
+            where,
             orderBy: { createdAt: "desc" },
             include: {
                 patient: true,
             },
         }),
-        prisma.surveySubmission.count(),
+        prisma.surveySubmission.count({ where }),
     ]);
 
     return {

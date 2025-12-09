@@ -30,11 +30,11 @@ export default function MedicalRecordForm({
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div className="bg-linear-to-r from-teal-600 to-emerald-600 py-8 px-8">
-                    <h1 className="text-2xl font-bold text-white mb-2">
+                <div className="bg-linear-to-r from-blue-600 to-indigo-700 py-8 px-8">
+                    <h1 className="text-3xl font-bold text-white mb-2">
                         ตอนที่ 2 ข้อมูลเกี่ยวกับโรคและการรักษาจากเวชระเบียน
                     </h1>
-                    <p className="text-teal-100">
+                    <p className="text-blue-100 text-lg">
                         กรุณากรอกข้อมูลจากเวชระเบียนของผู้ป่วย
                     </p>
                 </div>
@@ -48,7 +48,7 @@ export default function MedicalRecordForm({
                             </label>
                             <input
                                 type="number"
-                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 placeholder="เช่น 120"
                                 value={formData.bloodSugar}
                                 onChange={(e) =>
@@ -64,7 +64,7 @@ export default function MedicalRecordForm({
                             </label>
                             <input
                                 type="number"
-                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 placeholder="เช่น 6.5"
                                 value={formData.hba1c}
                                 onChange={(e) =>
@@ -80,7 +80,7 @@ export default function MedicalRecordForm({
                             </label>
                             <input
                                 type="text"
-                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 placeholder="เช่น 120/80"
                                 value={formData.bloodPressure}
                                 onChange={(e) =>
@@ -95,11 +95,11 @@ export default function MedicalRecordForm({
                         {/* 5. Creatinine */}
                         <div className="space-y-2">
                             <label className="font-semibold block">
-                                5. Creatinine (mg/dl)
+                                4. Creatinine (mg/dl)
                             </label>
                             <input
                                 type="number"
-                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                                 placeholder="ระบุค่า Creatinine"
                                 value={formData.creatinine}
                                 onChange={(e) =>
@@ -108,67 +108,81 @@ export default function MedicalRecordForm({
                             />
                         </div>
 
-                        {/* 6. Weight */}
-                        <div className="space-y-2">
-                            <label className="font-semibold block">
-                                6. น้ำหนัก (Kg)
-                            </label>
-                            <input
-                                type="number"
-                                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                                placeholder="ระบุน้ำหนัก"
-                                value={formData.weight}
-                                onChange={(e) =>
-                                    handleChange("weight", e.target.value)
-                                }
-                            />
+                        {/* 4. Micro albumin & 4.1 Ratio (Inline) */}
+                        <div className="col-span-1 md:col-span-2 space-y-4">
+                            <div className="flex flex-col md:flex-row md:items-center gap-4 flex-wrap">
+                                {/* 4. Micro albumin */}
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold whitespace-nowrap">
+                                        5. Micro albumin =
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="w-full md:w-32 border-b border-gray-400 focus:border-blue-600 outline-none px-2 py-1 text-center bg-transparent transition-colors"
+                                        value={formData.microAlbumin}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                "microAlbumin",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                </div>
+
+                                {/* 4.1 Ratio */}
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold whitespace-nowrap">
+                                        5.1 Micro albumin/Cr =
+                                    </span>
+                                    <input
+                                        type="number"
+                                        className="w-full md:w-32 border-b border-gray-400 focus:border-blue-600 outline-none px-2 py-1 text-center bg-transparent transition-colors"
+                                        value={formData.microAlbuminRatio}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                "microAlbuminRatio",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                    <span className="text-black whitespace-nowrap">
+                                        mg/g of Cr =
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="w-full md:w-32 border-b border-gray-400 focus:border-blue-600 outline-none px-2 py-1 text-center bg-transparent transition-colors"
+                                        value={formData.microAlbuminOther}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                "microAlbuminOther",
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* 4. Micro albumin */}
+                    {/* 6. Weight */}
                     <div className="space-y-2">
                         <label className="font-semibold block">
-                            4. Micro albumin
+                            6. น้ำหนัก (Kg)
                         </label>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-sm text-gray-600 mb-1 block">
-                                    Micro albumin
-                                </label>
-                                <input
-                                    type="text"
-                                    className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                                    value={formData.microAlbumin}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "microAlbumin",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                            </div>
-                            <div>
-                                <label className="text-sm text-gray-600 mb-1 block">
-                                    4.1 Micro albumin/Cr (mg/g of Cr)
-                                </label>
-                                <input
-                                    type="number"
-                                    className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                                    value={formData.microAlbuminRatio}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "microAlbuminRatio",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                            </div>
-                        </div>
+                        <input
+                            type="number"
+                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            placeholder="ระบุน้ำหนัก"
+                            value={formData.weight}
+                            onChange={(e) =>
+                                handleChange("weight", e.target.value)
+                            }
+                        />
                     </div>
 
                     {/* 7. Lipid Profile */}
                     <div className="space-y-4 border p-4 rounded-xl border-gray-200">
-                        <label className="font-semibold block text-lg text-teal-800">
+                        <label className="font-semibold block text-lg text-black">
                             7. Lipid Profile
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -178,7 +192,7 @@ export default function MedicalRecordForm({
                                 </label>
                                 <input
                                     type="number"
-                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={formData.lipid_tchol}
                                     onChange={(e) =>
                                         handleChange(
@@ -194,7 +208,7 @@ export default function MedicalRecordForm({
                                 </label>
                                 <input
                                     type="number"
-                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={formData.lipid_tg}
                                     onChange={(e) =>
                                         handleChange("lipid_tg", e.target.value)
@@ -207,7 +221,7 @@ export default function MedicalRecordForm({
                                 </label>
                                 <input
                                     type="number"
-                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={formData.lipid_ldl}
                                     onChange={(e) =>
                                         handleChange(
@@ -223,7 +237,7 @@ export default function MedicalRecordForm({
                                 </label>
                                 <input
                                     type="number"
-                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
                                     value={formData.lipid_hdl}
                                     onChange={(e) =>
                                         handleChange(
@@ -243,7 +257,7 @@ export default function MedicalRecordForm({
                         </label>
 
                         <textarea
-                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             rows={2}
                             value={formData.otherDiseases}
                             onChange={(e) =>
@@ -300,7 +314,7 @@ export default function MedicalRecordForm({
                     </button>
                     <button
                         onClick={handleNext}
-                        className="px-8 py-3 bg-linear-to-r from-teal-600 to-emerald-600 text-white rounded-xl hover:from-teal-700 hover:to-emerald-700 font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                        className="px-8 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                     >
                         ถัดไป
                         <ChevronRight size={20} />

@@ -60,14 +60,14 @@ export default function SectionFourForm({
             />
 
             {/* Header Card */}
-            <div className="bg-linear-to-r from-indigo-900 to-purple-800 rounded-3xl shadow-xl overflow-hidden">
-                <div className="py-10 px-8 text-white">
+            <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl overflow-hidden">
+                <div className="py-8 px-8 text-white">
                     <h1 className="text-3xl font-bold mb-4">
                         แบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2{" "}
                         <br />
                         โดยผู้ป่วยเป็นคนรายงาน
                     </h1>
-                    <p className="text-purple-100 text-lg leading-relaxed max-w-4xl opacity-90">
+                    <p className="text-blue-100 text-lg leading-relaxed max-w-4xl opacity-90">
                         คำชี้แจง
                         ข้อคำถามในแต่ละข้อต่อไปนี้เป็นข้อความเกี่ยวกับประสบการณ์อย่างใดอย่างหนึ่งของ
                         ท่านในช่วง 1 เดือน ที่ผ่านมา
@@ -84,7 +84,7 @@ export default function SectionFourForm({
 
             {/* Sections Loop */}
             <div className="space-y-8">
-                {data.map((section) => (
+                {data.map((section, sectionIndex) => (
                     <div
                         key={section.id}
                         className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"
@@ -121,13 +121,15 @@ export default function SectionFourForm({
                                             )
                                         )}
                                     </ul>
-                                    <div className="bg-gray-50 p-6 rounded-2xl w-fit mx-auto border border-gray-100 shadow-inner">
+                                    <div className="bg-gray-50 p-6 rounded-2xl w-full max-w-4xl mx-auto border border-gray-100 shadow-inner">
                                         <Image
-                                            src="/graph.png"
-                                            alt="Graph Description"
-                                            width={500}
-                                            height={150}
-                                            className="w-full h-auto max-w-2xl"
+                                            src={`/sec${sectionIndex + 1}.png`}
+                                            alt={`Section ${
+                                                sectionIndex + 1
+                                            } Graph`}
+                                            width={700}
+                                            height={300}
+                                            className="w-full h-auto"
                                         />
                                     </div>
                                 </div>
@@ -310,7 +312,7 @@ export default function SectionFourForm({
                 </button>
                 <button
                     onClick={handleSubmit}
-                    className="px-10 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl hover:from-indigo-700 hover:to-violet-700 font-bold shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-300 transition-all flex items-center gap-3 transform hover:-translate-y-1 active:translate-y-0 active:scale-95"
+                    className="px-10 py-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-bold shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 transition-all flex items-center gap-3 transform hover:-translate-y-1 active:translate-y-0 active:scale-95"
                 >
                     <span className="text-lg">บันทึกข้อมูล</span>
                     <Check size={24} />

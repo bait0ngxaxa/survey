@@ -5,11 +5,25 @@ import Link from "next/link";
 export default async function SubmissionsPage({
     searchParams,
 }: {
-    searchParams: Promise<{ page?: string }>;
+    searchParams: Promise<{ page?: string; region?: string }>;
 }) {
-    const params = await searchParams; // Await the searchParams promise
+    const params = await searchParams;
     const currentPage = Number(params?.page) || 1;
-    const { submissions, totalPages } = await getSubmissions(currentPage);
+    const regionFilter = params?.region || "";
+    const { submissions, totalPages } = await getSubmissions(
+        currentPage,
+        20,
+        regionFilter
+    );
+
+    const regions = ["", "phetchabun", "satun", "lopburi", "central"];
+    const regionLabels: Record<string, string> = {
+        "": "ทั้งหมด",
+        phetchabun: "เพชรบูรณ์",
+        satun: "สตูล",
+        lopburi: "ลพบุรี",
+        central: "ทีมกลาง",
+    };
 
     return (
         <div className="space-y-6">
@@ -22,7 +36,28 @@ export default async function SubmissionsPage({
                         Manage and view survey results
                     </p>
                 </div>
-                <ExportButton />
+
+                {/* Region Filter */}
+                <div className="flex items-center gap-2">
+                    <label className="text-sm text-gray-600">กรองตาม:</label>
+                    <div className="flex gap-1">
+                        {regions.map((r) => (
+                            <Link
+                                key={r}
+                                href={`/admin/submissions?page=1${
+                                    r ? `&region=${r}` : ""
+                                }`}
+                                className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                                    regionFilter === r
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                }`}
+                            >
+                                {regionLabels[r]}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -35,14 +70,13 @@ export default async function SubmissionsPage({
                                 <th className="px-6 py-4">Region</th>
                                 <th className="px-6 py-4">Hospital</th>
                                 <th className="px-6 py-4">Result</th>
-                                {/* <th className="px-6 py-4 text-right">Actions</th> */}
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {submissions.length === 0 ? (
                                 <tr>
                                     <td
-                                        colSpan={6}
+                                        colSpan={5}
                                         className="px-6 py-8 text-center text-gray-500"
                                     >
                                         No submissions found
@@ -103,7 +137,9 @@ export default async function SubmissionsPage({
                     </span>
                     <div className="flex gap-2">
                         <Link
-                            href={`/admin/submissions?page=${currentPage - 1}`}
+                            href={`/admin/submissions?page=${currentPage - 1}${
+                                regionFilter ? `&region=${regionFilter}` : ""
+                            }`}
                             className={`px-3 py-1 text-sm border rounded hover:bg-gray-50 ${
                                 currentPage <= 1
                                     ? "pointer-events-none opacity-50"
@@ -113,7 +149,9 @@ export default async function SubmissionsPage({
                             Previous
                         </Link>
                         <Link
-                            href={`/admin/submissions?page=${currentPage + 1}`}
+                            href={`/admin/submissions?page=${currentPage + 1}${
+                                regionFilter ? `&region=${regionFilter}` : ""
+                            }`}
                             className={`px-3 py-1 text-sm border rounded hover:bg-gray-50 ${
                                 currentPage >= totalPages
                                     ? "pointer-events-none opacity-50"
@@ -124,6 +162,11 @@ export default async function SubmissionsPage({
                         </Link>
                     </div>
                 </div>
+            </div>
+
+            {/* Export Button - Bottom Center */}
+            <div className="flex justify-center pt-4">
+                <ExportButton />
             </div>
         </div>
     );

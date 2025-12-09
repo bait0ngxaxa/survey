@@ -71,10 +71,10 @@ export default function SectionTwoForm({
             />
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                 <div className="bg-linear-to-r from-blue-600 to-indigo-700 py-8 px-8">
-                    <h1 className="text-2xl font-bold text-white mb-2">
+                    <h1 className="text-3xl font-bold text-white mb-2">
                         ตอนที่ 1 ข้อมูลทั่วไป (ส่วนที่ 1)
                     </h1>
-                    <p className="text-blue-100">
+                    <p className="text-blue-100 text-lg">
                         ตามความเป็นจริงเกี่ยวกับตัวของผู้ตอบแบบสอบถาม
                     </p>
                 </div>

@@ -85,8 +85,8 @@ export default function Home() {
 
             {/* Footer */}
             <footer className="py-6 text-center text-gray-400 text-sm">
-                © {new Date().getFullYear()} Patient Report Outcomes
-                Measurement. All rights reserved.
+                © {new Date().getFullYear()} สถาบันพัฒนาระบบบริการสุขภาพองค์รวม.
+                สงวนลิขสิทธิ์.
             </footer>
         </div>
     );

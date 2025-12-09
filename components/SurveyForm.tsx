@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Suspense } from "react";
 import { ChevronRight, ChevronLeft, Check } from "lucide-react";
-import SuccessModal from "@/components/SuccessModal";
+import SubmitSuccessModal from "@/components/SubmitSuccessModal";
 import AlertModal from "@/components/AlertModal";
 import SectionTwoForm from "./SectionTwoForm";
 import MedicalRecordForm from "./MedicalRecordForm";
@@ -124,6 +124,7 @@ const initialMedicalRecordData: MedicalRecordData = {
     bloodPressure: "",
     microAlbumin: "",
     microAlbuminRatio: "",
+    microAlbuminOther: "",
     creatinine: "",
     weight: "",
     lipid_tchol: "",
@@ -230,7 +231,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
     };
 
     if (submitSuccess) {
-        return <SuccessModal />;
+        return <SubmitSuccessModal isOpen={true} redirectTo="/dashboard" />;
     }
 
     return (
@@ -471,6 +472,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                 <div className="pt-8 flex justify-end gap-4">
                                     <button
                                         type="button"
+                                        onClick={() =>
+                                            (window.location.href =
+                                                "/dashboard")
+                                        }
                                         className="px-8 py-3 bg-white border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-semibold transition-all shadow-sm"
                                     >
                                         ยกเลิก

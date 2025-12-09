@@ -83,6 +83,7 @@ export interface MedicalRecordData {
     bloodPressure: string;
     microAlbumin: string;
     microAlbuminRatio: string;
+    microAlbuminOther: string;
     creatinine: string;
     weight: string;
     lipid_tchol: string;
