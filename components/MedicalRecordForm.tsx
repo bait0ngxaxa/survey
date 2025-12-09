@@ -3,34 +3,23 @@
 import { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 
+import { MedicalRecordData } from "@/lib/types";
+
 interface MedicalRecordFormProps {
+    formData: MedicalRecordData;
+    onChange: (data: MedicalRecordData) => void;
     onNext: () => void;
     onBack: () => void;
 }
 
 export default function MedicalRecordForm({
+    formData,
+    onChange,
     onNext,
     onBack,
 }: MedicalRecordFormProps) {
-    const [formData, setFormData] = useState({
-        bloodSugar: "",
-        hba1c: "",
-        bloodPressure: "",
-        microAlbumin: "",
-        microAlbuminRatio: "",
-        creatinine: "",
-        weight: "",
-        lipid_tchol: "",
-        lipid_tg: "",
-        lipid_ldl: "",
-        lipid_hdl: "",
-        otherDiseases: "",
-        diabetesDurationYears: "",
-        diabetesDurationMonths: "",
-    });
-
-    const handleChange = (field: string, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+    const handleChange = (field: keyof MedicalRecordData, value: string) => {
+        onChange({ ...formData, [field]: value });
     };
 
     const handleNext = () => {

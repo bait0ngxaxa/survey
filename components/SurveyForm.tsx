@@ -8,48 +8,189 @@ import AlertModal from "@/components/AlertModal";
 import SectionTwoForm from "./SectionTwoForm";
 import MedicalRecordForm from "./MedicalRecordForm";
 import SectionFourForm from "./SectionFourForm";
-import Introduction from "./Introduction"; // Import
+import Introduction from "./Introduction";
 import { SurveyConfig } from "@/config/surveyData";
+import { submitSurvey } from "@/lib/actions/survey";
+import { Part1Data, SectionTwoData, MedicalRecordData } from "@/lib/types";
 
 interface SurveyFormProps {
     config: SurveyConfig;
+    region: string;
 }
 
-export default function SurveyForm({ config }: SurveyFormProps) {
-    const [step, setStep] = useState(0); // Start at 0
-    const [bloodSugarKnown, setBloodSugarKnown] = useState<string>("");
-    const [fastingLevel, setFastingLevel] = useState<string>("");
-    const [hba1cLevel, setHba1cLevel] = useState<string>("");
-    const [visitDoctor, setVisitDoctor] = useState<string>("");
-    const [notVisitReason, setNotVisitReason] = useState<string>("");
+const initialPart1Data: Part1Data = {
+    bloodSugarKnown: "",
+    fastingLevel: "",
+    hba1cLevel: "",
+    visitDoctor: "",
+    notVisitReason: "",
+};
+
+const initialSectionTwoData: SectionTwoData = {
+    respondentName: "",
+    gender: "",
+    age: "",
+    birthDate: "",
+    education: "",
+    educationOther: "",
+    maritalStatus: "",
+    occupation: "",
+    occupationOther: "",
+    income: "",
+    supportSource: "",
+    supportSourceOther: "",
+    financialStatus: "",
+    diabetesDuration: "",
+    diabetesAge: "",
+    treatmentType: "",
+    treatmentOther: "",
+    medicationCount: "",
+    paymentMethod: "",
+    paymentMethodOther: "",
+    livingArrangement: "",
+    livingMembers: "",
+    livingArrangementOther: "",
+    familySupport: "",
+    workSupport: "",
+    dietFood: "",
+    dietSnack: "",
+    dietDrink: "",
+    alcohol: "",
+    alcoholYears: "",
+    alcoholDays: "",
+    smoking: "",
+    smokingYears: "",
+    smokingAmount: "",
+    otherDiseases: "no",
+    otherDiseasesList: "",
+    complications: [],
+    complicationsOther: "",
+    screenings: {
+        physical: "",
+        physicalOther: "",
+        foot: "",
+        footOther: "",
+        eye: "",
+        eyeOther: "",
+        urine: "",
+        urineOther: "",
+        lipid: "",
+        lipidOther: "",
+        dental: "",
+        dentalOther: "",
+        hba1c: "",
+        hba1cOther: "",
+        other: "",
+        otherText: "",
+    },
+    adviceReceived: "",
+    adviceCount: "",
+    adviceCountUnknown: false,
+    adviceTopics: "",
+    adviceSources: {
+        doctor_pcc: "",
+        doctor_other: "",
+        doctor2_pcc: "",
+        doctor2_other: "",
+        nurse_pcc: "",
+        nurse_other: "",
+        patient_pcc: "",
+        patient_other: "",
+        camp_pcc: "",
+        camp_other: "",
+        teaching_pcc: "",
+        teaching_other: "",
+        pamphlet_pcc: "",
+        pamphlet_other: "",
+        tv_radio: "",
+        internet: "",
+        newspaper: "",
+        other_source: "",
+        other_source_count: "",
+        other_source_name: "",
+    },
+    peerDiscussion: "",
+    peerDiscussionTopic: "",
+    activities: "",
+    activitiesTopic: "",
+    admissions: "",
+    admissionCount: "",
+    admissionReason: "",
+};
+
+const initialMedicalRecordData: MedicalRecordData = {
+    bloodSugar: "",
+    hba1c: "",
+    bloodPressure: "",
+    microAlbumin: "",
+    microAlbuminRatio: "",
+    creatinine: "",
+    weight: "",
+    lipid_tchol: "",
+    lipid_tg: "",
+    lipid_ldl: "",
+    lipid_hdl: "",
+    otherDiseases: "",
+    diabetesDurationYears: "",
+    diabetesDurationMonths: "",
+};
+
+export default function SurveyForm({ config, region }: SurveyFormProps) {
+    const [step, setStep] = useState(0);
+
+    // Part 1 State
+    const [part1Data, setPart1Data] = useState<Part1Data>(initialPart1Data);
+
+    // Section 2 State
+    const [sectionTwoData, setSectionTwoData] = useState<SectionTwoData>(
+        initialSectionTwoData
+    );
+
+    // Medical Record State
+    const [medicalRecordData, setMedicalRecordData] =
+        useState<MedicalRecordData>(initialMedicalRecordData);
+
+    // Section 4 State
+    const [sectionFourAnswers, setSectionFourAnswers] = useState<
+        Record<number, number>
+    >({});
 
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [step]);
 
+    const handlePart1Change = (field: keyof Part1Data, value: string) => {
+        setPart1Data((prev) => ({ ...prev, [field]: value }));
+    };
+
     const handleNext = () => {
-        // Validation for Part 1 (now effectively step 1)
-        if (!bloodSugarKnown) {
+        // Validation for Part 1
+        if (!part1Data.bloodSugarKnown) {
             setAlertMessage("กรุณาระบุว่าท่านทราบผลการตรวจระดับน้ำตาลหรือไม่");
             setIsAlertOpen(true);
             return;
         }
-        if (bloodSugarKnown === "known") {
-            if (!fastingLevel || !hba1cLevel) {
+        if (part1Data.bloodSugarKnown === "known") {
+            if (!part1Data.fastingLevel || !part1Data.hba1cLevel) {
                 setAlertMessage("กรุณาระบุระดับน้ำตาลในเลือดและค่าน้ำตาลสะสม");
                 setIsAlertOpen(true);
                 return;
             }
         }
-        if (!visitDoctor) {
+        if (!part1Data.visitDoctor) {
             setAlertMessage("กรุณาระบุว่าท่านมาพบแพทย์ตามนัดทุกครั้งหรือไม่");
             setIsAlertOpen(true);
             return;
         }
-        if (visitDoctor === "sometimes" && !notVisitReason) {
+        if (
+            part1Data.visitDoctor === "sometimes" &&
+            !part1Data.notVisitReason
+        ) {
             setAlertMessage("กรุณาระบุสาเหตุที่ไม่ได้มาพบแพทย์ทุกครั้ง");
             setIsAlertOpen(true);
             return;
@@ -58,24 +199,70 @@ export default function SurveyForm({ config }: SurveyFormProps) {
         setStep(2);
     };
 
+    const handleSubmitSurvey = async () => {
+        setIsSubmitting(true);
+        try {
+            const result = await submitSurvey({
+                region: region,
+                hospital: "", // Optional
+                part1: part1Data,
+                sectionTwo: sectionTwoData,
+                medicalRecord: medicalRecordData,
+                sectionFour: { answers: sectionFourAnswers },
+                // nationalId could be added to part1 or sectionTwo if needed, currently not in form inputs
+            });
+
+            if (result.success) {
+                setSubmitSuccess(true);
+            } else {
+                setAlertMessage(
+                    result.error || "เกิดข้อผิดพลาดในการบันทึกข้อมูล"
+                );
+                setIsAlertOpen(true);
+            }
+        } catch (error) {
+            console.error("Submit error:", error);
+            setAlertMessage("เกิดข้อผิดพลาด: " + (error as Error).message);
+            setIsAlertOpen(true);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (submitSuccess) {
+        return <SuccessModal />;
+    }
+
     return (
         <>
             <Suspense fallback={null}>
-                <SuccessModal />
+                {/* SuccessModal is shown by condition above */}
             </Suspense>
             <AlertModal
                 isOpen={isAlertOpen}
                 onClose={() => setIsAlertOpen(false)}
                 message={alertMessage}
             />
+            {isSubmitting && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-xl shadow-xl flex items-center gap-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span className="text-lg font-medium text-gray-700">
+                            กำลังบันทึกข้อมูล...
+                        </span>
+                    </div>
+                </div>
+            )}
             <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
                 {step === 0 ? (
-                    <Introduction onStart={() => setStep(1)} />
+                    <Introduction
+                        onStart={() => setStep(region === "central" ? 4 : 1)}
+                    />
                 ) : step === 1 ? (
                     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
                         {/* Header */}
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-8 px-8">
+                            <div className="bg-linear-to-r from-blue-600 to-indigo-700 py-8 px-8">
                                 <h1 className="text-3xl font-bold text-white mb-2">
                                     {config.title}
                                 </h1>
@@ -106,11 +293,12 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                     name="bloodSugarKnown"
                                                     value="known"
                                                     checked={
-                                                        bloodSugarKnown ===
+                                                        part1Data.bloodSugarKnown ===
                                                         "known"
                                                     }
                                                     onChange={(e) =>
-                                                        setBloodSugarKnown(
+                                                        handlePart1Change(
+                                                            "bloodSugarKnown",
                                                             e.target.value
                                                         )
                                                     }
@@ -121,7 +309,8 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                 </span>
                                             </label>
 
-                                            {bloodSugarKnown === "known" && (
+                                            {part1Data.bloodSugarKnown ===
+                                                "known" && (
                                                 <div className="ml-8 space-y-3 animate-in fade-in slide-in-from-top-2">
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                                         <span className="text-gray-600 min-w-[200px]">
@@ -131,9 +320,12 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                         </span>
                                                         <input
                                                             type="text"
-                                                            value={fastingLevel}
+                                                            value={
+                                                                part1Data.fastingLevel
+                                                            }
                                                             onChange={(e) =>
-                                                                setFastingLevel(
+                                                                handlePart1Change(
+                                                                    "fastingLevel",
                                                                     e.target
                                                                         .value
                                                                 )
@@ -153,9 +345,12 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                         </span>
                                                         <input
                                                             type="text"
-                                                            value={hba1cLevel}
+                                                            value={
+                                                                part1Data.hba1cLevel
+                                                            }
                                                             onChange={(e) =>
-                                                                setHba1cLevel(
+                                                                handlePart1Change(
+                                                                    "hba1cLevel",
                                                                     e.target
                                                                         .value
                                                                 )
@@ -178,11 +373,12 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                 name="bloodSugarKnown"
                                                 value="unknown"
                                                 checked={
-                                                    bloodSugarKnown ===
+                                                    part1Data.bloodSugarKnown ===
                                                     "unknown"
                                                 }
                                                 onChange={(e) =>
-                                                    setBloodSugarKnown(
+                                                    handlePart1Change(
+                                                        "bloodSugarKnown",
                                                         e.target.value
                                                     )
                                                 }
@@ -209,10 +405,12 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                 name="visitDoctor"
                                                 value="always"
                                                 checked={
-                                                    visitDoctor === "always"
+                                                    part1Data.visitDoctor ===
+                                                    "always"
                                                 }
                                                 onChange={(e) =>
-                                                    setVisitDoctor(
+                                                    handlePart1Change(
+                                                        "visitDoctor",
                                                         e.target.value
                                                     )
                                                 }
@@ -230,11 +428,12 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                     name="visitDoctor"
                                                     value="sometimes"
                                                     checked={
-                                                        visitDoctor ===
+                                                        part1Data.visitDoctor ===
                                                         "sometimes"
                                                     }
                                                     onChange={(e) =>
-                                                        setVisitDoctor(
+                                                        handlePart1Change(
+                                                            "visitDoctor",
                                                             e.target.value
                                                         )
                                                     }
@@ -245,12 +444,16 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                                                 </span>
                                             </label>
 
-                                            {visitDoctor === "sometimes" && (
+                                            {part1Data.visitDoctor ===
+                                                "sometimes" && (
                                                 <div className="ml-8 animate-in fade-in slide-in-from-top-2">
                                                     <textarea
-                                                        value={notVisitReason}
+                                                        value={
+                                                            part1Data.notVisitReason
+                                                        }
                                                         onChange={(e) =>
-                                                            setNotVisitReason(
+                                                            handlePart1Change(
+                                                                "notVisitReason",
                                                                 e.target.value
                                                             )
                                                         }
@@ -286,19 +489,31 @@ export default function SurveyForm({ config }: SurveyFormProps) {
                     </div>
                 ) : step === 2 ? (
                     <SectionTwoForm
+                        formData={sectionTwoData}
+                        onChange={setSectionTwoData}
                         onNext={() => setStep(3)}
                         onBack={() => setStep(1)}
+                        region={region}
                     />
                 ) : step === 3 ? (
                     <MedicalRecordForm
+                        formData={medicalRecordData}
+                        onChange={setMedicalRecordData}
                         onNext={() => setStep(4)}
                         onBack={() => setStep(2)}
                     />
                 ) : (
                     <SectionFourForm
                         data={config.part4Questions}
-                        onBack={() => setStep(3)}
-                        onSubmit={() => alert("บันทึกข้อมูลสำเร็จ!")}
+                        answers={sectionFourAnswers}
+                        onAnswer={(id, score) =>
+                            setSectionFourAnswers((prev) => ({
+                                ...prev,
+                                [id]: score,
+                            }))
+                        }
+                        onBack={() => setStep(region === "central" ? 0 : 3)}
+                        onSubmit={handleSubmitSurvey}
                     />
                 )}
             </div>

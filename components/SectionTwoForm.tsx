@@ -4,141 +4,53 @@ import { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import AlertModal from "@/components/AlertModal";
 
+import { SectionTwoData } from "@/lib/types";
+
 interface SectionTwoFormProps {
+    formData: SectionTwoData;
+    onChange: (data: SectionTwoData) => void;
     onNext: () => void;
     onBack: () => void;
+    region: string;
 }
 
 export default function SectionTwoForm({
+    formData,
+    onChange,
     onNext,
     onBack,
+    region,
 }: SectionTwoFormProps) {
-    const [formData, setFormData] = useState({
-        respondentName: "",
-        gender: "",
-        age: "",
-        birthDate: "",
-        education: "",
-        educationOther: "",
-        maritalStatus: "",
-        occupation: "",
-        occupationOther: "",
-        income: "",
-        supportSource: "",
-        supportSourceOther: "",
-        financialStatus: "",
-        diabetesDuration: "",
-        diabetesAge: "",
-        treatmentType: "",
-        treatmentOther: "",
-        medicationCount: "",
-        paymentMethod: "",
-        paymentMethodOther: "",
-        livingArrangement: "",
-        livingMembers: "",
-        livingArrangementOther: "",
-        familySupport: "",
-        workSupport: "",
-        dietFood: "",
-        dietSnack: "",
-        dietDrink: "",
-        alcohol: "",
-        alcoholYears: "",
-        alcoholDays: "",
-        smoking: "",
-        smokingYears: "",
-        smokingAmount: "",
-        otherDiseases: "no",
-        otherDiseasesList: "",
-        complications: [] as string[],
-        complicationsOther: "",
-        screenings: {
-            physical: "",
-            physicalOther: "",
-            foot: "",
-            footOther: "",
-            eye: "",
-            eyeOther: "",
-            urine: "",
-            urineOther: "",
-            lipid: "",
-            lipidOther: "",
-            dental: "",
-            dentalOther: "",
-            hba1c: "",
-            hba1cOther: "",
-            other: "",
-            otherText: "",
-        },
-        // Q22-27 State
-        adviceReceived: "",
-        adviceCount: "",
-        adviceCountUnknown: false,
-        adviceTopics: "",
-        adviceSources: {
-            doctor_pcc: "",
-            doctor_other: "",
-            doctor2_pcc: "",
-            doctor2_other: "",
-            nurse_pcc: "",
-            nurse_other: "",
-            patient_pcc: "",
-            patient_other: "",
-            camp_pcc: "",
-            camp_other: "",
-            teaching_pcc: "",
-            teaching_other: "",
-            pamphlet_pcc: "",
-            pamphlet_other: "",
-            tv_radio: "",
-            internet: "",
-            newspaper: "",
-            other_source: "",
-            other_source_count: "",
-            other_source_name: "",
-        },
-        peerDiscussion: "",
-        peerDiscussionTopic: "",
-        activities: "",
-        activitiesTopic: "",
-        admissions: "",
-        admissionCount: "",
-        admissionReason: "",
-    });
-
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
-    const handleChange = (field: string, value: any) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
+    const handleChange = (field: keyof SectionTwoData, value: any) => {
+        onChange({ ...formData, [field]: value });
     };
 
     const handleScreeningChange = (field: string, value: string) => {
-        setFormData((prev) => ({
-            ...prev,
-            screenings: { ...prev.screenings, [field]: value },
-        }));
-    };
-
-    const handleComplicationChange = (value: string) => {
-        setFormData((prev) => {
-            const current = prev.complications;
-            if (current.includes(value)) {
-                return {
-                    ...prev,
-                    complications: current.filter((c) => c !== value),
-                };
-            } else {
-                return { ...prev, complications: [...current, value] };
-            }
+        onChange({
+            ...formData,
+            screenings: { ...formData.screenings, [field]: value },
         });
     };
 
+    const handleComplicationChange = (value: string) => {
+        const current = formData.complications;
+        let newComplications;
+        if (current.includes(value)) {
+            newComplications = current.filter((c) => c !== value);
+        } else {
+            newComplications = [...current, value];
+        }
+        onChange({ ...formData, complications: newComplications });
+    };
+
     const handleAdviceSourceChange = (field: string, value: string) => {
-        setFormData((prev) => ({
-            ...prev,
-            adviceSources: { ...prev.adviceSources, [field]: value },
-        }));
+        onChange({
+            ...formData,
+            adviceSources: { ...formData.adviceSources, [field]: value },
+        });
     };
 
     const handleNext = () => {
@@ -228,8 +140,7 @@ export default function SectionTwoForm({
                             />
                             <span>หรือ วัน/เดือน/ปี พ.ศ. เกิด</span>
                             <input
-                                type="text"
-                                placeholder="DD/MM/YYYY"
+                                type="date"
                                 value={formData.birthDate}
                                 onChange={(e) =>
                                     handleChange("birthDate", e.target.value)
@@ -1467,7 +1378,14 @@ export default function SectionTwoForm({
                                             แหล่งข้อมูล
                                         </th>
                                         <th scope="col" className="px-4 py-2">
-                                            PCC คลองศาลา (ครั้ง)
+                                            {region === "phetchabun"
+                                                ? "PCC คลองศาลา"
+                                                : region === "lopburi"
+                                                ? "รพ.ท่าวุ้ง"
+                                                : region === "satun"
+                                                ? "รพ.ละงู"
+                                                : "รพ.ที่รักษา"}{" "}
+                                            (ครั้ง)
                                         </th>
                                         <th scope="col" className="px-4 py-2">
                                             รพ.อื่น (ครั้ง)

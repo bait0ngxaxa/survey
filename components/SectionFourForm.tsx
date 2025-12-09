@@ -8,24 +8,24 @@ import { Part4Section } from "@/config/part4Data";
 
 interface SectionFourFormProps {
     data: Part4Section[];
+    answers: Record<number, number>;
+    onAnswer: (questionId: number, score: number) => void;
     onBack: () => void;
     onSubmit: () => void;
 }
 
 export default function SectionFourForm({
     data,
+    answers,
+    onAnswer,
     onBack,
     onSubmit,
 }: SectionFourFormProps) {
-    const [answers, setAnswers] = useState<Record<number, number>>({});
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
     const handleAnswer = (questionId: number, score: number) => {
-        setAnswers((prev) => ({
-            ...prev,
-            [questionId]: score,
-        }));
+        onAnswer(questionId, score);
     };
 
     const handleSubmit = () => {
