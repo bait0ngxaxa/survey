@@ -97,4 +97,5 @@ export interface MedicalRecordData {
 
 export interface SectionFourData {
     answers: Record<number, number>;
+    reportData?: Record<string, any>;
 }

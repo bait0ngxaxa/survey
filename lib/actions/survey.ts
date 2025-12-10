@@ -143,6 +143,7 @@ export async function submitSurvey(input: SurveySubmissionInput) {
                 sectionTwo: input.sectionTwo,
                 medicalRecord: input.medicalRecord,
                 sectionFour: input.sectionFour.answers,
+                reportData: input.sectionFour.reportData,
             })
         );
 

@@ -155,6 +155,12 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
     const [sectionFourAnswers, setSectionFourAnswers] = useState<
         Record<number, number>
     >({});
+    const [recommendations, setRecommendations] = useState<Record<string, any>>(
+        {}
+    ); // Changed to any to support structured object
+    const [additionalInfo, setAdditionalInfo] = useState<Record<string, any>>(
+        {}
+    );
 
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
@@ -209,8 +215,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                 part1: part1Data,
                 sectionTwo: sectionTwoData,
                 medicalRecord: medicalRecordData,
-                sectionFour: { answers: sectionFourAnswers },
-                // nationalId could be added to part1 or sectionTwo if needed, currently not in form inputs
+                sectionFour: {
+                    answers: sectionFourAnswers,
+                    reportData: recommendations, // Pass the report data
+                },
             });
 
             if (result.success) {
@@ -256,9 +264,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
             )}
             <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
                 {step === 0 ? (
-                    <Introduction
-                        onStart={() => setStep(region === "central" ? 4 : 1)}
-                    />
+                    <Introduction onStart={() => setStep(1)} />
                 ) : step === 1 ? (
                     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
                         {/* Header */}
@@ -496,7 +502,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                     <SectionTwoForm
                         formData={sectionTwoData}
                         onChange={setSectionTwoData}
-                        onNext={() => setStep(3)}
+                        onNext={() => setStep(4)}
                         onBack={() => setStep(1)}
                         region={region}
                     />
@@ -517,8 +523,13 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                 [id]: score,
                             }))
                         }
-                        onBack={() => setStep(region === "central" ? 0 : 3)}
+                        onBack={() => setStep(region === "central" ? 2 : 3)} // Central skips step 3
                         onSubmit={handleSubmitSurvey}
+                        region={region}
+                        recommendations={recommendations}
+                        onRecommendationsChange={setRecommendations}
+                        additionalInfo={additionalInfo}
+                        onAdditionalInfoChange={setAdditionalInfo}
                     />
                 )}
             </div>

@@ -1250,517 +1250,585 @@ export default function SectionTwoForm({
 
                     <div className="border-t border-gray-200" />
 
-                    {/* 22. Advice Received */}
-                    <div className="space-y-2">
-                        <label className="font-semibold block">
-                            22. ในรอบ 1
-                            ปีที่ผ่านมาท่านได้รับข้อมูลคำแนะนำเกี่ยวกับโรคเบาหวานบ้างหรือไม่
-                        </label>
-                        <div className="space-y-2 pl-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="adviceReceived"
-                                    value="yes"
-                                    checked={formData.adviceReceived === "yes"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "adviceReceived",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="text-blue-600 focus:ring-blue-500"
-                                />
-                                ได้รับ
-                            </label>
-                            {formData.adviceReceived === "yes" && (
-                                <div className="ml-6 space-y-2">
+                    {false && (
+                        <>
+                            {/* 22. Advice Received */}
+                            <div className="space-y-2">
+                                <label className="font-semibold block">
+                                    22. ในรอบ 1
+                                    ปีที่ผ่านมาท่านได้รับข้อมูลคำแนะนำเกี่ยวกับโรคเบาหวานบ้างหรือไม่
+                                </label>
+                                <div className="space-y-2 pl-4">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="radio"
-                                            name="adviceCountType"
+                                            name="adviceReceived"
+                                            value="yes"
                                             checked={
-                                                !formData.adviceCountUnknown
+                                                formData.adviceReceived ===
+                                                "yes"
                                             }
-                                            onChange={() =>
-                                                handleChange(
-                                                    "adviceCountUnknown",
-                                                    false
-                                                )
-                                            }
-                                        />
-                                        ได้รับจำนวน
-                                        <input
-                                            type="number"
-                                            className="border-b border-gray-300 w-16 text-center"
-                                            value={formData.adviceCount}
-                                            onChange={(e) => {
-                                                handleChange(
-                                                    "adviceCount",
-                                                    e.target.value
-                                                );
-                                                handleChange(
-                                                    "adviceCountUnknown",
-                                                    false
-                                                );
-                                            }}
-                                            disabled={
-                                                formData.adviceCountUnknown
-                                            }
-                                        />
-                                        ครั้ง
-                                    </label>
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                            type="radio"
-                                            name="adviceCountType"
-                                            checked={
-                                                formData.adviceCountUnknown
-                                            }
-                                            onChange={() =>
-                                                handleChange(
-                                                    "adviceCountUnknown",
-                                                    true
-                                                )
-                                            }
-                                        />
-                                        จำไม่ได้ว่ากี่ครั้ง
-                                    </label>
-                                </div>
-                            )}
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="adviceReceived"
-                                    value="no"
-                                    checked={formData.adviceReceived === "no"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "adviceReceived",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="text-blue-600 focus:ring-blue-500"
-                                />
-                                ไม่ได้รับ
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* 23. Advice Topics */}
-                    <div className="space-y-2">
-                        <label className="font-semibold block">
-                            23. จากข้อ 22
-                            ท่านได้รับทราบข้อมูลคำแนะนำเกี่ยวกับโรคเบาหวานในเรื่องใดบ้าง
-                        </label>
-                        <textarea
-                            className="w-full border border-gray-300 rounded p-2 focus:border-blue-500 outline-none"
-                            rows={3}
-                            value={formData.adviceTopics}
-                            onChange={(e) =>
-                                handleChange("adviceTopics", e.target.value)
-                            }
-                            placeholder="ระบุเรื่องที่ได้รับคำแนะนำ..."
-                        />
-                    </div>
-
-                    {/* 24. Advice Sources */}
-                    <div className="space-y-4">
-                        <label className="font-semibold block">
-                            24. จากข้อ 23
-                            ท่านได้รับข้อมูลคำแนะนำเหล่านั้นจากใครหรือแหล่งใดบ้าง
-                        </label>
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full text-sm text-left text-gray-700">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                                    <tr>
-                                        <th scope="col" className="px-4 py-2">
-                                            แหล่งข้อมูล
-                                        </th>
-                                        <th scope="col" className="px-4 py-2">
-                                            {region === "phetchabun"
-                                                ? "PCC คลองศาลา"
-                                                : region === "lopburi"
-                                                ? "รพ.ท่าวุ้ง"
-                                                : region === "satun"
-                                                ? "รพ.ละงู"
-                                                : "รพ.ที่รักษา"}{" "}
-                                            (ครั้ง)
-                                        </th>
-                                        <th scope="col" className="px-4 py-2">
-                                            รพ.อื่น (ครั้ง)
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {[
-                                        {
-                                            id: "doctor",
-                                            label: "1. แพทย์ผู้ดูแลรักษา",
-                                            pcc: "doctor_pcc",
-                                            other: "doctor_other",
-                                        },
-                                        {
-                                            id: "doctor2",
-                                            label: "2. แพทย์ท่านอื่น",
-                                            pcc: "doctor2_pcc",
-                                            other: "doctor2_other",
-                                        },
-                                        {
-                                            id: "nurse",
-                                            label: "3. พยาบาล",
-                                            pcc: "nurse_pcc",
-                                            other: "nurse_other",
-                                        },
-                                        {
-                                            id: "patient",
-                                            label: "4. ผู้ป่วยด้วยกันเอง",
-                                            pcc: "patient_pcc",
-                                            other: "patient_other",
-                                        },
-                                        {
-                                            id: "camp",
-                                            label: "5. การเข้าค่ายเบาหวาน",
-                                            pcc: "camp_pcc",
-                                            other: "camp_other",
-                                        },
-                                        {
-                                            id: "teaching",
-                                            label: "6. จากห้องสอนแสดง",
-                                            pcc: "teaching_pcc",
-                                            other: "teaching_other",
-                                        },
-                                        {
-                                            id: "pamphlet",
-                                            label: "7. แผ่นพับ/โปสเตอร์",
-                                            pcc: "pamphlet_pcc",
-                                            other: "pamphlet_other",
-                                        },
-                                    ].map((row) => (
-                                        <tr
-                                            key={row.id}
-                                            className="bg-white border-b"
-                                        >
-                                            <td className="px-4 py-2 font-medium text-gray-900">
-                                                {row.label}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                <input
-                                                    type="number"
-                                                    className="w-20 border rounded p-1"
-                                                    value={
-                                                        formData.adviceSources[
-                                                            row.pcc as keyof typeof formData.adviceSources
-                                                        ]
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleAdviceSourceChange(
-                                                            row.pcc,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                <input
-                                                    type="number"
-                                                    className="w-20 border rounded p-1"
-                                                    value={
-                                                        formData.adviceSources[
-                                                            row.other as keyof typeof formData.adviceSources
-                                                        ]
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleAdviceSourceChange(
-                                                            row.other,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            {/* Non-matrix sources */}
-                            <div className="mt-4 space-y-2 pl-4">
-                                <div className="flex items-center gap-2">
-                                    <span>8. สื่อโทรทัศน์/วิทยุ จำนวน</span>
-                                    <input
-                                        type="number"
-                                        className="border-b border-gray-300 w-16 text-center"
-                                        value={formData.adviceSources.tv_radio}
-                                        onChange={(e) =>
-                                            handleAdviceSourceChange(
-                                                "tv_radio",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span>ครั้ง</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span>9. ทางอินเตอร์เน็ต จำนวน</span>
-                                    <input
-                                        type="number"
-                                        className="border-b border-gray-300 w-16 text-center"
-                                        value={formData.adviceSources.internet}
-                                        onChange={(e) =>
-                                            handleAdviceSourceChange(
-                                                "internet",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span>ครั้ง</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <span>
-                                        10. หนังสือพิมพ์/นิตยสาร/สิ่งพิมพ์ต่างๆ
-                                        จำนวน
-                                    </span>
-                                    <input
-                                        type="number"
-                                        className="border-b border-gray-300 w-16 text-center"
-                                        value={formData.adviceSources.newspaper}
-                                        onChange={(e) =>
-                                            handleAdviceSourceChange(
-                                                "newspaper",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span>ครั้ง</span>
-                                </div>
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <span>11. จากแหล่งอื่นๆ โปรดระบุ</span>
-                                    <input
-                                        type="text"
-                                        className="border-b border-gray-300 w-40"
-                                        value={
-                                            formData.adviceSources
-                                                .other_source_name
-                                        }
-                                        onChange={(e) =>
-                                            handleAdviceSourceChange(
-                                                "other_source_name",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span>จำนวน</span>
-                                    <input
-                                        type="number"
-                                        className="border-b border-gray-300 w-16 text-center"
-                                        value={
-                                            formData.adviceSources
-                                                .other_source_count
-                                        }
-                                        onChange={(e) =>
-                                            handleAdviceSourceChange(
-                                                "other_source_count",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span>ครั้ง</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 25. Peer Discussion */}
-                    <div className="space-y-2">
-                        <label className="font-semibold block">
-                            25. ระหว่างที่ท่านนั่ง รอพบแพทย์ท่านได้พูด
-                            คุยแลกเปลี่ยนเรียนรู้ข้อมูล คำแนะนำกับผู้ป่วย
-                            ด้วยกันเองบ้างหรือไม่ เรื่องอะไรบ้าง
-                        </label>
-                        <div className="space-y-2 pl-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="peerDiscussion"
-                                    value="no"
-                                    checked={formData.peerDiscussion === "no"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "peerDiscussion",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                                ไม่ได้พูดคุยกัน
-                            </label>
-                            <label className="flex items-start gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="peerDiscussion"
-                                    value="yes"
-                                    checked={formData.peerDiscussion === "yes"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "peerDiscussion",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="mt-1"
-                                />
-                                <div className="flex-1">
-                                    <span>
-                                        ได้พูดคุยกัน
-                                        โปรดระบุประเด็นที่ได้รับจากการพูดคุย
-                                    </span>
-                                    <textarea
-                                        className="w-full border border-gray-300 rounded p-2 mt-1 focus:border-blue-500 outline-none"
-                                        rows={2}
-                                        value={formData.peerDiscussionTopic}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "peerDiscussionTopic",
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={
-                                            formData.peerDiscussion !== "yes"
-                                        }
-                                    />
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* 26. Activities */}
-                    <div className="space-y-2">
-                        <label className="font-semibold block">
-                            26.
-                            ท่านเคยเข้าร่วมกิจกรรมเกี่ยวกับโรคเบาหวานบ้างหรือไม่
-                            อย่างไร
-                        </label>
-                        <div className="space-y-2 pl-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="activities"
-                                    value="no"
-                                    checked={formData.activities === "no"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "activities",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                                ไม่เคย
-                            </label>
-                            <label className="flex items-start gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="activities"
-                                    value="yes"
-                                    checked={formData.activities === "yes"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "activities",
-                                            e.target.value
-                                        )
-                                    }
-                                    className="mt-1"
-                                />
-                                <div className="flex-1">
-                                    <span>
-                                        เคย โปรดระบุกิจกรรมที่ท่านเคยเข้าร่วม
-                                    </span>
-                                    <input
-                                        type="text"
-                                        className="w-full border-b border-gray-300 focus:border-blue-500 outline-none"
-                                        value={formData.activitiesTopic}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "activitiesTopic",
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={formData.activities !== "yes"}
-                                    />
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* 27. Admissions */}
-                    <div className="space-y-2">
-                        <label className="font-semibold block">
-                            27. ในรอบ 1
-                            ปีที่ผ่านมาท่านเคยเข้ารับการรักษาตัวในโรงพยาบาล
-                            ในแผนกฉุกเฉิน/แผนก ผู้ป่วยในบ้างหรือไม่
-                        </label>
-                        <div className="space-y-2 pl-4">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="admissions"
-                                    value="no"
-                                    checked={formData.admissions === "no"}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            "admissions",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                                ไม่เคย
-                            </label>
-                            <label className="flex items-start gap-2 cursor-pointer flex-col">
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="admissions"
-                                        value="yes"
-                                        checked={formData.admissions === "yes"}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "admissions",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span>เคย จำนวน</span>
-                                    <input
-                                        type="number"
-                                        className="border-b border-gray-300 w-16 text-center"
-                                        value={formData.admissionCount}
-                                        onChange={(e) =>
-                                            handleChange(
-                                                "admissionCount",
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={formData.admissions !== "yes"}
-                                    />
-                                    <span>ครั้ง</span>
-                                </div>
-                                {formData.admissions === "yes" && (
-                                    <div className="w-full pl-6">
-                                        <div className="mb-1">
-                                            โปรดระบุสาเหตุที่ท่านต้องนอนโรงพยาบาล
-                                        </div>
-                                        <textarea
-                                            className="w-full border border-gray-300 rounded p-2"
-                                            rows={2}
-                                            value={formData.admissionReason}
                                             onChange={(e) =>
                                                 handleChange(
-                                                    "admissionReason",
+                                                    "adviceReceived",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="text-blue-600 focus:ring-blue-500"
+                                        />
+                                        ได้รับ
+                                    </label>
+                                    {formData.adviceReceived === "yes" && (
+                                        <div className="ml-6 space-y-2">
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="adviceCountType"
+                                                    checked={
+                                                        !formData.adviceCountUnknown
+                                                    }
+                                                    onChange={() =>
+                                                        handleChange(
+                                                            "adviceCountUnknown",
+                                                            false
+                                                        )
+                                                    }
+                                                />
+                                                ได้รับจำนวน
+                                                <input
+                                                    type="number"
+                                                    className="border-b border-gray-300 w-16 text-center"
+                                                    value={formData.adviceCount}
+                                                    onChange={(e) => {
+                                                        handleChange(
+                                                            "adviceCount",
+                                                            e.target.value
+                                                        );
+                                                        handleChange(
+                                                            "adviceCountUnknown",
+                                                            false
+                                                        );
+                                                    }}
+                                                    disabled={
+                                                        formData.adviceCountUnknown
+                                                    }
+                                                />
+                                                ครั้ง
+                                            </label>
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="adviceCountType"
+                                                    checked={
+                                                        formData.adviceCountUnknown
+                                                    }
+                                                    onChange={() =>
+                                                        handleChange(
+                                                            "adviceCountUnknown",
+                                                            true
+                                                        )
+                                                    }
+                                                />
+                                                จำไม่ได้ว่ากี่ครั้ง
+                                            </label>
+                                        </div>
+                                    )}
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="adviceReceived"
+                                            value="no"
+                                            checked={
+                                                formData.adviceReceived === "no"
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "adviceReceived",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="text-blue-600 focus:ring-blue-500"
+                                        />
+                                        ไม่ได้รับ
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* 23. Advice Topics */}
+                            <div className="space-y-2">
+                                <label className="font-semibold block">
+                                    23. จากข้อ 22
+                                    ท่านได้รับทราบข้อมูลคำแนะนำเกี่ยวกับโรคเบาหวานในเรื่องใดบ้าง
+                                </label>
+                                <textarea
+                                    className="w-full border border-gray-300 rounded p-2 focus:border-blue-500 outline-none"
+                                    rows={3}
+                                    value={formData.adviceTopics}
+                                    onChange={(e) =>
+                                        handleChange(
+                                            "adviceTopics",
+                                            e.target.value
+                                        )
+                                    }
+                                    placeholder="ระบุเรื่องที่ได้รับคำแนะนำ..."
+                                />
+                            </div>
+
+                            {/* 24. Advice Sources */}
+                            <div className="space-y-4">
+                                <label className="font-semibold block">
+                                    24. จากข้อ 23
+                                    ท่านได้รับข้อมูลคำแนะนำเหล่านั้นจากใครหรือแหล่งใดบ้าง
+                                </label>
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full text-sm text-left text-gray-700">
+                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                            <tr>
+                                                <th
+                                                    scope="col"
+                                                    className="px-4 py-2"
+                                                >
+                                                    แหล่งข้อมูล
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-4 py-2"
+                                                >
+                                                    {region === "phetchabun"
+                                                        ? "PCC คลองศาลา"
+                                                        : region === "lopburi"
+                                                        ? "รพ.ท่าวุ้ง"
+                                                        : region === "satun"
+                                                        ? "รพ.ละงู"
+                                                        : "รพ.ที่รักษา"}{" "}
+                                                    (ครั้ง)
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-4 py-2"
+                                                >
+                                                    รพ.อื่น (ครั้ง)
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {[
+                                                {
+                                                    id: "doctor",
+                                                    label: "1. แพทย์ผู้ดูแลรักษา",
+                                                    pcc: "doctor_pcc",
+                                                    other: "doctor_other",
+                                                },
+                                                {
+                                                    id: "doctor2",
+                                                    label: "2. แพทย์ท่านอื่น",
+                                                    pcc: "doctor2_pcc",
+                                                    other: "doctor2_other",
+                                                },
+                                                {
+                                                    id: "nurse",
+                                                    label: "3. พยาบาล",
+                                                    pcc: "nurse_pcc",
+                                                    other: "nurse_other",
+                                                },
+                                                {
+                                                    id: "patient",
+                                                    label: "4. ผู้ป่วยด้วยกันเอง",
+                                                    pcc: "patient_pcc",
+                                                    other: "patient_other",
+                                                },
+                                                {
+                                                    id: "camp",
+                                                    label: "5. การเข้าค่ายเบาหวาน",
+                                                    pcc: "camp_pcc",
+                                                    other: "camp_other",
+                                                },
+                                                {
+                                                    id: "teaching",
+                                                    label: "6. จากห้องสอนแสดง",
+                                                    pcc: "teaching_pcc",
+                                                    other: "teaching_other",
+                                                },
+                                                {
+                                                    id: "pamphlet",
+                                                    label: "7. แผ่นพับ/โปสเตอร์",
+                                                    pcc: "pamphlet_pcc",
+                                                    other: "pamphlet_other",
+                                                },
+                                            ].map((row) => (
+                                                <tr
+                                                    key={row.id}
+                                                    className="bg-white border-b"
+                                                >
+                                                    <td className="px-4 py-2 font-medium text-gray-900">
+                                                        {row.label}
+                                                    </td>
+                                                    <td className="px-4 py-2">
+                                                        <input
+                                                            type="number"
+                                                            className="w-20 border rounded p-1"
+                                                            value={
+                                                                formData
+                                                                    .adviceSources[
+                                                                    row.pcc as keyof typeof formData.adviceSources
+                                                                ]
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleAdviceSourceChange(
+                                                                    row.pcc,
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="px-4 py-2">
+                                                        <input
+                                                            type="number"
+                                                            className="w-20 border rounded p-1"
+                                                            value={
+                                                                formData
+                                                                    .adviceSources[
+                                                                    row.other as keyof typeof formData.adviceSources
+                                                                ]
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleAdviceSourceChange(
+                                                                    row.other,
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    {/* Non-matrix sources */}
+                                    <div className="mt-4 space-y-2 pl-4">
+                                        <div className="flex items-center gap-2">
+                                            <span>
+                                                8. สื่อโทรทัศน์/วิทยุ จำนวน
+                                            </span>
+                                            <input
+                                                type="number"
+                                                className="border-b border-gray-300 w-16 text-center"
+                                                value={
+                                                    formData.adviceSources
+                                                        .tv_radio
+                                                }
+                                                onChange={(e) =>
+                                                    handleAdviceSourceChange(
+                                                        "tv_radio",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span>ครั้ง</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span>
+                                                9. ทางอินเตอร์เน็ต จำนวน
+                                            </span>
+                                            <input
+                                                type="number"
+                                                className="border-b border-gray-300 w-16 text-center"
+                                                value={
+                                                    formData.adviceSources
+                                                        .internet
+                                                }
+                                                onChange={(e) =>
+                                                    handleAdviceSourceChange(
+                                                        "internet",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span>ครั้ง</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span>
+                                                10.
+                                                หนังสือพิมพ์/นิตยสาร/สิ่งพิมพ์ต่างๆ
+                                                จำนวน
+                                            </span>
+                                            <input
+                                                type="number"
+                                                className="border-b border-gray-300 w-16 text-center"
+                                                value={
+                                                    formData.adviceSources
+                                                        .newspaper
+                                                }
+                                                onChange={(e) =>
+                                                    handleAdviceSourceChange(
+                                                        "newspaper",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span>ครั้ง</span>
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span>
+                                                11. จากแหล่งอื่นๆ โปรดระบุ
+                                            </span>
+                                            <input
+                                                type="text"
+                                                className="border-b border-gray-300 w-40"
+                                                value={
+                                                    formData.adviceSources
+                                                        .other_source_name
+                                                }
+                                                onChange={(e) =>
+                                                    handleAdviceSourceChange(
+                                                        "other_source_name",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span>จำนวน</span>
+                                            <input
+                                                type="number"
+                                                className="border-b border-gray-300 w-16 text-center"
+                                                value={
+                                                    formData.adviceSources
+                                                        .other_source_count
+                                                }
+                                                onChange={(e) =>
+                                                    handleAdviceSourceChange(
+                                                        "other_source_count",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span>ครั้ง</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 25. Peer Discussion */}
+                            <div className="space-y-2">
+                                <label className="font-semibold block">
+                                    25. ระหว่างที่ท่านนั่ง รอพบแพทย์ท่านได้พูด
+                                    คุยแลกเปลี่ยนเรียนรู้ข้อมูล
+                                    คำแนะนำกับผู้ป่วย ด้วยกันเองบ้างหรือไม่
+                                    เรื่องอะไรบ้าง
+                                </label>
+                                <div className="space-y-2 pl-4">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="peerDiscussion"
+                                            value="no"
+                                            checked={
+                                                formData.peerDiscussion === "no"
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "peerDiscussion",
                                                     e.target.value
                                                 )
                                             }
                                         />
-                                    </div>
-                                )}
-                            </label>
-                        </div>
-                    </div>
+                                        ไม่ได้พูดคุยกัน
+                                    </label>
+                                    <label className="flex items-start gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="peerDiscussion"
+                                            value="yes"
+                                            checked={
+                                                formData.peerDiscussion ===
+                                                "yes"
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "peerDiscussion",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="mt-1"
+                                        />
+                                        <div className="flex-1">
+                                            <span>
+                                                ได้พูดคุยกัน
+                                                โปรดระบุประเด็นที่ได้รับจากการพูดคุย
+                                            </span>
+                                            <textarea
+                                                className="w-full border border-gray-300 rounded p-2 mt-1 focus:border-blue-500 outline-none"
+                                                rows={2}
+                                                value={
+                                                    formData.peerDiscussionTopic
+                                                }
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "peerDiscussionTopic",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                disabled={
+                                                    formData.peerDiscussion !==
+                                                    "yes"
+                                                }
+                                            />
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* 26. Activities */}
+                            <div className="space-y-2">
+                                <label className="font-semibold block">
+                                    26.
+                                    ท่านเคยเข้าร่วมกิจกรรมเกี่ยวกับโรคเบาหวานบ้างหรือไม่
+                                    อย่างไร
+                                </label>
+                                <div className="space-y-2 pl-4">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="activities"
+                                            value="no"
+                                            checked={
+                                                formData.activities === "no"
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "activities",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        ไม่เคย
+                                    </label>
+                                    <label className="flex items-start gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="activities"
+                                            value="yes"
+                                            checked={
+                                                formData.activities === "yes"
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "activities",
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="mt-1"
+                                        />
+                                        <div className="flex-1">
+                                            <span>
+                                                เคย
+                                                โปรดระบุกิจกรรมที่ท่านเคยเข้าร่วม
+                                            </span>
+                                            <input
+                                                type="text"
+                                                className="w-full border-b border-gray-300 focus:border-blue-500 outline-none"
+                                                value={formData.activitiesTopic}
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "activitiesTopic",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                disabled={
+                                                    formData.activities !==
+                                                    "yes"
+                                                }
+                                            />
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* 27. Admissions */}
+                            <div className="space-y-2">
+                                <label className="font-semibold block">
+                                    27. ในรอบ 1
+                                    ปีที่ผ่านมาท่านเคยเข้ารับการรักษาตัวในโรงพยาบาล
+                                    ในแผนกฉุกเฉิน/แผนก ผู้ป่วยในบ้างหรือไม่
+                                </label>
+                                <div className="space-y-2 pl-4">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input
+                                            type="radio"
+                                            name="admissions"
+                                            value="no"
+                                            checked={
+                                                formData.admissions === "no"
+                                            }
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "admissions",
+                                                    e.target.value
+                                                )
+                                            }
+                                        />
+                                        ไม่เคย
+                                    </label>
+                                    <label className="flex items-start gap-2 cursor-pointer flex-col">
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="radio"
+                                                name="admissions"
+                                                value="yes"
+                                                checked={
+                                                    formData.admissions ===
+                                                    "yes"
+                                                }
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "admissions",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                            <span>เคย จำนวน</span>
+                                            <input
+                                                type="number"
+                                                className="border-b border-gray-300 w-16 text-center"
+                                                value={formData.admissionCount}
+                                                onChange={(e) =>
+                                                    handleChange(
+                                                        "admissionCount",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                disabled={
+                                                    formData.admissions !==
+                                                    "yes"
+                                                }
+                                            />
+                                            <span>ครั้ง</span>
+                                        </div>
+                                        {formData.admissions === "yes" && (
+                                            <div className="w-full pl-6">
+                                                <div className="mb-1">
+                                                    โปรดระบุสาเหตุที่ท่านต้องนอนโรงพยาบาล
+                                                </div>
+                                                <textarea
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                    rows={2}
+                                                    value={
+                                                        formData.admissionReason
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleChange(
+                                                            "admissionReason",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+                                    </label>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 <div className="p-8 border-t border-gray-100 flex justify-between bg-gray-50">

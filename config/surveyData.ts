@@ -105,8 +105,8 @@ export const surveyData: Record<string, SurveyConfig> = {
 };
 
 export const regions = [
-    { id: "phetchabun", name: "บริบทพื้นที่เพชรบูรณ์", color: "bg-teal-500" },
-    { id: "satun", name: "บริบทพื้นที่สตูล", color: "bg-orange-500" },
-    { id: "lopburi", name: "บริบทพื้นที่ลพบุรี", color: "bg-purple-500" },
+    // { id: "phetchabun", name: "บริบทพื้นที่เพชรบูรณ์", color: "bg-teal-500" },
+    // { id: "satun", name: "บริบทพื้นที่สตูล", color: "bg-orange-500" },
+    // { id: "lopburi", name: "บริบทพื้นที่ลพบุรี", color: "bg-purple-500" },
     { id: "central", name: "บริบทคนไทยทีมกลาง", color: "bg-blue-500" },
 ];

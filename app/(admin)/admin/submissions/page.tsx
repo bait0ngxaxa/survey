@@ -16,12 +16,12 @@ export default async function SubmissionsPage({
         regionFilter
     );
 
-    const regions = ["", "phetchabun", "satun", "lopburi", "central"];
+    const regions = ["", "central"]; // "phetchabun", "satun", "lopburi" hidden
     const regionLabels: Record<string, string> = {
         "": "ทั้งหมด",
-        phetchabun: "เพชรบูรณ์",
-        satun: "สตูล",
-        lopburi: "ลพบุรี",
+        // phetchabun: "เพชรบูรณ์",
+        // satun: "สตูล",
+        // lopburi: "ลพบุรี",
         central: "ทีมกลาง",
     };
 
