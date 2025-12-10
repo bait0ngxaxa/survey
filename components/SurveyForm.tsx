@@ -24,6 +24,8 @@ const initialPart1Data: Part1Data = {
     hba1cLevel: "",
     visitDoctor: "",
     notVisitReason: "",
+    surveyMethod: "self",
+    interviewerName: "",
 };
 
 const initialSectionTwoData: SectionTwoData = {
@@ -176,6 +178,22 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
     };
 
     const handleNext = () => {
+        // Validation for Pre-Survey Questions
+        if (!sectionTwoData.respondentName.trim()) {
+            setAlertMessage("กรุณาระบุชื่อผู้ให้ข้อมูล (ตัวผู้ป่วย)");
+            setIsAlertOpen(true);
+            return;
+        }
+
+        if (
+            part1Data.surveyMethod === "interview" &&
+            !part1Data.interviewerName?.trim()
+        ) {
+            setAlertMessage("กรุณาระบุชื่อผู้สัมภาษณ์");
+            setIsAlertOpen(true);
+            return;
+        }
+
         // Validation for Part 1
         if (!part1Data.bloodSugarKnown) {
             setAlertMessage("กรุณาระบุว่าท่านทราบผลการตรวจระดับน้ำตาลหรือไม่");
@@ -283,6 +301,102 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                     ก่อนที่ท่านจะตอบแบบสอบถามชุดนี้
                                     ผู้วิจัยอยากทราบว่า
                                 </p>
+
+                                {/* Pre-Survey Questions */}
+                                <div className="space-y-6 border-b border-gray-100 pb-8">
+                                    <div className="space-y-2">
+                                        <label className="font-semibold block text-gray-800">
+                                            วิธีการเก็บข้อมูล
+                                        </label>
+                                        <div className="flex gap-6">
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="surveyMethod"
+                                                    value="self"
+                                                    checked={
+                                                        part1Data.surveyMethod ===
+                                                        "self"
+                                                    }
+                                                    onChange={(e) =>
+                                                        handlePart1Change(
+                                                            "surveyMethod",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="text-gray-700">
+                                                    ตอบด้วยตนเอง
+                                                </span>
+                                            </label>
+                                            <label className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name="surveyMethod"
+                                                    value="interview"
+                                                    checked={
+                                                        part1Data.surveyMethod ===
+                                                        "interview"
+                                                    }
+                                                    onChange={(e) =>
+                                                        handlePart1Change(
+                                                            "surveyMethod",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="text-gray-700">
+                                                    สัมภาษณ์
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="font-semibold block text-gray-800">
+                                            ชื่อผู้ให้ข้อมูล
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="ระบุชื่อ-นามสกุล"
+                                            value={
+                                                sectionTwoData.respondentName
+                                            }
+                                            onChange={(e) =>
+                                                setSectionTwoData((prev) => ({
+                                                    ...prev,
+                                                    respondentName:
+                                                        e.target.value,
+                                                }))
+                                            }
+                                            className="w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    {part1Data.surveyMethod === "interview" && (
+                                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                                            <label className="font-semibold block text-gray-800">
+                                                ชื่อผู้สัมภาษณ์
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="ระบุชื่อ-นามสกุลผู้สัมภาษณ์"
+                                                value={
+                                                    part1Data.interviewerName
+                                                }
+                                                onChange={(e) =>
+                                                    handlePart1Change(
+                                                        "interviewerName",
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 outline-none transition-all"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
 
                                 {/* 1. Blood Sugar Knowledge */}
                                 <div className="space-y-4">
@@ -530,6 +644,8 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                         onRecommendationsChange={setRecommendations}
                         additionalInfo={additionalInfo}
                         onAdditionalInfoChange={setAdditionalInfo}
+                        respondentName={sectionTwoData.respondentName}
+                        interviewerName={part1Data.interviewerName}
                     />
                 )}
             </div>

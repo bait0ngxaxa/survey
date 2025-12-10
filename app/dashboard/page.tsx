@@ -32,12 +32,12 @@ export default async function DashboardPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-wrap justify-center gap-6">
                     {regions.map((region) => (
                         <Link
                             key={region.id}
                             href={`/survey/${region.id}`}
-                            className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100"
+                            className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 w-full max-w-md"
                         >
                             <div className={`h-2 ${region.color}`} />
                             <div className="p-8 flex items-center gap-6">

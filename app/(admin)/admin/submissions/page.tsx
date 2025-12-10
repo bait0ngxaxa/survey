@@ -68,15 +68,15 @@ export default async function SubmissionsPage({
                                 <th className="px-6 py-4">Date</th>
                                 <th className="px-6 py-4">Patient ID</th>
                                 <th className="px-6 py-4">Region</th>
-                                <th className="px-6 py-4">Hospital</th>
-                                <th className="px-6 py-4">Result</th>
+
+                                <th className="px-6 py-4">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {submissions.length === 0 ? (
                                 <tr>
                                     <td
-                                        colSpan={5}
+                                        colSpan={4}
                                         className="px-6 py-8 text-center text-gray-500"
                                     >
                                         No submissions found
@@ -100,28 +100,14 @@ export default async function SubmissionsPage({
                                         <td className="px-6 py-4 capitalize">
                                             {item.region}
                                         </td>
+
                                         <td className="px-6 py-4">
-                                            {item.hospital || "-"}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {item.interpretationResult ? (
-                                                <span
-                                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                        item.interpretationResult.includes(
-                                                            "สูง"
-                                                        ) ||
-                                                        item.interpretationResult.includes(
-                                                            "High"
-                                                        )
-                                                            ? "bg-red-50 text-red-700"
-                                                            : "bg-green-50 text-green-700"
-                                                    }`}
-                                                >
-                                                    {item.interpretationResult}
-                                                </span>
-                                            ) : (
-                                                "-"
-                                            )}
+                                            <Link
+                                                href={`/admin/submissions/${item.id}/report`}
+                                                className="text-blue-600 hover:text-blue-900 font-medium text-sm"
+                                            >
+                                                View Report
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))

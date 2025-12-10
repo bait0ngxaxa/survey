@@ -54,11 +54,6 @@ export default function SectionTwoForm({
     };
 
     const handleNext = () => {
-        if (!formData.respondentName.trim()) {
-            setAlertMessage("กรุณาระบุชื่อผู้ทำแบบสอบถาม");
-            setIsAlertOpen(true);
-            return;
-        }
         onNext();
     };
 
@@ -81,22 +76,7 @@ export default function SectionTwoForm({
 
                 <div className="p-8 space-y-8">
                     {/* Name */}
-                    <div className="space-y-2">
-                        <label className="font-semibold block">
-                            ชื่อผู้ให้ข้อมูล
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="ระบุชื่อ-นามสกุล"
-                            value={formData.respondentName}
-                            onChange={(e) =>
-                                handleChange("respondentName", e.target.value)
-                            }
-                            className="border rounded p-2 w-full md:w-1/2"
-                        />
-                    </div>
 
-                    {/* 1. Gender */}
                     {/* 1. Gender */}
                     <div className="space-y-2">
                         <label className="font-semibold block">1. เพศ</label>

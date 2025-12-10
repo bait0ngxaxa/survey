@@ -53,74 +53,113 @@ export default function ExportButton() {
                 return;
             }
 
-            // Collect all possible headers from all submissions
-            const allHeaders = new Set<string>([
-                "id",
-                "patientId",
-                "patient_firstName",
-                "patient_lastName",
-                "region",
-                "hospital",
-                "totalScorePart4",
-                "interpretationResult",
-                "createdAt",
-            ]);
+            // Define Headers (7 Dimensions + General Info)
+            const headers = [
+                "วันที่ทำรายการ",
+                "เวลา",
+                "ชื่อ-นามสกุล ผู้ป่วย",
+                "เพศ",
+                "เขตสุขภาพ",
+                "โรงพยาบาล",
+                "ชื่อผู้ให้ข้อมูล",
+                "ชื่อผู้สัมภาษณ์",
+                "มิติที่ 1 (การทำงานของร่างกาย)", // G1, G2
+                "มิติที่ 2 (อาการของโรค)", // G3
+                "มิติที่ 3 (สุขภาพจิตใจ)", // G4
+                "มิติที่ 4 (การดูแลตนเอง)", // G5, G6
+                "มิติที่ 5 (สังคม)", // G7
+                "มิติที่ 6 (สุขภาพโดยรวม)", // G8
+                "มิติที่ 7 (ความพึงพอใจ)", // G9, G10
+            ];
 
-            // Process all submissions and collect headers
-            const processedData: Record<string, string>[] = [];
+            // Processing Helper
+            const getActionText = (report: any, stepId: number) => {
+                const step = report[`step_${stepId}`];
+                if (!step || !step.action) return null;
+                // Format: "ข้อ X-Y: [Action]"
+                return `${step.label?.split("\n")[0] || `ข้อ ${stepId}`}: ${
+                    step.action
+                }`;
+            };
 
-            for (const s of submissions) {
-                const row: Record<string, string> = {
-                    id: s.id,
-                    patientId: s.patientId,
-                    patient_firstName:
-                        (s.patient as { firstName?: string })?.firstName || "",
-                    patient_lastName:
-                        (s.patient as { lastName?: string })?.lastName || "",
-                    region: s.region,
-                    hospital: s.hospital || "",
-                    totalScorePart4: s.totalScorePart4?.toString() || "",
-                    interpretationResult: s.interpretationResult || "",
-                    createdAt: new Date(s.createdAt).toLocaleString("th-TH"),
-                };
+            // Process Rows
+            const csvRows = submissions.map((s) => {
+                const raw: any = s.rawAnswers || {};
+                const report = raw.reportData || raw.sectionFourReport || {};
+                const part1 = raw.part1 || {};
+                const sec2 = raw.sectionTwo || {};
+                const patient = s.patient as any;
 
-                // Flatten rawAnswers
-                if (s.rawAnswers && typeof s.rawAnswers === "object") {
-                    const flatAnswers = flattenObject(
-                        s.rawAnswers as Record<string, unknown>,
-                        "raw"
-                    );
-                    for (const key of Object.keys(flatAnswers)) {
-                        allHeaders.add(key);
-                    }
-                    Object.assign(row, flatAnswers);
-                }
+                const dateObj = new Date(s.createdAt);
 
-                // Flatten scoreBySection
-                if (s.scoreBySection && typeof s.scoreBySection === "object") {
-                    const flatScores = flattenObject(
-                        s.scoreBySection as Record<string, unknown>,
-                        "score"
-                    );
-                    for (const key of Object.keys(flatScores)) {
-                        allHeaders.add(key);
-                    }
-                    Object.assign(row, flatScores);
-                }
+                // Group results by dimension
+                // Dim 1: G1, G2
+                const dim1 = [
+                    getActionText(report, 1),
+                    getActionText(report, 2),
+                ]
+                    .filter(Boolean)
+                    .join("\n");
+                // Dim 2: G3
+                const dim2 = [getActionText(report, 3)]
+                    .filter(Boolean)
+                    .join("\n");
+                // Dim 3: G4
+                const dim3 = [getActionText(report, 4)]
+                    .filter(Boolean)
+                    .join("\n");
+                // Dim 4: G5, G6
+                const dim4 = [
+                    getActionText(report, 5),
+                    getActionText(report, 6),
+                ]
+                    .filter(Boolean)
+                    .join("\n");
+                // Dim 5: G7
+                const dim5 = [getActionText(report, 7)]
+                    .filter(Boolean)
+                    .join("\n");
+                // Dim 6: G8
+                const dim6 = [getActionText(report, 8)]
+                    .filter(Boolean)
+                    .join("\n");
+                // Dim 7: G9, G10
+                const dim7 = [
+                    getActionText(report, 9),
+                    getActionText(report, 10),
+                ]
+                    .filter(Boolean)
+                    .join("\n");
 
-                processedData.push(row);
-            }
+                const rowData = [
+                    dateObj.toLocaleDateString("th-TH"),
+                    dateObj.toLocaleTimeString("th-TH"),
+                    `${patient?.firstName || ""} ${
+                        patient?.lastName || ""
+                    }`.trim(),
+                    patient?.gender || sec2.gender || "",
+                    s.region,
+                    s.hospital || "",
+                    sec2.respondentName || "",
+                    part1.interviewerName || "",
+                    dim1,
+                    dim2,
+                    dim3,
+                    dim4,
+                    dim5,
+                    dim6,
+                    dim7,
+                ];
 
-            // Convert to CSV
-            const headerArray = Array.from(allHeaders);
+                return rowData.map(escapeCSV).join(",");
+            });
+
             const csvContent = [
-                headerArray.map(escapeCSV).join(","),
-                ...processedData.map((row) =>
-                    headerArray.map((h) => escapeCSV(row[h] || "")).join(",")
-                ),
+                headers.map(escapeCSV).join(","),
+                ...csvRows,
             ].join("\n");
 
-            // Add BOM for Excel UTF-8 compatibility
+            // BOM for Excel
             const BOM = "\uFEFF";
             const blob = new Blob([BOM + csvContent], {
                 type: "text/csv;charset=utf-8;",
@@ -130,7 +169,7 @@ export default function ExportButton() {
             link.setAttribute("href", url);
             link.setAttribute(
                 "download",
-                `survey_full_export_${
+                `survey_report_7dim_${
                     new Date().toISOString().split("T")[0]
                 }.csv`
             );
@@ -152,7 +191,7 @@ export default function ExportButton() {
             className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
             <Download size={18} />
-            {loading ? "กำลัง Export..." : "Export CSV (ข้อมูลทั้งหมด)"}
+            {loading ? "กำลัง Export..." : "Export Report (CSV)"}
         </button>
     );
 }

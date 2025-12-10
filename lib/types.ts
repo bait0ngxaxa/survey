@@ -4,6 +4,8 @@ export interface Part1Data {
     hba1cLevel: string;
     visitDoctor: string;
     notVisitReason: string;
+    surveyMethod?: string;
+    interviewerName?: string;
 }
 
 export interface SectionTwoData {

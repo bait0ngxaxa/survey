@@ -16,6 +16,8 @@ interface SectionFourFormProps {
     onRecommendationsChange?: (recs: Record<string, any>) => void;
     additionalInfo?: Record<string, any>;
     onAdditionalInfoChange?: (info: Record<string, any>) => void;
+    respondentName?: string;
+    interviewerName?: string;
 }
 
 // Group definitions for Central region logic
@@ -92,6 +94,116 @@ const CENTRAL_GROUPS = [
     },
 ];
 
+// UI Steps for Central region (7 steps)
+const CENTRAL_UI_STEPS = [
+    {
+        questions: [1, 2, 3],
+        containedGroups: [1, 2],
+        title: "ข้อ 1-3 มิติการทำงานของร่างกาย (Physical Function)",
+        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
+
+ตอนที่ 1 การทำงานของร่างกาย
+เป็นการประเมินว่าใน 1 เดือนที่ผ่านมาท่านทำกิจกรรมต่าง ๆ ต่อไปนี้ในชีวิตประจำวันได้บ่อยแค่ไหน โดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ทำไม่ได้เลย หมายถึง ท่านทำกิจกรรมนั้นไม่ได้เลย
+คะแนน 2 = ทำได้นาน ๆ ครั้ง หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 1 วันต่อสัปดาห์
+คะแนน 3 = ทำได้บางครั้ง หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 2-3 วันต่อสัปดาห์
+คะแนน 4 = ทำได้บ่อย ๆ หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 4 วันต่อสัปดาห์
+คะแนน 5 = ทำได้เกือบทุกวัน หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 5-6 วันต่อสัปดาห์
+คะแนน 6 = ทำได้ทุกวัน หมายถึง ท่านทำกิจกรรมนั้นได้ทุกวัน`,
+    },
+    {
+        questions: [4, 5, 6, 7],
+        containedGroups: [3],
+        title: "ข้อ 4-7 มิติอาการของโรค (Symptoms)",
+        description: `ใน 1 เดือนที่ผ่านมาท่านมีอาการต่างๆต่อไปนี้บ่อยแค่ไหน
+
+ตอนที่ 2 เกี่ยวกับอาการของโรค
+เป็นการประเมินว่าใน 1 เดือนที่ผ่านมาท่านมีอาการต่างๆ ต่อไปนี้บ่อยแค่ไหน โดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ไม่มีเลย หมายถึง ท่านไม่มีอาการต่างๆ นั้นเกิดขึ้นเลย
+คะแนน 2 = มีนานๆ ครั้ง หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นประมาณ 1 ครั้งต่อสัปดาห์
+คะแนน 3 = มีบางครั้ง หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นประมาณ 2-3 ครั้งต่อสัปดาห์
+คะแนน 4 = มีบ่อยๆ หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นประมาณ 4 ครั้งต่อสัปดาห์
+คะแนน 5 = มีเกือบทุกวัน หมายถึง ท่านมีอาการต่างๆนั้นเกิดขึ้นประมาณ 5-6 ครั้งต่อสัปดาห์
+คะแนน 6 = มีทุกวัน หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นทุกวัน`,
+    },
+    {
+        questions: [8, 9, 10],
+        containedGroups: [4],
+        title: "ข้อที่ 8-10 มิติสุขภาพทางด้านจิตใจ (Psychological Well-being)",
+        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
+
+ตอนที่ 3 เกี่ยวกับเรื่องทางด้านจิตใจ
+เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
+คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
+คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
+คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
+คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
+คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
+    },
+    {
+        questions: [11, 12, 13, 14, 15, 16], // Combined G5 and G6 questions as requested (11-16)
+        containedGroups: [5, 6],
+        title: "ข้อ 11-16 มิติทางด้านบทบาทการดูแลตนเอง (Self - care management)",
+        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
+
+ตอนที่ 4 เกี่ยวกับเรื่อง การจัดการดูแลตนเอง
+เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
+คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
+คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
+คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
+คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
+คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
+    },
+    {
+        questions: [17, 18, 19, 20],
+        containedGroups: [7],
+        title: "ข้อ 17-20 มิติทางด้านสังคม(Social well-being)",
+        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
+
+ตอนที่ 5 เกี่ยวกับเรื่องทางสังคม
+เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
+คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
+คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
+คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
+คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
+คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
+    },
+    {
+        questions: [21, 22, 23],
+        containedGroups: [8],
+        title: "ข้อ 21-23 มิติสุขภาพโดยรวม(Global judgments of health)",
+        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
+
+ตอนที่ 6 เกี่ยวกับเรื่องสุขภาพโดยรวม
+เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
+คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
+คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
+คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
+คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
+คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
+    },
+    {
+        questions: [24, 25, 26, 27, 28, 29], // Combined G9 and G10
+        containedGroups: [9, 10],
+        title: "ข้อ 24-29 มิติความพึงพอใจต่อการรักษาและการดูแล(Satisfaction with care and flexibility of treatment)",
+        description: `ท่านพึงพอใจต่อการดูแลรักษาและการควบคุม เบาหวาน ของท่านและบุคคลากรทางการแพทย์มากน้อยแค่ไหน
+
+ตอนที่ 7 เกี่ยวกับความพึงพอใจต่อการดูแลรักษา
+เป็นการประเมินว่าท่านพึงพอใจต่อการดูแลรักษาและการควบคุมเบาหวานของ ท่านและบุคคลากรทางการแพทย์มากน้อยแค่ไหนในเรื่องต่อไปนี้
+โดยมีเกณฑ์การให้คะแนน ดังนี้
+คะแนน 1 = ไม่พอใจเลย หมายถึง ท่านไม่พึงพอใจต่อเรื่องนั้นเลย
+คะแนน 2 = พอใจน้อยมาก หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 1 ส่วนใน 5 ส่วน
+คะแนน 3 = พอใจบ้าง หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 2 ส่วนใน 5 ส่วน
+คะแนน 4 = พอใจพอสมควร หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 3 ส่วนใน 5 ส่วน
+คะแนน 5 = พอใจมาก หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 4 ส่วนใน 5 ส่วน
+คะแนน 6 = พอใจมากที่สุด หมายถึง ท่านพึงพอใจต่อเรื่องนั้นมากที่สุด`,
+    },
+];
+
 export default function SectionFourForm({
     data,
     answers,
@@ -103,13 +215,16 @@ export default function SectionFourForm({
     onRecommendationsChange,
     additionalInfo = {},
     onAdditionalInfoChange,
+    respondentName,
+    interviewerName,
 }: SectionFourFormProps) {
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [currentStep, setCurrentStep] = useState(0);
 
     const isCentral = region === "central";
-    const isSummaryStep = isCentral && currentStep === CENTRAL_GROUPS.length;
+    // Summary step is after the last UI step (index 7)
+    const isSummaryStep = isCentral && currentStep === CENTRAL_UI_STEPS.length;
 
     const handleAnswer = (questionId: number, score: number) => {
         onAnswer(questionId, score);
@@ -139,24 +254,32 @@ export default function SectionFourForm({
         if (!isCentral) return true;
         if (isSummaryStep) return true;
 
-        const currentGroup = CENTRAL_GROUPS[currentStep];
-        for (const qId of currentGroup.questions) {
+        const currentUIStep = CENTRAL_UI_STEPS[currentStep];
+        for (const qId of currentUIStep.questions) {
             if (!answers[qId]) {
                 return false;
             }
         }
 
-        const avgScore = getGroupAverage(currentGroup.questions);
+        // Conditional Check for Group 2 (Questions 2-3) if in this step
+        if (currentUIStep.containedGroups.includes(2)) {
+            const group2Avg = getGroupAverage([2, 3]);
+            if (group2Avg > 0 && group2Avg <= 2) {
+                if (!additionalInfo.movementLimit && !additionalInfo.tired) {
+                    return false;
+                }
+            }
+        }
 
-        // Validation for extra inputs (Scores 1-2)
-        if (avgScore <= 2) {
-            if (currentGroup.id === 9) {
-                // Group 9 (Q24-26)
+        // Conditional Check for Group 9 (Questions 24-26) if in this step
+        if (currentUIStep.containedGroups.includes(9)) {
+            const group9Avg = getGroupAverage([24, 25, 26]);
+            if (group9Avg > 0 && group9Avg <= 2) {
                 if (
                     !additionalInfo.q9Topic ||
                     additionalInfo.q9Topic.trim() === ""
                 ) {
-                    return false; // Require topic input
+                    return false;
                 }
             }
         }
@@ -167,164 +290,169 @@ export default function SectionFourForm({
     const processStepLogic = () => {
         if (!isCentral || !onRecommendationsChange || isSummaryStep) return;
 
-        const currentGroup = CENTRAL_GROUPS[currentStep];
+        const currentUIStep = CENTRAL_UI_STEPS[currentStep];
         let newRecs = { ...recommendations };
-        let action = "";
-        let relatedUnit = "";
 
-        const avgScore = getGroupAverage(currentGroup.questions);
+        // Process all analytic groups contained in this UI step
+        currentUIStep.containedGroups.forEach((groupId) => {
+            const analyticGroup = CENTRAL_GROUPS.find((g) => g.id === groupId);
+            if (!analyticGroup) return;
 
-        let criteria = "";
-        if (avgScore <= 2) criteria = "1-2";
-        else if (avgScore === 3) criteria = "3";
-        else criteria = "4-6";
+            let action = "";
+            let relatedUnit = "";
+            const avgScore = getGroupAverage(analyticGroup.questions);
 
-        if (criteria === "4-6") {
-            action = "ติดตามตามรอบ";
-            switch (currentGroup.id) {
-                case 1:
-                    relatedUnit = "พยาบาล / LTC";
-                    break;
-                case 2:
-                    relatedUnit = "นักกายภาพ/พยาบาล";
-                    break;
-                case 3:
-                    relatedUnit = "พยาบาล/แพทย์";
-                    break;
-                case 4:
-                    relatedUnit = "ทีม Mental Health";
-                    break;
-                case 5:
-                    relatedUnit = "ทีม HL";
-                    break;
-                case 6:
-                    relatedUnit = "พยาบาล / แพทย์";
-                    break;
-                case 7:
-                    relatedUnit = "แพทย์/ Mental Health";
-                    break;
-                case 8:
-                    relatedUnit = "แพทย์";
-                    break;
-                case 9:
-                    relatedUnit = "ทีมบริการ";
-                    break;
-                case 10:
-                    relatedUnit = "ทีม HL";
-                    break;
+            let criteria = "";
+            if (avgScore <= 2) criteria = "1-2";
+            else if (avgScore === 3) criteria = "3";
+            else criteria = "4-6";
+
+            // Reuse existing logic for actions/units
+            if (criteria === "4-6") {
+                action = "ติดตามตามรอบ";
+                switch (analyticGroup.id) {
+                    case 1:
+                        relatedUnit = "พยาบาล / LTC";
+                        break;
+                    case 2:
+                        relatedUnit = "นักกายภาพ/พยาบาล";
+                        break;
+                    case 3:
+                        relatedUnit = "พยาบาล/แพทย์";
+                        break;
+                    case 4:
+                        relatedUnit = "ทีม Mental Health";
+                        break;
+                    case 5:
+                        relatedUnit = "ทีม HL";
+                        break;
+                    case 6:
+                        relatedUnit = "พยาบาล / แพทย์";
+                        break;
+                    case 7:
+                        relatedUnit = "แพทย์/ Mental Health";
+                        break;
+                    case 8:
+                        relatedUnit = "แพทย์";
+                        break;
+                    case 9:
+                        relatedUnit = "ทีมบริการ";
+                        break;
+                    case 10:
+                        relatedUnit = "ทีม HL";
+                        break;
+                }
+            } else if (criteria === "3") {
+                action = "เฝ้าระวัง";
+                switch (analyticGroup.id) {
+                    case 1:
+                        relatedUnit = "พยาบาล / LTC";
+                        break;
+                    case 2:
+                        relatedUnit = "นักกายภาพ/พยาบาล";
+                        break;
+                    case 3:
+                        relatedUnit = "พยาบาล/แพทย์";
+                        break;
+                    case 4:
+                        relatedUnit = "ทีม Mental Health";
+                        break;
+                    case 5:
+                        relatedUnit = "ทีม HL";
+                        break;
+                    case 6:
+                        relatedUnit = "พยาบาล / แพทย์";
+                        break;
+                    case 7:
+                        relatedUnit = "แพทย์/ Mental Health";
+                        break;
+                    case 8:
+                        relatedUnit = "แพทย์";
+                        break;
+                    case 9:
+                        relatedUnit = "ทีมบริการ";
+                        break;
+                    case 10:
+                        relatedUnit = "ทีม HL";
+                        break;
+                }
+            } else {
+                // Criteria 1-2
+                switch (analyticGroup.id) {
+                    case 1:
+                        action = "ส่ง Manager เพื่อลงทะเบียน LTC";
+                        relatedUnit = "พยาบาล / LTC";
+                        break;
+                    case 2:
+                        let actions = [];
+                        if (additionalInfo.movementLimit)
+                            actions.push("ส่งต่อนักกายภาพ");
+                        if (additionalInfo.tired)
+                            actions.push("ส่งต่อ Manager หรือ แพทย์");
+                        if (actions.length === 0) actions.push("ถามเพิ่ม");
+                        action = actions.join(", ");
+                        relatedUnit = "นักกายภาพ/พยาบาล";
+                        break;
+                    case 3:
+                        action = "ส่ง Manager";
+                        relatedUnit = "พยาบาล/แพทย์";
+                        break;
+                    case 4:
+                        action = "Consult ทีม Mental Health";
+                        relatedUnit = "ทีม Mental Health";
+                        break;
+                    case 5:
+                        action = "ส่งเข้าร่วม Health Literacy Program";
+                        relatedUnit = "ทีม HL";
+                        break;
+                    case 6:
+                        action = "ส่งพบ Manager";
+                        relatedUnit = "พยาบาล / แพทย์";
+                        break;
+                    case 7:
+                        action =
+                            "ส่งพบ Manager หรือ ทีม Mental Health เพื่อประเมินภาวะเครียด";
+                        relatedUnit = "แพทย์/ Mental Health";
+                        break;
+                    case 8:
+                        action = "พบ Manager";
+                        relatedUnit = "แพทย์";
+                        break;
+                    case 9:
+                        action = `ถามเพิ่ม: ต้องการรู้เรื่องใดเพิ่มเติม (${
+                            additionalInfo.q9Topic || "-"
+                        }) แล้วส่ง Manager`;
+                        relatedUnit = "ทีมบริการ";
+                        break;
+                    case 10:
+                        action = "ประเมินเพื่อส่งเข้า Health Literacy Program";
+                        relatedUnit = "ทีม HL";
+                        break;
+                }
             }
-        } else if (criteria === "3") {
-            action = "เฝ้าระวัง";
-            switch (currentGroup.id) {
-                case 1:
-                    relatedUnit = "พยาบาล / LTC";
-                    break;
-                case 2:
-                    relatedUnit = "นักกายภาพ/พยาบาล";
-                    break;
-                case 3:
-                    relatedUnit = "พยาบาล/แพทย์";
-                    break;
-                case 4:
-                    relatedUnit = "ทีม Mental Health";
-                    break;
-                case 5:
-                    relatedUnit = "ทีม HL";
-                    break;
-                case 6:
-                    relatedUnit = "พยาบาล / แพทย์";
-                    break;
-                case 7:
-                    relatedUnit = "แพทย์/ Mental Health";
-                    break;
-                case 8:
-                    relatedUnit = "แพทย์";
-                    break;
-                case 9:
-                    relatedUnit = "ทีมบริการ";
-                    break;
-                case 10:
-                    relatedUnit = "ทีม HL";
-                    break;
-            }
-        } else {
-            // Criteria 1-2
-            switch (currentGroup.id) {
-                case 1:
-                    action = "ส่ง Manager เพื่อลงทะเบียน LTC";
-                    relatedUnit = "พยาบาล / LTC";
-                    break;
-                case 2:
-                    let actions = [];
-                    if (additionalInfo.movementLimit)
-                        actions.push("ส่งต่อนักกายภาพ");
-                    if (additionalInfo.tired)
-                        actions.push("ส่งต่อ Manager หรือ แพทย์");
-                    if (actions.length === 0) actions.push("ถามเพิ่ม");
-                    action = actions.join(", ");
-                    relatedUnit = "นักกายภาพ/พยาบาล";
-                    break;
-                case 3:
-                    action = "ส่ง Manager";
-                    relatedUnit = "พยาบาล/แพทย์";
-                    break;
-                case 4:
-                    action = "Consult ทีม Mental Health";
-                    relatedUnit = "ทีม Mental Health";
-                    break;
-                case 5:
-                    action = "ส่งเข้าร่วม Health Literacy Program";
-                    relatedUnit = "ทีม HL";
-                    break;
-                case 6:
-                    action = "ส่งพบ Manager";
-                    relatedUnit = "พยาบาล / แพทย์";
-                    break;
-                case 7:
-                    action =
-                        "ส่งพบ Manager หรือ ทีม Mental Health เพื่อประเมินภาวะเครียด";
-                    relatedUnit = "แพทย์/ Mental Health";
-                    break;
-                case 8:
-                    action = "พบ Manager";
-                    relatedUnit = "แพทย์";
-                    break;
-                case 9:
-                    action = `ถามเพิ่ม: ต้องการรู้เรื่องใดเพิ่มเติม (${
-                        additionalInfo.q9Topic || "-"
-                    }) แล้วส่ง Manager`;
-                    relatedUnit = "ทีมบริการ";
-                    break;
-                case 10:
-                    action = "ประเมินเพื่อส่งเข้า Health Literacy Program";
-                    relatedUnit = "ทีม HL";
-                    break;
-            }
-        }
 
-        newRecs[`step_${currentGroup.id}`] = {
-            id: currentGroup.id,
-            dimension: currentGroup.dimension,
-            questionsLabel: currentGroup.questionsLabel,
-            label: currentGroup.label,
-            criteria: criteria,
-            averageScore: avgScore,
-            action: action,
-            relatedUnit: relatedUnit,
-            additionalInfo:
-                avgScore <= 2
-                    ? currentGroup.id === 2
-                        ? {
-                              movementLimit: additionalInfo.movementLimit,
-                              tired: additionalInfo.tired,
-                          }
-                        : currentGroup.id === 9
-                        ? {
-                              topic: additionalInfo.q9Topic,
-                          }
-                        : null
-                    : null,
-        };
+            newRecs[`step_${analyticGroup.id}`] = {
+                id: analyticGroup.id,
+                dimension: analyticGroup.dimension,
+                questionsLabel: analyticGroup.questionsLabel,
+                label: analyticGroup.label,
+                criteria: criteria,
+                averageScore: avgScore,
+                action: action,
+                relatedUnit: relatedUnit,
+                additionalInfo:
+                    avgScore <= 2
+                        ? analyticGroup.id === 2
+                            ? {
+                                  movementLimit: additionalInfo.movementLimit,
+                                  tired: additionalInfo.tired,
+                              }
+                            : analyticGroup.id === 9
+                            ? { topic: additionalInfo.q9Topic }
+                            : null
+                        : null,
+            };
+        });
 
         onRecommendationsChange(newRecs);
     };
@@ -519,6 +647,27 @@ export default function SectionFourForm({
                         สรุปผลการประเมิน
                     </h2>
 
+                    <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <span className="text-gray-500 font-medium">
+                                ชื่อผู้ให้ข้อมูล:
+                            </span>
+                            <span className="ml-2 text-gray-900 font-semibold text-lg">
+                                {respondentName || "-"}
+                            </span>
+                        </div>
+                        {interviewerName && (
+                            <div>
+                                <span className="text-gray-500 font-medium">
+                                    ชื่อผู้สัมภาษณ์:
+                                </span>
+                                <span className="ml-2 text-gray-900 font-semibold text-lg">
+                                    {interviewerName}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
                     <div className="overflow-hidden rounded-xl border border-gray-200 shadow-xs">
                         <table className="w-full text-left text-sm text-gray-600 border-collapse">
                             <thead className="bg-gray-50 text-gray-900 font-semibold text-center">
@@ -618,14 +767,23 @@ export default function SectionFourForm({
     }
 
     if (isCentral) {
-        const currentGroup = CENTRAL_GROUPS[currentStep];
+        const currentUIStep = CENTRAL_UI_STEPS[currentStep];
         const displayQuestions = data
             .flatMap((s) => s.questions)
-            .filter((q) => currentGroup.questions.includes(q.id));
-        const avgScore = getGroupAverage(currentGroup.questions);
+            .filter((q) => currentUIStep.questions.includes(q.id));
 
-        const showGroup2Extra = currentGroup.id === 2 && avgScore <= 2;
-        const showGroup9Extra = currentGroup.id === 9 && avgScore <= 2;
+        // Calculate conditional checks for display
+        let showGroup2Extra = false;
+        let showGroup9Extra = false;
+
+        if (currentUIStep.containedGroups.includes(2)) {
+            const avg = getGroupAverage([2, 3]);
+            showGroup2Extra = avg > 0 && avg <= 2;
+        }
+        if (currentUIStep.containedGroups.includes(9)) {
+            const avg = getGroupAverage([24, 25, 26]);
+            showGroup9Extra = avg > 0 && avg <= 2;
+        }
 
         return (
             <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8">
@@ -637,18 +795,17 @@ export default function SectionFourForm({
 
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                     <div className="flex justify-between items-center mb-4">
-                        <div>
+                        <div className="flex-1 mr-4">
                             <span className="text-sm font-bold text-blue-600 tracking-wide uppercase whitespace-pre-line">
-                                {currentGroup.dimension}
+                                {currentUIStep.title}
                             </span>
-                            <h2 className="text-xl font-bold text-gray-800 mt-1">
-                                {currentGroup.label.split("\n")[1] ||
-                                    currentGroup.label}
-                            </h2>
+                            <div className="text-gray-600 mt-2 text-sm whitespace-pre-line bg-gray-50 p-4 rounded-lg">
+                                {currentUIStep.description}
+                            </div>
                         </div>
-                        <span className="text-sm font-medium text-gray-500">
+                        <span className="self-start text-sm font-medium text-gray-500 whitespace-nowrap">
                             ขั้นตอนที่ {currentStep + 1} /{" "}
-                            {CENTRAL_GROUPS.length}
+                            {CENTRAL_UI_STEPS.length}
                         </span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
@@ -657,7 +814,7 @@ export default function SectionFourForm({
                             style={{
                                 width: `${
                                     ((currentStep + 1) /
-                                        CENTRAL_GROUPS.length) *
+                                        CENTRAL_UI_STEPS.length) *
                                     100
                                 }%`,
                             }}
