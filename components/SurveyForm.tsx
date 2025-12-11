@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Suspense } from "react";
 import { ChevronRight, ChevronLeft, Check } from "lucide-react";
 import SubmitSuccessModal from "@/components/SubmitSuccessModal";
 import AlertModal from "@/components/AlertModal";
+import ConfirmExitModal from "@/components/ConfirmExitModal";
 import SectionTwoForm from "./SectionTwoForm";
 import MedicalRecordForm from "./MedicalRecordForm";
 import SectionFourForm from "./SectionFourForm";
@@ -169,6 +170,48 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
 
+    // Exit confirmation state
+    const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+
+    // Check if user has started filling the survey
+    const hasStartedSurvey = step > 0;
+
+    // Handle browser back button and beforeunload
+    useEffect(() => {
+        if (!hasStartedSurvey || submitSuccess) return;
+
+        // Prevent accidental page close/refresh
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            e.preventDefault();
+            e.returnValue = "";
+            return "";
+        };
+
+        // Push a dummy state to history to intercept back button
+        window.history.pushState({ surveyInProgress: true }, "");
+
+        const handlePopState = (e: PopStateEvent) => {
+            // User pressed back button, show confirmation modal
+            setIsExitModalOpen(true);
+            // Push state again to prevent immediate navigation
+            window.history.pushState({ surveyInProgress: true }, "");
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, [hasStartedSurvey, submitSuccess]);
+
+    const handleConfirmExit = useCallback(() => {
+        setIsExitModalOpen(false);
+        // Navigate to dashboard
+        window.location.href = "/dashboard";
+    }, []);
+
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [step]);
@@ -270,6 +313,11 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                 onClose={() => setIsAlertOpen(false)}
                 message={alertMessage}
             />
+            <ConfirmExitModal
+                isOpen={isExitModalOpen}
+                onClose={() => setIsExitModalOpen(false)}
+                onConfirm={handleConfirmExit}
+            />
             {isSubmitting && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-xl shadow-xl flex items-center gap-4">
@@ -297,15 +345,15 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                             </div>
 
                             <form className="p-8 space-y-10">
-                                <p className="text-gray-600 italic border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50 rounded-r-lg">
+                                <p className="text-slate-700 italic border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50 rounded-r-lg font-medium">
                                     ก่อนที่ท่านจะตอบแบบสอบถามชุดนี้
                                     ผู้วิจัยอยากทราบว่า
                                 </p>
 
                                 {/* Pre-Survey Questions */}
-                                <div className="space-y-6 border-b border-gray-100 pb-8">
+                                <div className="space-y-6 border-b border-slate-200 pb-8">
                                     <div className="space-y-2">
-                                        <label className="font-semibold block text-gray-800">
+                                        <label className="font-semibold block text-slate-900">
                                             วิธีการเก็บข้อมูล
                                         </label>
                                         <div className="flex gap-6">
@@ -326,7 +374,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                     }
                                                     className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                                                 />
-                                                <span className="text-gray-700">
+                                                <span className="text-slate-800">
                                                     ตอบด้วยตนเอง
                                                 </span>
                                             </label>
@@ -347,7 +395,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                     }
                                                     className="w-5 h-5 text-blue-600 focus:ring-blue-500"
                                                 />
-                                                <span className="text-gray-700">
+                                                <span className="text-slate-800">
                                                     สัมภาษณ์
                                                 </span>
                                             </label>
@@ -355,7 +403,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="font-semibold block text-gray-800">
+                                        <label className="font-semibold block text-slate-900">
                                             ชื่อผู้ให้ข้อมูล
                                         </label>
                                         <input
@@ -371,13 +419,13 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                         e.target.value,
                                                 }))
                                             }
-                                            className="w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 outline-none transition-all"
+                                            className="w-full p-3 rounded-lg border border-slate-300 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder-slate-400"
                                         />
                                     </div>
 
                                     {part1Data.surveyMethod === "interview" && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                            <label className="font-semibold block text-gray-800">
+                                            <label className="font-semibold block text-slate-900">
                                                 ชื่อผู้สัมภาษณ์
                                             </label>
                                             <input
@@ -392,7 +440,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 outline-none transition-all"
+                                                className="w-full p-3 rounded-lg border border-slate-300 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder-slate-400"
                                             />
                                         </div>
                                     )}
@@ -400,7 +448,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
 
                                 {/* 1. Blood Sugar Knowledge */}
                                 <div className="space-y-4">
-                                    <label className="text-lg font-semibold text-gray-900 block">
+                                    <label className="text-lg font-semibold text-slate-900 block">
                                         1.
                                         ท่านทราบผลการตรวจระดับน้ำตาลในเลือดและค่าน้ำตาลสะสมของท่านในครั้งนี้หรือไม่
                                         อย่างไร
@@ -423,9 +471,9 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
                                                 />
-                                                <span className="text-gray-700">
+                                                <span className="text-slate-800">
                                                     1. ทราบ
                                                 </span>
                                             </label>
@@ -434,7 +482,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                 "known" && (
                                                 <div className="ml-8 space-y-3 animate-in fade-in slide-in-from-top-2">
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                                        <span className="text-gray-600 min-w-[200px]">
+                                                        <span className="text-slate-700 min-w-[200px]">
                                                             1.1
                                                             ระดับน้ำตาลในเลือด
                                                             (Fasting) =
@@ -451,16 +499,16 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                                         .value
                                                                 )
                                                             }
-                                                            className="flex-1 w-full max-w-[200px] border-b border-gray-300 focus:border-blue-500 outline-none px-2 py-1 text-center font-medium bg-transparent"
+                                                            className="flex-1 w-full max-w-[200px] border-b border-slate-400 focus:border-blue-500 outline-none px-2 py-1 text-center font-medium bg-transparent text-slate-900 placeholder-slate-400"
                                                             placeholder="ระบุค่า"
                                                         />
-                                                        <span className="text-gray-600">
+                                                        <span className="text-slate-700">
                                                             มิลลิกรัม/เดซิลิตร
                                                             (mg/dl)
                                                         </span>
                                                     </div>
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                                        <span className="text-gray-600 min-w-[200px]">
+                                                        <span className="text-slate-700 min-w-[200px]">
                                                             1.2 ระดับน้ำตาลสะสม
                                                             (HbA1c) =
                                                         </span>
@@ -476,10 +524,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                                         .value
                                                                 )
                                                             }
-                                                            className="flex-1 w-full max-w-[200px] border-b border-gray-300 focus:border-blue-500 outline-none px-2 py-1 text-center font-medium bg-transparent"
+                                                            className="flex-1 w-full max-w-[200px] border-b border-slate-400 focus:border-blue-500 outline-none px-2 py-1 text-center font-medium bg-transparent text-slate-900 placeholder-slate-400"
                                                             placeholder="ระบุค่า"
                                                         />
-                                                        <span className="text-gray-600">
+                                                        <span className="text-slate-700">
                                                             เปอร์เซ็นต์ (%)
                                                         </span>
                                                     </div>
@@ -503,20 +551,20 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
                                             />
-                                            <span className="text-gray-700">
+                                            <span className="text-slate-800">
                                                 2. ไม่ทราบ
                                             </span>
                                         </label>
                                     </div>
                                 </div>
 
-                                <div className="border-t border-gray-100" />
+                                <div className="border-t border-slate-200" />
 
                                 {/* 2. Doctor Visits */}
                                 <div className="space-y-4">
-                                    <label className="text-lg font-semibold text-gray-900 block">
+                                    <label className="text-lg font-semibold text-slate-900 block">
                                         2. ท่านมาพบแพทย์ตามนัดทุกครั้งหรือไม่
                                     </label>
                                     <div className="pl-4 space-y-4">
@@ -535,9 +583,9 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                         e.target.value
                                                     )
                                                 }
-                                                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
                                             />
-                                            <span className="text-gray-700">
+                                            <span className="text-slate-800">
                                                 1. ทุกครั้ง
                                             </span>
                                         </label>
@@ -558,9 +606,9 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                             e.target.value
                                                         )
                                                     }
-                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
                                                 />
-                                                <span className="text-gray-700">
+                                                <span className="text-slate-800">
                                                     2. ไม่ทุกครั้ง เพราะ
                                                 </span>
                                             </label>
@@ -578,7 +626,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                                 e.target.value
                                                             )
                                                         }
-                                                        className="w-full p-3 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder-gray-400"
+                                                        className="w-full p-3 rounded-lg border border-slate-300 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-900 placeholder-slate-400"
                                                         placeholder="ระบุสาเหตุ..."
                                                         rows={3}
                                                     />
@@ -596,7 +644,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                             (window.location.href =
                                                 "/dashboard")
                                         }
-                                        className="px-8 py-3 bg-white border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-semibold transition-all shadow-sm"
+                                        className="px-8 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold transition-all shadow-sm"
                                     >
                                         ยกเลิก
                                     </button>
@@ -646,6 +694,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                         onAdditionalInfoChange={setAdditionalInfo}
                         respondentName={sectionTwoData.respondentName}
                         interviewerName={part1Data.interviewerName}
+                        isSubmitting={isSubmitting}
                     />
                 )}
             </div>

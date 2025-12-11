@@ -50,13 +50,27 @@ export async function getAdminStats() {
 export async function getSubmissions(
     page = 1,
     pageSize = 10,
-    regionFilter = ""
+    regionFilter = "",
+    searchQuery = ""
 ) {
     await checkAdmin();
 
     const skip = (page - 1) * pageSize;
 
-    const where = regionFilter ? { region: regionFilter } : {};
+    // Build where clause
+    const where: {
+        region?: string;
+        id?: { contains: string; mode: "insensitive" };
+    } = {};
+
+    if (regionFilter) {
+        where.region = regionFilter;
+    }
+
+    // Search by Submission ID
+    if (searchQuery) {
+        where.id = { contains: searchQuery, mode: "insensitive" };
+    }
 
     const [submissions, total] = await Promise.all([
         prisma.surveySubmission.findMany({

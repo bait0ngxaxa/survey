@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "แบบสอบถาม PROM เบาหวาน",
+    title: "แบบสอบถาม PROMs",
     description: "ระบบแบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2",
 };
 

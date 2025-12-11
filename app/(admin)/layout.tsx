@@ -5,6 +5,11 @@ import { redirect } from "next/navigation";
 import { LayoutDashboard, FileSpreadsheet } from "lucide-react";
 import { Suspense } from "react";
 import Loading from "./admin/loading";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Admin Panel PROMs",
+};
 
 export default async function AdminLayout({
     children,
@@ -46,9 +51,14 @@ export default async function AdminLayout({
                 <div className="p-4 border-t border-gray-200 mt-auto">
                     <div className="flex items-center gap-3 px-4 py-2">
                         <UserButton />
-                        <span className="text-sm font-medium text-gray-600">
-                            Admin User
-                        </span>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-bold text-gray-900">
+                                Admin
+                            </span>
+                            <span className="text-xs text-gray-500">
+                                {user?.firstName} {user?.lastName}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </aside>

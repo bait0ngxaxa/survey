@@ -10,7 +10,8 @@ interface SectionFourFormProps {
     answers: Record<number, number>;
     onAnswer: (questionId: number, score: number) => void;
     onBack: () => void;
-    onSubmit: () => void;
+    onSubmit: () => void | Promise<void>;
+    isSubmitting?: boolean;
     region?: string;
     recommendations?: Record<string, any>;
     onRecommendationsChange?: (recs: Record<string, any>) => void;
@@ -217,14 +218,31 @@ export default function SectionFourForm({
     onAdditionalInfoChange,
     respondentName,
     interviewerName,
+    isSubmitting: isSubmittingProp = false,
 }: SectionFourFormProps) {
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
 
+    // Use prop if available, otherwise local state (though we prefer prop now)
+    // We can just use the prop directly for the loading indicator.
+    // But we need to handle the "handleConfirmSubmit" logic.
+
+    // We'll keep a local one just in case parent doesn't provide it,
+    // OR just rely on the prop + local "optimistic" loading if needed.
+    // Actually, let's purely rely on the prop if provided, or fallback to local.
+    // But mixing them is messy.
+    // Let's assume we will pass it from parent.
+    // For backward compatibility or testing, we can keep local state but sync it?
+    // Simpler: user clicked -> set local true. Parent props update -> effectively true.
+    // If we use prop, use prop.
+
+    const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
+
+    const isSubmitting = isSubmittingProp || localIsSubmitting;
+
     const isCentral = region === "central";
-    // Summary step is after the last UI step (index 7)
-    const isSummaryStep = isCentral && currentStep === CENTRAL_UI_STEPS.length;
 
     const handleAnswer = (questionId: number, score: number) => {
         onAnswer(questionId, score);
@@ -236,7 +254,7 @@ export default function SectionFourForm({
         }
     };
 
-    const NEGATIVE_QUESTIONS = [4, 5, 6, 7, 11, 12, 13, 14, 15, 16];
+    const NEGATIVE_QUESTIONS = [4, 5, 6, 7, 8, 19, 20, 21, 22];
 
     const getGroupAverage = (questionIds: number[]) => {
         if (questionIds.length === 0) return 0;
@@ -252,7 +270,6 @@ export default function SectionFourForm({
 
     const validateCurrentStep = () => {
         if (!isCentral) return true;
-        if (isSummaryStep) return true;
 
         const currentUIStep = CENTRAL_UI_STEPS[currentStep];
         for (const qId of currentUIStep.questions) {
@@ -288,7 +305,7 @@ export default function SectionFourForm({
     };
 
     const processStepLogic = () => {
-        if (!isCentral || !onRecommendationsChange || isSummaryStep) return;
+        if (!isCentral || !onRecommendationsChange) return;
 
         const currentUIStep = CENTRAL_UI_STEPS[currentStep];
         let newRecs = { ...recommendations };
@@ -419,9 +436,8 @@ export default function SectionFourForm({
                         relatedUnit = "แพทย์";
                         break;
                     case 9:
-                        action = `ถามเพิ่ม: ต้องการรู้เรื่องใดเพิ่มเติม (${
-                            additionalInfo.q9Topic || "-"
-                        }) แล้วส่ง Manager`;
+                        action =
+                            "ถามเพิ่ม: ต้องการรู้เรื่องใดเพิ่มเติม แล้วส่ง Manager";
                         relatedUnit = "ทีมบริการ";
                         break;
                     case 10:
@@ -459,8 +475,26 @@ export default function SectionFourForm({
 
     const handleNext = () => {
         if (isCentral) {
-            if (isSummaryStep) {
-                onSubmit();
+            // If it was the last step (summary), we submit.
+            // BUT, per new requirement, we don't want a summary step anymore.
+            // We want a confirmation modal on the last question step.
+
+            // Check if we are on the last question step
+            const isLastQuestionStep =
+                currentStep === CENTRAL_UI_STEPS.length - 1;
+
+            if (isLastQuestionStep) {
+                if (!validateCurrentStep()) {
+                    setAlertMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
+                    setIsAlertOpen(true);
+                    return;
+                }
+
+                // Process logic for the last step
+                processStepLogic();
+
+                // Show confirmation modal
+                setShowConfirmModal(true);
                 return;
             }
 
@@ -569,7 +603,21 @@ export default function SectionFourForm({
                             onChange={(e) =>
                                 handleAnswer(q.id, parseInt(e.target.value))
                             }
-                            className="w-full relative z-10 opacity-0 hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                                // Force update to handle initial click on "1" if value was undefined/0
+                                handleAnswer(
+                                    q.id,
+                                    parseInt(e.currentTarget.value)
+                                );
+                            }}
+                            onTouchEnd={(e) => {
+                                // Force update for touch devices on initial tap
+                                handleAnswer(
+                                    q.id,
+                                    parseInt(e.currentTarget.value)
+                                );
+                            }}
+                            className="w-full relative z-10 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
                             style={{ opacity: 1 }}
                         />
                         <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between px-1 pointer-events-none w-full">
@@ -611,11 +659,13 @@ export default function SectionFourForm({
                                 key={num}
                                 type="button"
                                 onClick={() => handleAnswer(q.id, num)}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm transition-all duration-200 ${
+                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm transition-all duration-200 cursor-pointer ${
                                     answers[q.id] === num
-                                        ? "bg-indigo-100 text-indigo-700 font-bold shadow-inner ring-2 ring-indigo-500 ring-offset-2"
-                                        : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                                        ? "bg-indigo-100 text-indigo-700 font-bold shadow-inner ring-2 ring-indigo-500 ring-offset-2 scale-110"
+                                        : "text-gray-400 hover:text-gray-600 hover:bg-gray-50 hover:scale-110 hover:shadow-md border border-transparent hover:border-gray-200"
                                 }`}
+                                aria-label={`Select score ${num}`}
+                                title={`เลือกคะแนน ${num}`}
                             >
                                 {num}
                             </button>
@@ -626,145 +676,29 @@ export default function SectionFourForm({
         </div>
     );
 
-    if (isSummaryStep && recommendations) {
-        // Calculate rowspans
-        const dimensionCounts: Record<string, number> = {};
-        CENTRAL_GROUPS.forEach((g) => {
-            dimensionCounts[g.dimension] =
-                (dimensionCounts[g.dimension] || 0) + 1;
-        });
+    const handleConfirmSubmit = async () => {
+        if (isSubmitting) return;
 
-        // Helper to track which dimension has been rendered
-        const renderedDimensions: Record<string, boolean> = {};
+        // Optimistically set local loading
+        setLocalIsSubmitting(true);
 
-        return (
-            <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8">
-                <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                        <span className="bg-blue-100 text-blue-700 p-2 rounded-lg">
-                            <Check size={28} />
-                        </span>
-                        สรุปผลการประเมิน
-                    </h2>
+        try {
+            await onSubmit();
+            // If success, likely unmounts or navigates.
+            // If parent updates prop, isSubmitting remains true.
+        } catch (error) {
+            console.error("Error submitting:", error);
+            // Reset local
+            setLocalIsSubmitting(false);
 
-                    <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <span className="text-gray-500 font-medium">
-                                ชื่อผู้ให้ข้อมูล:
-                            </span>
-                            <span className="ml-2 text-gray-900 font-semibold text-lg">
-                                {respondentName || "-"}
-                            </span>
-                        </div>
-                        {interviewerName && (
-                            <div>
-                                <span className="text-gray-500 font-medium">
-                                    ชื่อผู้สัมภาษณ์:
-                                </span>
-                                <span className="ml-2 text-gray-900 font-semibold text-lg">
-                                    {interviewerName}
-                                </span>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="overflow-hidden rounded-xl border border-gray-200 shadow-xs">
-                        <table className="w-full text-left text-sm text-gray-600 border-collapse">
-                            <thead className="bg-gray-50 text-gray-900 font-semibold text-center">
-                                <tr>
-                                    <th className="p-4 border-b border-gray-200 w-1/5">
-                                        มิติ
-                                    </th>
-                                    <th className="p-4 border-b border-gray-200 w-[10%]">
-                                        ข้อที่
-                                    </th>
-                                    <th className="p-4 border-b border-gray-200 w-2/5">
-                                        ผลการประเมิน
-                                    </th>
-                                    <th className="p-4 border-b border-gray-200 w-1/5">
-                                        หน่วยงานที่เกี่ยวข้อง
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 bg-white">
-                                {CENTRAL_GROUPS.map((group, index) => {
-                                    const rec =
-                                        recommendations[`step_${group.id}`];
-                                    if (!rec) return null;
-
-                                    const isActionNeeded =
-                                        rec.criteria === "1-2";
-                                    const isWatch = rec.criteria === "3";
-                                    const count =
-                                        dimensionCounts[group.dimension];
-                                    const isFirstOfDimension =
-                                        !renderedDimensions[group.dimension];
-
-                                    if (isFirstOfDimension) {
-                                        renderedDimensions[group.dimension] =
-                                            true;
-                                    }
-
-                                    return (
-                                        <tr
-                                            key={group.id}
-                                            className="hover:bg-gray-50/30"
-                                        >
-                                            {isFirstOfDimension && (
-                                                <td
-                                                    className="p-4 align-top font-bold text-gray-900 bg-gray-50/50 border-r border-gray-100"
-                                                    rowSpan={count}
-                                                >
-                                                    <div className="whitespace-pre-line">
-                                                        {group.dimension}
-                                                    </div>
-                                                </td>
-                                            )}
-                                            <td className="p-4 align-top text-center font-medium border-r border-gray-100 text-indigo-600">
-                                                {group.questionsLabel}
-                                            </td>
-                                            <td className="p-4 align-top border-r border-gray-100">
-                                                <div
-                                                    className={`text-base ${
-                                                        isActionNeeded
-                                                            ? "text-red-600 font-bold"
-                                                            : isWatch
-                                                            ? "text-orange-600 font-semibold"
-                                                            : "text-green-700 font-medium"
-                                                    }`}
-                                                >
-                                                    {rec.action}
-                                                </div>
-                                            </td>
-                                            <td className="p-4 align-top text-gray-800">
-                                                {rec.relatedUnit}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div className="flex justify-between items-center pt-6">
-                    <button
-                        onClick={handleBack}
-                        className="px-8 py-3 bg-white border border-gray-300 rounded-xl text-gray-600 hover:bg-gray-50 font-semibold"
-                    >
-                        แก้ไขข้อมูล
-                    </button>
-                    <button
-                        onClick={handleNext}
-                        className="px-10 py-4 bg-green-600 text-white rounded-2xl hover:bg-green-700 font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-3 active:scale-95"
-                    >
-                        <span>ยืนยันและส่งแบบสอบถาม</span>
-                        <Check size={24} />
-                    </button>
-                </div>
-            </div>
-        );
-    }
+            setAlertMessage(
+                "เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง (" +
+                    (error as Error).message +
+                    ")"
+            );
+            setIsAlertOpen(true);
+        }
+    };
 
     if (isCentral) {
         const currentUIStep = CENTRAL_UI_STEPS[currentStep];
@@ -793,17 +727,66 @@ export default function SectionFourForm({
                     message={alertMessage}
                 />
 
+                {/* Confirmation Modal */}
+                {showConfirmModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
+                            <div className="text-center space-y-4">
+                                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    {isSubmitting ? (
+                                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                        <Check size={32} />
+                                    )}
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900">
+                                    {isSubmitting
+                                        ? "กำลังส่งข้อมูล..."
+                                        : "ยืนยันการส่งแบบสอบถาม?"}
+                                </h3>
+                                <p className="text-gray-500">
+                                    {isSubmitting
+                                        ? "กรุณารอสักครู่ ระบบกำลังบันทึกข้อมูลของท่าน"
+                                        : "ท่านได้ทำแบบสอบถามครบถ้วนแล้ว ต้องการส่งข้อมูลเลยหรือไม่"}
+                                </p>
+                                {!isSubmitting && (
+                                    <div className="flex gap-3 pt-4">
+                                        <button
+                                            onClick={() =>
+                                                setShowConfirmModal(false)
+                                            }
+                                            className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 font-semibold transition-colors"
+                                            disabled={isSubmitting}
+                                        >
+                                            กลับไปแก้ไข
+                                        </button>
+                                        <button
+                                            onClick={handleConfirmSubmit}
+                                            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-blue-200 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting
+                                                ? "กำลังส่ง..."
+                                                : "ยืนยันส่งข้อมูล"}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                    <div className="flex justify-between items-center mb-4">
-                        <div className="flex-1 mr-4">
-                            <span className="text-sm font-bold text-blue-600 tracking-wide uppercase whitespace-pre-line">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+                        <div className="flex-1 w-full md:mr-4">
+                            <span className="text-xl font-bold text-blue-600 tracking-wide uppercase whitespace-pre-line block">
                                 {currentUIStep.title}
                             </span>
-                            <div className="text-gray-600 mt-2 text-sm whitespace-pre-line bg-gray-50 p-4 rounded-lg">
+                            <div className="text-gray-600 mt-2 text-lg whitespace-pre-line bg-gray-50 p-4 rounded-lg w-full">
                                 {currentUIStep.description}
                             </div>
                         </div>
-                        <span className="self-start text-sm font-medium text-gray-500 whitespace-nowrap">
+                        <span className="self-end md:self-start text-sm font-medium text-gray-500 whitespace-nowrap bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">
                             ขั้นตอนที่ {currentStep + 1} /{" "}
                             {CENTRAL_UI_STEPS.length}
                         </span>
@@ -918,6 +901,55 @@ export default function SectionFourForm({
                 onClose={() => setIsAlertOpen(false)}
                 message={alertMessage}
             />
+
+            {/* Confirmation Modal */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
+                        <div className="text-center space-y-4">
+                            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                {isSubmitting ? (
+                                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <Check size={32} />
+                                )}
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900">
+                                {isSubmitting
+                                    ? "กำลังส่งข้อมูล..."
+                                    : "ยืนยันการส่งแบบสอบถาม?"}
+                            </h3>
+                            <p className="text-gray-500">
+                                {isSubmitting
+                                    ? "กรุณารอสักครู่ ระบบกำลังบันทึกข้อมูลของท่าน"
+                                    : "ท่านได้ทำแบบสอบถามครบถ้วนแล้ว ต้องการส่งข้อมูลเลยหรือไม่"}
+                            </p>
+                            {!isSubmitting && (
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        onClick={() =>
+                                            setShowConfirmModal(false)
+                                        }
+                                        className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 font-semibold transition-colors"
+                                        disabled={isSubmitting}
+                                    >
+                                        กลับไปแก้ไข
+                                    </button>
+                                    <button
+                                        onClick={handleConfirmSubmit}
+                                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-blue-200 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting
+                                            ? "กำลังส่ง..."
+                                            : "ยืนยันส่งข้อมูล"}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl overflow-hidden">
                 <div className="py-8 px-8 text-white">

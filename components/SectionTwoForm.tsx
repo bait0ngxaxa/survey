@@ -79,7 +79,9 @@ export default function SectionTwoForm({
 
                     {/* 1. Gender */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">1. เพศ</label>
+                        <label className="font-semibold block text-slate-900">
+                            1. เพศ
+                        </label>
                         <div className="flex gap-4">
                             {["ชาย", "หญิง"].map((opt) => (
                                 <label
@@ -99,7 +101,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                 </label>
                             ))}
                         </div>
@@ -107,7 +111,9 @@ export default function SectionTwoForm({
 
                     {/* 2. Age */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">2. อายุ</label>
+                        <label className="font-semibold block text-slate-900">
+                            2. อายุ
+                        </label>
                         <div className="flex flex-wrap gap-4 items-center">
                             <input
                                 type="number"
@@ -116,23 +122,25 @@ export default function SectionTwoForm({
                                 onChange={(e) =>
                                     handleChange("age", e.target.value)
                                 }
-                                className="border rounded p-2 w-24"
+                                className="border rounded p-2 w-24 text-slate-900 border-slate-300"
                             />
-                            <span>หรือ วัน/เดือน/ปี พ.ศ. เกิด</span>
+                            <span className="text-slate-900">
+                                หรือ วัน/เดือน/ปี พ.ศ. เกิด
+                            </span>
                             <input
                                 type="date"
                                 value={formData.birthDate}
                                 onChange={(e) =>
                                     handleChange("birthDate", e.target.value)
                                 }
-                                className="border rounded p-2"
+                                className="border rounded p-2 text-slate-900 border-slate-300"
                             />
                         </div>
                     </div>
 
                     {/* 3. Education */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             3. ระดับการศึกษา
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -163,7 +171,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                     {(opt === "สูงกว่าปริญญาตรี" ||
                                         opt === "อื่น ๆ") &&
                                         formData.education === opt && (
@@ -177,7 +187,7 @@ export default function SectionTwoForm({
                                                         e.target.value
                                                     )
                                                 }
-                                                className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1"
+                                                className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 text-slate-900 placeholder-slate-400"
                                             />
                                         )}
                                 </label>
@@ -187,7 +197,7 @@ export default function SectionTwoForm({
 
                     {/* 4. Marital Status */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             4. สถานภาพสมรส
                         </label>
                         <div className="flex flex-wrap gap-4">
@@ -212,7 +222,9 @@ export default function SectionTwoForm({
                                             }
                                             className="text-blue-600 focus:ring-blue-500"
                                         />
-                                        {opt}
+                                        <span className="text-slate-900">
+                                            {opt}
+                                        </span>
                                     </label>
                                 )
                             )}
@@ -221,7 +233,9 @@ export default function SectionTwoForm({
 
                     {/* 5. Occupation */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">5. อาชีพ</label>
+                        <label className="font-semibold block text-slate-900">
+                            5. อาชีพ
+                        </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {[
                                 "ไม่ได้ประกอบอาชีพ",
@@ -250,7 +264,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                     {opt === "อื่น ๆ" &&
                                         formData.occupation === opt && (
                                             <input
@@ -263,7 +279,7 @@ export default function SectionTwoForm({
                                                         e.target.value
                                                     )
                                                 }
-                                                className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1"
+                                                className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 text-slate-900 placeholder-slate-400"
                                             />
                                         )}
                                 </label>
@@ -273,7 +289,7 @@ export default function SectionTwoForm({
 
                     {/* 6. Income */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             6. รายได้เฉลี่ยต่อเดือน
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -302,7 +318,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                 </label>
                             ))}
                         </div>
@@ -311,7 +329,7 @@ export default function SectionTwoForm({
                     {/* 7. Support Source (Conditional: If not working) */}
                     {formData.occupation === "ไม่ได้ประกอบอาชีพ" && (
                         <div className="space-y-2 bg-blue-50 p-4 rounded-lg">
-                            <label className="font-semibold block">
+                            <label className="font-semibold block text-slate-900">
                                 7. ถ้าท่านไม่ได้ทำงาน
                                 ท่านได้รับการส่งเสียเลี้ยงดูจากใคร
                             </label>
@@ -344,7 +362,9 @@ export default function SectionTwoForm({
                                             }
                                             className="text-blue-600 focus:ring-blue-500"
                                         />
-                                        {opt}
+                                        <span className="text-slate-900">
+                                            {opt}
+                                        </span>
                                         {opt === "อื่น ๆ" &&
                                             formData.supportSource === opt && (
                                                 <input
@@ -359,7 +379,7 @@ export default function SectionTwoForm({
                                                             e.target.value
                                                         )
                                                     }
-                                                    className="border-b border-blue-300 focus:border-blue-500 outline-none ml-2 flex-1 bg-transparent"
+                                                    className="border-b border-blue-300 focus:border-blue-500 outline-none ml-2 flex-1 bg-transparent text-slate-900 placeholder-slate-400"
                                                 />
                                             )}
                                     </label>
@@ -370,7 +390,7 @@ export default function SectionTwoForm({
 
                     {/* 8. Family Economy */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             8. เศรษฐกิจโดยรวมของครอบครัว
                         </label>
                         <div className="flex gap-4">
@@ -397,7 +417,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                 </label>
                             ))}
                         </div>
@@ -405,7 +427,7 @@ export default function SectionTwoForm({
 
                     {/* 9. Diabetes Duration */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             9.
                             ระยะเวลาที่ทราบว่าเป็นเบาหวานจากการวินิจฉัยจากแพทย์
                         </label>
@@ -413,7 +435,7 @@ export default function SectionTwoForm({
                             <div className="flex items-center gap-2">
                                 <input
                                     type="number"
-                                    className="border border-gray-300 rounded p-1 w-20 text-center"
+                                    className="border border-slate-300 rounded p-1 w-20 text-center text-slate-900"
                                     value={formData.diabetesDuration}
                                     onChange={(e) =>
                                         handleChange(
@@ -422,14 +444,16 @@ export default function SectionTwoForm({
                                         )
                                     }
                                 />
-                                <span>ปี</span>
+                                <span className="text-slate-900">ปี</span>
                             </div>
-                            <span>หรือเริ่มเป็นเบาหวานตั้งแต่อายุเท่าไร</span>
+                            <span className="text-slate-900">
+                                หรือเริ่มเป็นเบาหวานตั้งแต่อายุเท่าไร
+                            </span>
                             <div className="flex items-center gap-2">
-                                <span>อายุ</span>
+                                <span className="text-slate-900">อายุ</span>
                                 <input
                                     type="number"
-                                    className="border border-gray-300 rounded p-1 w-20 text-center"
+                                    className="border border-slate-300 rounded p-1 w-20 text-center text-slate-900"
                                     value={formData.diabetesAge}
                                     onChange={(e) =>
                                         handleChange(
@@ -438,19 +462,19 @@ export default function SectionTwoForm({
                                         )
                                     }
                                 />
-                                <span>ปี</span>
+                                <span className="text-slate-900">ปี</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-200" />
-                    <h2 className="text-xl font-bold text-gray-800">
+                    <div className="border-t border-slate-200" />
+                    <h2 className="text-xl font-bold text-slate-900">
                         ตอนที่ 1 ข้อมูลทั่วไป (ส่วนที่ 1 ต่อ)
                     </h2>
 
                     {/* 10. Treatment */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             10. รูปแบบการรักษา
                         </label>
                         <div className="flex flex-col gap-2">
@@ -478,7 +502,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                     {opt === "อื่น ๆ" &&
                                         formData.treatmentType === opt && (
                                             <input
@@ -491,7 +517,7 @@ export default function SectionTwoForm({
                                                         e.target.value
                                                     )
                                                 }
-                                                className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1"
+                                                className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 text-slate-900 placeholder-slate-400"
                                             />
                                         )}
                                 </label>
@@ -501,7 +527,7 @@ export default function SectionTwoForm({
 
                     {/* 11. Meds Count */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             11. จำนวนยาที่ได้รับ
                         </label>
                         <div className="flex flex-wrap gap-4">
@@ -530,7 +556,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                 </label>
                             ))}
                         </div>
@@ -538,7 +566,7 @@ export default function SectionTwoForm({
 
                     {/* 12. Payment */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             12.
                             ท่านจ่ายค่ารักษาพยาบาลในการรักษาโรคเบาหวานด้วยวิธีใด
                             (สิทธิการรักษาของผู้ป่วย)
@@ -569,7 +597,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                     {opt === "อื่น ๆ" &&
                                         formData.paymentMethod === opt && (
                                             <input
@@ -584,7 +614,7 @@ export default function SectionTwoForm({
                                                         e.target.value
                                                     )
                                                 }
-                                                className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1"
+                                                className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 text-slate-900 placeholder-slate-400"
                                             />
                                         )}
                                 </label>
@@ -594,7 +624,7 @@ export default function SectionTwoForm({
 
                     {/* 13. Living Arrangement */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             13. ปัจจุบันท่านพักอาศัยอยู่กับใคร
                         </label>
                         <div className="space-y-2">
@@ -615,14 +645,18 @@ export default function SectionTwoForm({
                                     }
                                     className="text-blue-600 focus:ring-blue-500"
                                 />
-                                อยู่กับคู่สมรสและบุตร/หลาน
+                                <span className="text-slate-900">
+                                    อยู่กับคู่สมรสและบุตร/หลาน
+                                </span>
                                 {formData.livingArrangement ===
                                     "spouse_child" && (
                                     <div className="flex items-center gap-2">
-                                        <span>จำนวนสมาชิกทั้งหมด</span>
+                                        <span className="text-slate-900">
+                                            จำนวนสมาชิกทั้งหมด
+                                        </span>
                                         <input
                                             type="number"
-                                            className="border-b border-gray-300 w-16 text-center"
+                                            className="border-b border-slate-300 w-16 text-center text-slate-900"
                                             value={formData.livingMembers}
                                             onChange={(e) =>
                                                 handleChange(
@@ -631,7 +665,9 @@ export default function SectionTwoForm({
                                                 )
                                             }
                                         />
-                                        <span>คน (รวมตัวท่านด้วย)</span>
+                                        <span className="text-slate-900">
+                                            คน (รวมตัวท่านด้วย)
+                                        </span>
                                     </div>
                                 )}
                             </label>
@@ -652,14 +688,18 @@ export default function SectionTwoForm({
                                     }
                                     className="text-blue-600 focus:ring-blue-500"
                                 />
-                                อยู่กับญาติ/เพื่อน
+                                <span className="text-slate-900">
+                                    อยู่กับญาติ/เพื่อน
+                                </span>
                                 {formData.livingArrangement ===
                                     "relative_friend" && (
                                     <div className="flex items-center gap-2">
-                                        <span>จำนวนสมาชิกทั้งหมด</span>
+                                        <span className="text-slate-900">
+                                            จำนวนสมาชิกทั้งหมด
+                                        </span>
                                         <input
                                             type="number"
-                                            className="border-b border-gray-300 w-16 text-center"
+                                            className="border-b border-slate-300 w-16 text-center text-slate-900"
                                             value={formData.livingMembers}
                                             onChange={(e) =>
                                                 handleChange(
@@ -668,7 +708,9 @@ export default function SectionTwoForm({
                                                 )
                                             }
                                         />
-                                        <span>คน (รวมตัวท่านด้วย)</span>
+                                        <span className="text-slate-900">
+                                            คน (รวมตัวท่านด้วย)
+                                        </span>
                                     </div>
                                 )}
                             </label>
@@ -688,7 +730,9 @@ export default function SectionTwoForm({
                                     }
                                     className="text-blue-600 focus:ring-blue-500"
                                 />
-                                อยู่คนเดียว
+                                <span className="text-slate-900">
+                                    อยู่คนเดียว
+                                </span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -706,7 +750,7 @@ export default function SectionTwoForm({
                                     }
                                     className="text-blue-600 focus:ring-blue-500"
                                 />
-                                อื่นๆ
+                                <span className="text-slate-900">อื่นๆ</span>
                                 {formData.livingArrangement === "other" && (
                                     <input
                                         type="text"
@@ -718,7 +762,7 @@ export default function SectionTwoForm({
                                                 e.target.value
                                             )
                                         }
-                                        className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1"
+                                        className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 text-slate-900 placeholder-slate-400"
                                     />
                                 )}
                             </label>
@@ -727,7 +771,7 @@ export default function SectionTwoForm({
 
                     {/* 14. Family Support */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             14.
                             คนในครอบครัว/ญาติ/เพื่อนมีการดูแลเรื่องอาหารการกิน
                             คอยระวังเรื่องอาหาร/ทานยา ให้ท่านหรือไม่
@@ -754,7 +798,9 @@ export default function SectionTwoForm({
                                             }
                                             className="text-blue-600 focus:ring-blue-500"
                                         />
-                                        {opt}
+                                        <span className="text-slate-900">
+                                            {opt}
+                                        </span>
                                     </label>
                                 )
                             )}
@@ -763,7 +809,7 @@ export default function SectionTwoForm({
 
                     {/* 15. Work Support */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             15.
                             กรณีที่ท่านยังทำงานอยู่เพื่อนร่วมงานมีการดูแลเรื่องอาหาร/ทานยา
                             เช่น คอยเตือนเมื่อ ได้เวลาทานยา
@@ -791,7 +837,9 @@ export default function SectionTwoForm({
                                             }
                                             className="text-blue-600 focus:ring-blue-500"
                                         />
-                                        {opt}
+                                        <span className="text-slate-900">
+                                            {opt}
+                                        </span>
                                     </label>
                                 )
                             )}
@@ -800,19 +848,19 @@ export default function SectionTwoForm({
 
                     {/* 16. Diet */}
                     <div className="space-y-4">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             16. รายการอาหาร/เครื่องดื่ม
                         </label>
                         <div className="grid grid-cols-1 gap-4 pl-4">
                             <div className="space-y-1">
-                                <label className="text-sm text-gray-700">
+                                <label className="text-sm text-slate-700">
                                     อาหาร 3
                                     อย่างที่ท่านรับประทานบ่อยที่สุดในช่วง 1
                                     เดือนที่ผ่านมา คือ
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full border border-gray-300 rounded p-2"
+                                    className="w-full border border-slate-300 rounded p-2 text-slate-900"
                                     value={formData.dietFood}
                                     onChange={(e) =>
                                         handleChange("dietFood", e.target.value)
@@ -820,14 +868,14 @@ export default function SectionTwoForm({
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm text-gray-700">
+                                <label className="text-sm text-slate-700">
                                     ของว่าง 3
                                     อย่างที่ท่านรับประทานบ่อยที่สุดในช่วง 1
                                     เดือนที่ผ่านมา คือ
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full border border-gray-300 rounded p-2"
+                                    className="w-full border border-slate-300 rounded p-2 text-slate-900"
                                     value={formData.dietSnack}
                                     onChange={(e) =>
                                         handleChange(
@@ -838,14 +886,14 @@ export default function SectionTwoForm({
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-sm text-gray-700">
+                                <label className="text-sm text-slate-700">
                                     เครื่องดื่ม 3
                                     อย่างที่ท่านดื่มบ่อยที่สุดในช่วง 1
                                     เดือนที่ผ่านมาคือ
                                 </label>
                                 <input
                                     type="text"
-                                    className="w-full border border-gray-300 rounded p-2"
+                                    className="w-full border border-slate-300 rounded p-2 text-slate-900"
                                     value={formData.dietDrink}
                                     onChange={(e) =>
                                         handleChange(
@@ -860,7 +908,7 @@ export default function SectionTwoForm({
 
                     {/* 17. Alcohol */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             17. ท่านดื่มเครื่องดื่มแอลกอฮอล์หรือไม่
                         </label>
                         <div className="space-y-2 pl-4">
@@ -873,8 +921,11 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                ไม่เคยดื่มเลย
+                                <span className="text-slate-900">
+                                    ไม่เคยดื่มเลย
+                                </span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -885,11 +936,14 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                เคยดื่มแต่เลิกแล้ว เลิกมาแล้ว
+                                <span className="text-slate-900">
+                                    เคยดื่มแต่เลิกแล้ว เลิกมาแล้ว
+                                </span>
                                 <input
                                     type="number"
-                                    className="border-b border-gray-300 w-16 text-center"
+                                    className="border-b border-slate-300 w-16 text-center text-slate-900"
                                     value={formData.alcoholYears}
                                     onChange={(e) =>
                                         handleChange(
@@ -899,7 +953,7 @@ export default function SectionTwoForm({
                                     }
                                     disabled={formData.alcohol !== "quit"}
                                 />
-                                ปี
+                                <span className="text-slate-900">ปี</span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -910,8 +964,11 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                ดื่มบ้างนานๆ ครั้ง
+                                <span className="text-slate-900">
+                                    ดื่มบ้างนานๆ ครั้ง
+                                </span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -922,11 +979,14 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                ดื่มเป็นประจำ สัปดาห์ละ
+                                <span className="text-slate-900">
+                                    ดื่มเป็นประจำ สัปดาห์ละ
+                                </span>
                                 <input
                                     type="number"
-                                    className="border-b border-gray-300 w-16 text-center"
+                                    className="border-b border-slate-300 w-16 text-center text-slate-900"
                                     value={formData.alcoholDays}
                                     onChange={(e) =>
                                         handleChange(
@@ -936,14 +996,14 @@ export default function SectionTwoForm({
                                     }
                                     disabled={formData.alcohol !== "regular"}
                                 />
-                                วัน
+                                <span className="text-slate-900">วัน</span>
                             </label>
                         </div>
                     </div>
 
                     {/* 18. Smoking */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             18. ท่านสูบบุหรี่หรือไม่
                         </label>
                         <div className="space-y-2 pl-4">
@@ -956,8 +1016,11 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                ไม่เคยสูบเลย
+                                <span className="text-slate-900">
+                                    ไม่เคยสูบเลย
+                                </span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -968,11 +1031,14 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                เคยสูบแต่เลิกแล้ว เลิกมาแล้ว
+                                <span className="text-slate-900">
+                                    เคยสูบแต่เลิกแล้ว เลิกมาแล้ว
+                                </span>
                                 <input
                                     type="number"
-                                    className="border-b border-gray-300 w-16 text-center"
+                                    className="border-b border-slate-300 w-16 text-center text-slate-900"
                                     value={formData.smokingYears}
                                     onChange={(e) =>
                                         handleChange(
@@ -982,7 +1048,7 @@ export default function SectionTwoForm({
                                     }
                                     disabled={formData.smoking !== "quit"}
                                 />
-                                ปี
+                                <span className="text-slate-900">ปี</span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -993,8 +1059,11 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                สูบบ้างนานๆ ครั้ง
+                                <span className="text-slate-900">
+                                    สูบบ้างนานๆ ครั้ง
+                                </span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
@@ -1005,11 +1074,14 @@ export default function SectionTwoForm({
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                สูบเป็นประจำทุกวัน วันละ
+                                <span className="text-slate-900">
+                                    สูบเป็นประจำทุกวัน วันละ
+                                </span>
                                 <input
                                     type="number"
-                                    className="border-b border-gray-300 w-16 text-center"
+                                    className="border-b border-slate-300 w-16 text-center text-slate-900"
                                     value={formData.smokingAmount}
                                     onChange={(e) =>
                                         handleChange(
@@ -1019,14 +1091,14 @@ export default function SectionTwoForm({
                                     }
                                     disabled={formData.smoking !== "regular"}
                                 />
-                                มวน
+                                <span className="text-slate-900">มวน</span>
                             </label>
                         </div>
                     </div>
 
                     {/* 19. Other Diseases */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             19. ท่านได้รับการวินิจฉัยจากแพทย์ว่าเป็นโรคอื่นๆ
                             ร่วมด้วยหรือไม่
                         </label>
@@ -1043,8 +1115,9 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                ไม่มี
+                                <span className="text-slate-900">ไม่มี</span>
                             </label>
                             <label className="flex items-center gap-2 cursor-pointer w-full sm:w-auto">
                                 <input
@@ -1058,11 +1131,14 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
+                                    className="text-blue-600 focus:ring-blue-500"
                                 />
-                                มี โปรดระบุโรค
+                                <span className="text-slate-900">
+                                    มี โปรดระบุโรค
+                                </span>
                                 <input
                                     type="text"
-                                    className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1 w-full"
+                                    className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 w-full text-slate-900"
                                     value={formData.otherDiseasesList}
                                     onChange={(e) =>
                                         handleChange(
@@ -1078,7 +1154,7 @@ export default function SectionTwoForm({
 
                     {/* 20. Complications */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             20. ภาวะแทรกซ้อนจากโรคเบาหวาน (ตอบได้มากกว่า 1 ข้อ)
                         </label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pl-4">
@@ -1109,7 +1185,9 @@ export default function SectionTwoForm({
                                         }
                                         className="text-blue-600 focus:ring-blue-500 rounded"
                                     />
-                                    {opt}
+                                    <span className="text-slate-900">
+                                        {opt}
+                                    </span>
                                     {opt === "อื่น ๆ" &&
                                         formData.complications.includes(
                                             opt
@@ -1126,7 +1204,7 @@ export default function SectionTwoForm({
                                                         e.target.value
                                                     )
                                                 }
-                                                className="border-b border-gray-300 focus:border-blue-500 outline-none ml-2 flex-1"
+                                                className="border-b border-slate-300 focus:border-blue-500 outline-none ml-2 flex-1 text-slate-900"
                                             />
                                         )}
                                 </label>
@@ -1136,7 +1214,7 @@ export default function SectionTwoForm({
 
                     {/* 21. Screening Freq */}
                     <div className="space-y-2">
-                        <label className="font-semibold block">
+                        <label className="font-semibold block text-slate-900">
                             21.
                             ท่านได้เข้ารับการตรวจประเมินภาวะแทรกซ้อนในเรื่องใดบ้างและบ่อยแค่ไหน
                         </label>
@@ -1155,7 +1233,7 @@ export default function SectionTwoForm({
                                 { id: "other", label: "8) การตรวจอื่นๆ" },
                             ].map((item) => (
                                 <div key={item.id} className="min-w-[500px]">
-                                    <div className="font-medium mb-1">
+                                    <div className="font-medium mb-1 text-slate-900">
                                         {item.label}
                                         {item.id === "other" && (
                                             <input
@@ -1171,11 +1249,11 @@ export default function SectionTwoForm({
                                                         e.target.value
                                                     )
                                                 }
-                                                className="border-b border-gray-300 ml-2 outline-none w-40"
+                                                className="border-b border-slate-300 ml-2 outline-none w-40 text-slate-900"
                                             />
                                         )}
                                     </div>
-                                    <div className="flex gap-4 text-sm text-gray-700 ml-4">
+                                    <div className="flex gap-4 text-sm text-slate-700 ml-4">
                                         {[
                                             "ทุก 3 เดือน",
                                             "ทุก 6 เดือน",
@@ -1201,8 +1279,11 @@ export default function SectionTwoForm({
                                                             e.target.value
                                                         )
                                                     }
+                                                    className="text-blue-600 focus:ring-blue-500"
                                                 />
-                                                {opt}
+                                                <span className="text-slate-900">
+                                                    {opt}
+                                                </span>
                                                 {opt === "อื่น ๆ" &&
                                                     formData.screenings[
                                                         item.id as keyof typeof formData.screenings
@@ -1210,7 +1291,7 @@ export default function SectionTwoForm({
                                                         <input
                                                             type="text"
                                                             placeholder="ระบุ"
-                                                            className="border-b border-gray-300 w-20 outline-none"
+                                                            className="border-b border-slate-300 w-20 outline-none text-slate-900"
                                                             onChange={(e) =>
                                                                 handleScreeningChange(
                                                                     `${item.id}Other`,
@@ -1811,10 +1892,10 @@ export default function SectionTwoForm({
                     )}
                 </div>
 
-                <div className="p-8 border-t border-gray-100 flex justify-between bg-gray-50">
+                <div className="p-8 border-t border-slate-100 flex justify-between bg-slate-50">
                     <button
                         onClick={onBack}
-                        className="px-6 py-3 bg-white border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 font-semibold transition-all flex items-center gap-2"
+                        className="px-6 py-3 bg-white border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold transition-all flex items-center gap-2"
                     >
                         <ChevronLeft size={20} />
                         ย้อนกลับ

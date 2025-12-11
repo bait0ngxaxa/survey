@@ -266,3 +266,37 @@ export async function getSurveySubmissions(options?: {
         };
     }
 }
+
+// ดึง submissions ของ user ที่ login อยู่ (สำหรับ Dashboard)
+export async function getUserSubmissions(limit: number = 10) {
+    try {
+        const { userId } = await auth();
+        if (!userId) {
+            return { success: false, error: "Unauthorized", data: [] };
+        }
+
+        const submissions = await prisma.surveySubmission.findMany({
+            where: { submittedByUserId: userId },
+            include: {
+                patient: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: "desc" },
+            take: limit,
+        });
+
+        return { success: true, data: submissions };
+    } catch (error) {
+        console.error("Error fetching user submissions:", error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
+            data: [],
+        };
+    }
+}

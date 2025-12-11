@@ -4,6 +4,10 @@ import { useState } from "react";
 import { Download } from "lucide-react";
 import { getSubmissions } from "@/lib/actions/admin";
 
+interface ExportButtonProps {
+    regionFilter?: string;
+}
+
 // Helper function to flatten nested object into flat key-value pairs
 function flattenObject(
     obj: Record<string, unknown>,
@@ -40,13 +44,17 @@ function escapeCSV(value: string): string {
     return value;
 }
 
-export default function ExportButton() {
+export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
 
     const handleExport = async () => {
         try {
             setLoading(true);
-            const { submissions } = await getSubmissions(1, 10000);
+            const { submissions } = await getSubmissions(
+                1,
+                10000,
+                regionFilter
+            );
 
             if (!submissions || submissions.length === 0) {
                 alert("No data to export");
@@ -60,7 +68,6 @@ export default function ExportButton() {
                 "ชื่อ-นามสกุล ผู้ป่วย",
                 "เพศ",
                 "เขตสุขภาพ",
-                "โรงพยาบาล",
                 "ชื่อผู้ให้ข้อมูล",
                 "ชื่อผู้สัมภาษณ์",
                 "มิติที่ 1 (การทำงานของร่างกาย)", // G1, G2
@@ -139,7 +146,6 @@ export default function ExportButton() {
                     }`.trim(),
                     patient?.gender || sec2.gender || "",
                     s.region,
-                    s.hospital || "",
                     sec2.respondentName || "",
                     part1.interviewerName || "",
                     dim1,
@@ -167,9 +173,10 @@ export default function ExportButton() {
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
+            const regionSuffix = regionFilter ? `_${regionFilter}` : "_all";
             link.setAttribute(
                 "download",
-                `survey_report_7dim_${
+                `survey_report${regionSuffix}_${
                     new Date().toISOString().split("T")[0]
                 }.csv`
             );

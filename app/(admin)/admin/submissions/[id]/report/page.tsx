@@ -149,31 +149,33 @@ export default async function SubmissionReportPage({
             </div>
 
             {/* Patient Info Card (Screen Only) */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6 print:hidden">
-                <h2 className="text-lg font-bold text-gray-800 mb-4">
-                    ข้อมูลผู้ป่วย
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-6 print:hidden">
+                <h2 className="text-lg font-bold text-slate-900 mb-4">
+                    ข้อมูลผู้ทำแบบสอบถาม
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                        <span className="block text-gray-500">
+                        <span className="block text-slate-500 mb-1">
                             ชื่อ-นามสกุล
                         </span>
-                        <span className="font-medium">
+                        <span className="font-semibold text-slate-900">
                             {submission.patient?.firstName}{" "}
                             {submission.patient?.lastName}
                         </span>
                     </div>
                     <div>
-                        <span className="block text-gray-500">HN / ID</span>
-                        <span className="font-medium">
+                        <span className="block text-slate-500 mb-1">
+                            HN / ID
+                        </span>
+                        <span className="font-semibold text-slate-900">
                             {submission.patient?.nationalId || "-"}
                         </span>
                     </div>
                     <div>
-                        <span className="block text-gray-500">
+                        <span className="block text-slate-500 mb-1">
                             วันที่ทำแบบสอบถาม
                         </span>
-                        <span className="font-medium">
+                        <span className="font-semibold text-slate-900">
                             {new Date(submission.createdAt).toLocaleDateString(
                                 "th-TH",
                                 {
@@ -187,17 +189,19 @@ export default async function SubmissionReportPage({
                         </span>
                     </div>
                     <div>
-                        <span className="block text-gray-500">Region</span>
-                        <span className="font-medium capitalize">
+                        <span className="block text-slate-500 mb-1">
+                            Region
+                        </span>
+                        <span className="font-semibold text-slate-900 capitalize">
                             {submission.region}
                         </span>
                     </div>
                     {rawAnswers?.part1?.interviewerName && (
-                        <div className="col-span-2 md:col-span-4 mt-2 pt-4 border-t border-gray-100">
-                            <span className="text-gray-500 mr-2">
+                        <div className="col-span-2 md:col-span-4 mt-2 pt-4 border-t border-slate-100">
+                            <span className="text-slate-500 mr-2">
                                 ผู้สัมภาษณ์:
                             </span>
-                            <span className="font-medium text-gray-900">
+                            <span className="font-semibold text-slate-900">
                                 {rawAnswers.part1.interviewerName}
                             </span>
                         </div>
@@ -213,8 +217,8 @@ export default async function SubmissionReportPage({
                     สรุปผลการประเมิน 7 มิติ
                 </h2>
 
-                <div className="overflow-hidden rounded-xl border border-gray-200 shadow-xs print:border-black print:rounded-none">
-                    <table className="w-full text-left text-sm text-gray-600 border-collapse">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-xs print:border-black print:rounded-none">
+                    <table className="w-full text-left text-sm text-gray-600 border-collapse min-w-[600px]">
                         <thead className="bg-gray-50 text-gray-900 font-semibold text-center print:bg-gray-200">
                             <tr>
                                 <th className="p-4 border-b border-gray-200 border-r w-1/5 print:border-black">
@@ -295,7 +299,7 @@ export default async function SubmissionReportPage({
                                                     {rec.additionalInfo
                                                         .topic && (
                                                         <div>
-                                                            • หัวข้อ:{" "}
+                                                            • ข้อมูลเพิ่มเติม :{" "}
                                                             {
                                                                 rec
                                                                     .additionalInfo
