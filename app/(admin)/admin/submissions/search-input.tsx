@@ -42,8 +42,8 @@ export default function SearchInput() {
                     type="text"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
-                    placeholder="ค้นหาด้วย Submission ID..."
-                    className="pl-10 pr-10 py-2 w-64 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    placeholder="ค้นหาด้วย ID แบบสอบถาม"
+                    className="pl-10 pr-10 py-2.5 w-full text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all shadow-sm"
                 />
                 {searchValue && (
                     <button

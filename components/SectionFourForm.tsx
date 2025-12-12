@@ -812,7 +812,7 @@ export default function SectionFourForm({
                 {showGroup2Extra && (
                     <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 animate-in fade-in">
                         <h3 className="text-lg font-bold text-orange-800 mb-4">
-                            ข้อมูลเพิ่มเติม (เนื่องจากคะแนนน้อย)
+                            ข้อมูลเพิ่มเติม (เนื่องจากผลลัพธ์ต่ำ)
                         </h3>
                         <div className="space-y-3">
                             <label className="flex items-center gap-3 cursor-pointer">
@@ -859,7 +859,7 @@ export default function SectionFourForm({
                             ข้อมูลเพิ่มเติม
                         </h3>
                         <label className="block text-gray-700 mb-2">
-                            ต้องการรู้เรื่องใดเพิ่มเติม:
+                            ต้องการทราบเรื่องใดเพิ่มเติม:
                         </label>
                         <textarea
                             value={additionalInfo?.q9Topic || ""}

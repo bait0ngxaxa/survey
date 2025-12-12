@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
+import Image from "next/image";
 import SuccessModal from "@/components/SuccessModal";
 
 export default function Home() {
@@ -21,26 +22,14 @@ export default function Home() {
             <main className="grow flex flex-col items-center justify-center p-6 text-center relative z-10">
                 <div className="max-w-4xl w-full bg-white/70 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-blue-900/10 p-8 md:p-16 border border-white/60 animate-in fade-in zoom-in-95 duration-700">
                     <div className="mb-10 flex justify-center">
-                        <div className="bg-linear-to-br from-blue-50 to-indigo-50 p-6 rounded-3xl shadow-inner border border-white">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="56"
-                                height="56"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="text-blue-600 drop-shadow-sm"
-                            >
-                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <path d="M16 13H8" />
-                                <path d="M16 17H8" />
-                                <path d="M10 9H8" />
-                            </svg>
-                        </div>
+                        <Image
+                            src="/logo_hhi.jpg"
+                            alt="HHI Logo"
+                            width={180}
+                            height={180}
+                            className="object-contain"
+                            priority
+                        />
                     </div>
 
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-8 leading-tight tracking-tight">

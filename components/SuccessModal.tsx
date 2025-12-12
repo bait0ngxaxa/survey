@@ -52,7 +52,7 @@ export default function SuccessModal() {
                         เข้าสู่ระบบสำเร็จ
                     </h3>
 
-                    <p className="text-gray-500">ยินดีต้อนรับกลับเข้าสู่ระบบ</p>
+                    <p className="text-gray-500">ยินดีต้อนรับเข้าสู่ระบบ</p>
                 </div>
             </div>
         </div>
