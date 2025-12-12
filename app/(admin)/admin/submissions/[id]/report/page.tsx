@@ -151,12 +151,12 @@ export default async function SubmissionReportPage({
             {/* Patient Info Card (Screen Only) */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-6 print:hidden">
                 <h2 className="text-lg font-bold text-slate-900 mb-4">
-                    ข้อมูลผู้ทำแบบสอบถาม
+                    ข้อมูลแบบสอบถาม
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                         <span className="block text-slate-500 mb-1">
-                            ชื่อ-นามสกุล
+                            ชื่อผู้ให้ข้อมูล
                         </span>
                         <span className="font-semibold text-slate-900">
                             {submission.patient?.firstName}{" "}

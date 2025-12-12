@@ -13,6 +13,16 @@ import {
     Search,
 } from "lucide-react";
 
+const getRegionLabel = (region: string) => {
+    const labels: Record<string, string> = {
+        central: "ทีมกลาง",
+        phetchabun: "เพชรบูรณ์",
+        satun: "สตูล",
+        lopburi: "ลพบุรี",
+    };
+    return labels[region] || region;
+};
+
 export default async function SubmissionsPage({
     searchParams,
 }: {
@@ -151,8 +161,8 @@ export default async function SubmissionsPage({
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize">
-                                                {item.region}
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                                                {getRegionLabel(item.region)}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
@@ -190,8 +200,8 @@ export default async function SubmissionsPage({
                                             {item.patient?.nationalId || "-"}
                                         </div>
                                     </div>
-                                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600 capitalize">
-                                        {item.region}
+                                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-600">
+                                        {getRegionLabel(item.region)}
                                     </span>
                                 </div>
 

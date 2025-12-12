@@ -12,7 +12,6 @@ interface ExportButtonProps {
 export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
 
-    // Helper: Get action text for PROMs dimensions
     const getActionText = (report: any, stepId: number) => {
         const step = report[`step_${stepId}`];
         if (!step || !step.action) return "";
@@ -21,7 +20,6 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
         }`;
     };
 
-    // Helper: Translate English values to Thai
     const translateAlcohol = (value: string) => {
         const map: Record<string, string> = {
             never: "ไม่เคยดื่มเลย",
@@ -60,7 +58,41 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
         return map[value] || value || "";
     };
 
-    // Export All Data (2 Sheets in 1 File)
+    const translateVisitDoctor = (value: string) => {
+        const map: Record<string, string> = {
+            always: "ทุกครั้ง",
+            sometimes: "ไม่ทุกครั้ง",
+            never: "ไม่เคยพบแพทย์ตามนัด",
+        };
+        return map[value] || value || "";
+    };
+
+    const translateSurveyMethod = (value: string) => {
+        const map: Record<string, string> = {
+            interview: "สัมภาษณ์",
+            self: "ตอบเอง",
+        };
+        return map[value] || value || "";
+    };
+
+    const translateBloodSugarKnown = (value: string) => {
+        const map: Record<string, string> = {
+            known: "ทราบ",
+            unknown: "ไม่ทราบ",
+        };
+        return map[value] || value || "";
+    };
+
+    const translateRegion = (value: string) => {
+        const map: Record<string, string> = {
+            central: "ทีมกลาง",
+            phetchabun: "เพชรบูรณ์",
+            satun: "สตูล",
+            lopburi: "ลพบุรี",
+        };
+        return map[value] || value || "";
+    };
+
     const handleExport = async () => {
         try {
             setLoading(true);
@@ -83,69 +115,123 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                 const patient = s.patient as any;
                 const dateObj = new Date(s.createdAt);
                 const screenings = sec2.screenings || {};
+                const report = raw.reportData || raw.sectionFourReport || {};
+
+                // // Extract additionalInfo from reportData
+                // const step2Info = report.step_2?.additionalInfo || {};
+                // const step9Info = report.step_9?.additionalInfo || {};
 
                 return {
-                    // Basic Info
                     วันที่: dateObj.toLocaleDateString("th-TH"),
                     เวลา: dateObj.toLocaleTimeString("th-TH"),
                     ID: s.id,
-                    เขตสุขภาพ: s.region,
+                    เขตสุขภาพ: translateRegion(s.region),
 
-                    // Patient Info
-                    "ชื่อ-นามสกุล": `${patient?.firstName || ""} ${
+                    วิธีเก็บข้อมูล: translateSurveyMethod(part1.surveyMethod),
+
+                    ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
                         patient?.lastName || ""
                     }`.trim(),
+
+                    // Part 1
+                    ผู้สัมภาษณ์: part1.interviewerName || "",
+
+                    ทราบระดับน้ำตาล: translateBloodSugarKnown(
+                        part1.bloodSugarKnown
+                    ),
+                    "ระดับน้ำตาลในเลือด Fasting": part1.fastingLevel || "",
+                    "ระดับน้ำตาลสะสม HbA1c": part1.hba1cLevel || "",
+                    พบแพทย์ตามนัด: translateVisitDoctor(part1.visitDoctor),
+                    เหตุผลไม่พบแพทย์: part1.notVisitReason || "",
+
+                    // Demographics
                     เพศ: sec2.gender || patient?.gender || "",
                     อายุ: sec2.age || "",
                     วันเกิด: sec2.birthDate || "",
-
-                    // Demographics
-                    การศึกษา: sec2.education || "",
-                    "การศึกษา (อื่นๆ)": sec2.educationOther || "",
+                    การศึกษา:
+                        (sec2.education === "อื่น ๆ" ||
+                            sec2.education === "สูงกว่าปริญญาตรี") &&
+                        sec2.educationOther
+                            ? `${sec2.education}: ${sec2.educationOther}`
+                            : sec2.education || "",
                     สถานภาพสมรส: sec2.maritalStatus || "",
-                    อาชีพ: sec2.occupation || "",
-                    "อาชีพ (อื่นๆ)": sec2.occupationOther || "",
-                    รายได้: sec2.income || "",
-                    แหล่งเงินสนับสนุน: sec2.supportSource || "",
-                    "แหล่งเงิน (อื่นๆ)": sec2.supportSourceOther || "",
-                    สถานะการเงิน: sec2.financialStatus || "",
+                    อาชีพ:
+                        sec2.occupation === "อื่น ๆ" && sec2.occupationOther
+                            ? `อื่นๆ: ${sec2.occupationOther}`
+                            : sec2.occupation || "",
+                    รายได้เฉลี่ยต่อเดือน: sec2.income || "",
+                    "การส่งเสียเลี้ยงดู(กรณีไม่ได้ทำงาน)":
+                        sec2.supportSource === "อื่น ๆ" &&
+                        sec2.supportSourceOther
+                            ? `อื่นๆ: ${sec2.supportSourceOther}`
+                            : sec2.supportSource || "",
+                    เศรษฐกิจครอบครัว: sec2.financialStatus || "",
+
+                    // Diabetes Info
+                    "ระยะเวลาทราบว่าเป็นเบาหวาน (ปี)":
+                        sec2.diabetesDuration || "",
+                    อายุตอนเป็นเบาหวาน: sec2.diabetesAge || "",
+                    ประเภทการรักษา:
+                        sec2.treatmentType === "อื่น ๆ" && sec2.treatmentOther
+                            ? `อื่นๆ: ${sec2.treatmentOther}`
+                            : sec2.treatmentType || "",
+                    จำนวนยา: sec2.medicationCount || "",
+                    สิทธิรักษาของผู้ป่วย:
+                        sec2.paymentMethod === "อื่น ๆ" &&
+                        sec2.paymentMethodOther
+                            ? `อื่นๆ: ${sec2.paymentMethodOther}`
+                            : sec2.paymentMethod || "",
 
                     // Living
-                    การอยู่อาศัย: translateLivingArrangement(
-                        sec2.livingArrangement
-                    ),
+                    สถานะการอยู่อาศัย:
+                        sec2.livingArrangement === "other" &&
+                        sec2.livingArrangementOther
+                            ? `อื่นๆ: ${sec2.livingArrangementOther}`
+                            : translateLivingArrangement(
+                                  sec2.livingArrangement
+                              ),
                     จำนวนสมาชิก: sec2.livingMembers || "",
-                    "การอยู่อาศัย (อื่นๆ)": sec2.livingArrangementOther || "",
                     การสนับสนุนจากครอบครัว: sec2.familySupport || "",
                     การสนับสนุนจากที่ทำงาน: sec2.workSupport || "",
 
-                    // Diabetes Info
-                    ระยะเวลาเป็นเบาหวาน: sec2.diabetesDuration || "",
-                    อายุที่เริ่มเป็น: sec2.diabetesAge || "",
-                    รูปแบบการรักษา: sec2.treatmentType || "",
-                    "การรักษา (อื่นๆ)": sec2.treatmentOther || "",
-                    จำนวนยา: sec2.medicationCount || "",
-                    วิธีชำระเงิน: sec2.paymentMethod || "",
-                    "วิธีชำระ (อื่นๆ)": sec2.paymentMethodOther || "",
+                    // Diet
+                    "อาหาร 3 อย่างทานบ่อย": sec2.dietFood || "",
+                    "ขนม 3 อย่างทานบ่อย": sec2.dietSnack || "",
+                    "เครื่องดื่ม 3 อย่างทานบ่อย": sec2.dietDrink || "",
 
-                    // Lifestyle
-                    อาหาร: sec2.dietFood || "",
-                    ของว่าง: sec2.dietSnack || "",
-                    เครื่องดื่ม: sec2.dietDrink || "",
-                    แอลกอฮอล์: translateAlcohol(sec2.alcohol),
-                    "ดื่มแอลกอฮอล์ (ปี)": sec2.alcoholYears || "",
-                    "ดื่มแอลกอฮอล์ (วัน/สัปดาห์)": sec2.alcoholDays || "",
-                    สูบบุหรี่: translateSmoking(sec2.smoking),
-                    "สูบบุหรี่ (ปี)": sec2.smokingYears || "",
-                    "สูบบุหรี่ (มวน/วัน)": sec2.smokingAmount || "",
+                    // Lifestyle - Alcohol (merge based on value)
+                    ดื่มแอลกอฮอล์:
+                        translateAlcohol(sec2.alcohol) +
+                        (sec2.alcohol === "quit" && sec2.alcoholYears
+                            ? ` (${sec2.alcoholYears} ปี)`
+                            : "") +
+                        (sec2.alcohol === "regular" && sec2.alcoholDays
+                            ? ` (${sec2.alcoholDays} วัน/สัปดาห์)`
+                            : ""),
 
-                    // Health Conditions
-                    โรคอื่นๆ: translateOtherDiseases(sec2.otherDiseases),
-                    รายการโรค: sec2.otherDiseasesList || "",
-                    ภาวะแทรกซ้อน: Array.isArray(sec2.complications)
-                        ? sec2.complications.join("; ")
-                        : "",
-                    "ภาวะแทรกซ้อน (อื่นๆ)": sec2.complicationsOther || "",
+                    // Lifestyle - Smoking (merge based on value)
+                    สูบบุหรี่:
+                        translateSmoking(sec2.smoking) +
+                        (sec2.smoking === "quit" && sec2.smokingYears
+                            ? ` (${sec2.smokingYears} ปี)`
+                            : "") +
+                        (sec2.smoking === "regular" && sec2.smokingAmount
+                            ? ` (${sec2.smokingAmount} มวน/วัน)`
+                            : ""),
+
+                    // Health Conditions - Merge other diseases with list
+                    โรคอื่นๆ:
+                        translateOtherDiseases(sec2.otherDiseases) +
+                        (sec2.otherDiseases === "yes" && sec2.otherDiseasesList
+                            ? `: ${sec2.otherDiseasesList}`
+                            : ""),
+                    ภาวะแทรกซ้อน:
+                        (Array.isArray(sec2.complications)
+                            ? sec2.complications.join("; ")
+                            : "") +
+                        (sec2.complicationsOther
+                            ? `; อื่นๆ: ${sec2.complicationsOther}`
+                            : ""),
 
                     // Screenings
                     ตรวจร่างกาย: screenings.physical || "",
@@ -155,15 +241,6 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     ตรวจไขมัน: screenings.lipid || "",
                     ตรวจฟัน: screenings.dental || "",
                     "ตรวจ HbA1c": screenings.hba1c || "",
-
-                    // Part 1
-                    รู้ระดับน้ำตาล: part1.bloodSugarKnown || "",
-                    ระดับน้ำตาลอดอาหาร: part1.fastingLevel || "",
-                    "ระดับ HbA1c": part1.hba1cLevel || "",
-                    พบแพทย์: part1.visitDoctor || "",
-                    เหตุผลไม่พบแพทย์: part1.notVisitReason || "",
-                    ผู้สัมภาษณ์: part1.interviewerName || "",
-                    วิธีสำรวจ: part1.surveyMethod || "",
                 };
             });
 
@@ -175,6 +252,10 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                 const part1 = raw.part1 || {};
                 const patient = s.patient as any;
                 const dateObj = new Date(s.createdAt);
+
+                // Extract additionalInfo from reportData
+                const step2Info = report.step_2?.additionalInfo || {};
+                const step9Info = report.step_9?.additionalInfo || {};
 
                 // Group results by dimension
                 const dim1 = [
@@ -204,20 +285,26 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     วันที่: dateObj.toLocaleDateString("th-TH"),
                     เวลา: dateObj.toLocaleTimeString("th-TH"),
                     ID: s.id,
-                    "ชื่อ-นามสกุล": `${patient?.firstName || ""} ${
+                    ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
                         patient?.lastName || ""
                     }`.trim(),
                     เพศ: sec2.gender || patient?.gender || "",
-                    เขตสุขภาพ: s.region,
-                    ผู้ให้ข้อมูล: sec2.respondentName || "",
-                    ผู้สัมภาษณ์: part1.interviewerName || "",
+                    เขตสุขภาพ: translateRegion(s.region),
+
                     "มิติที่ 1 (การทำงานของร่างกาย)": dim1,
+                    "ข้อจำกัดการเคลื่อนไหว (มิติ 1)": step2Info.movementLimit
+                        ? "มีข้อจำกัดด้านการเคลื่อนไหว"
+                        : "",
+                    "ออกแรงแล้วเหนื่อย (มิติ 1)": step2Info.tired
+                        ? "ออกแรงแล้วเหนื่อย"
+                        : "",
                     "มิติที่ 2 (อาการของโรค)": dim2,
                     "มิติที่ 3 (สุขภาพจิตใจ)": dim3,
                     "มิติที่ 4 (การดูแลตนเอง)": dim4,
                     "มิติที่ 5 (สังคม)": dim5,
                     "มิติที่ 6 (สุขภาพโดยรวม)": dim6,
                     "มิติที่ 7 (ความพึงพอใจ)": dim7,
+                    "ต้องการทราบเรื่องเพิ่ม (มิติ 7)": step9Info.topic || "",
                 };
             });
 

@@ -106,7 +106,7 @@ export default function SubmissionHistory({
                                         รหัสแบบสอบถาม
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                        ชื่อผู้ทำแบบสอบถาม
+                                        ชื่อผู้ให้ข้อมูล
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         พื้นที่

@@ -1,11 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+// Routes that require login
+const isProtectedRoute = createRouteMatcher([
+    "/admin(.*)",
+    "/survey(.*)",
+    "/dashboard(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
-    // Protect all routes starting with `/admin`
-    if (isAdminRoute(req)) {
+    // Protect all routes that require login
+    if (isProtectedRoute(req)) {
         await auth.protect();
     }
 });

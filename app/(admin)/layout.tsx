@@ -47,6 +47,25 @@ export default async function AdminLayout({
                         <FileSpreadsheet size={20} />
                         <span className="font-medium">Submissions</span>
                     </Link>
+                    <Link
+                        href="/admin/users"
+                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                    >
+                        <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                            />
+                        </svg>
+                        <span className="font-medium">Users</span>
+                    </Link>
                 </nav>
                 <div className="p-4 border-t border-gray-200 mt-auto">
                     <div className="flex items-center gap-3 px-4 py-2">
