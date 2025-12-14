@@ -9,15 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String
-  role      String   @default("staff") // admin, staff
-  hospital  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
 model Patient {
   id           String             @id @default(uuid())
@@ -45,8 +36,6 @@ model SurveySubmission {
   
   // ข้อมูลจากการทำแบบสอบถาม
   totalScorePart4      Int?
-  scoreBySection       Json?    // e.g. {"daily_activities": 24, "symptoms": 10, "psychosocial": 45, "satisfaction": 20}
-  interpretationResult String?  // e.g. "กลุ่มเสี่ยงสูง", "ปกติ"
   
   // เก็บคำตอบดิบทั้งหมดเผื่อคำนวณใหม่
   rawAnswers           Json?    // e.g. {"q1": 5, "q2": 1, ...}

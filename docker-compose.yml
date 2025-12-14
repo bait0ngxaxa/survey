@@ -1,5 +1,6 @@
 services:
     db:
+        container_name: survey-db
         image: postgres:16-alpine
         environment:
             POSTGRES_USER: ${POSTGRES_USER:-postgres}

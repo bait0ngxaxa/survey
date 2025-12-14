@@ -25,7 +25,7 @@ const initialPart1Data: Part1Data = {
     hba1cLevel: "",
     visitDoctor: "",
     notVisitReason: "",
-    surveyMethod: "self",
+    surveyMethod: "ตอบด้วยตนเอง",
     interviewerName: "",
 };
 
@@ -229,7 +229,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
         }
 
         if (
-            part1Data.surveyMethod === "interview" &&
+            part1Data.surveyMethod === "สัมภาษณ์" &&
             !part1Data.interviewerName?.trim()
         ) {
             setAlertMessage("กรุณาระบุชื่อผู้สัมภาษณ์");
@@ -243,7 +243,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
             setIsAlertOpen(true);
             return;
         }
-        if (part1Data.bloodSugarKnown === "known") {
+        if (part1Data.bloodSugarKnown === "ทราบ") {
             if (!part1Data.fastingLevel || !part1Data.hba1cLevel) {
                 setAlertMessage("กรุณาระบุระดับน้ำตาลในเลือดและค่าน้ำตาลสะสม");
                 setIsAlertOpen(true);
@@ -256,7 +256,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
             return;
         }
         if (
-            part1Data.visitDoctor === "sometimes" &&
+            part1Data.visitDoctor === "ไม่ทุกครั้ง" &&
             !part1Data.notVisitReason
         ) {
             setAlertMessage("กรุณาระบุสาเหตุที่ไม่ได้มาพบแพทย์ทุกครั้ง");
@@ -361,10 +361,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                 <input
                                                     type="radio"
                                                     name="surveyMethod"
-                                                    value="self"
+                                                    value="ตอบด้วยตนเอง"
                                                     checked={
                                                         part1Data.surveyMethod ===
-                                                        "self"
+                                                        "ตอบด้วยตนเอง"
                                                     }
                                                     onChange={(e) =>
                                                         handlePart1Change(
@@ -382,10 +382,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                 <input
                                                     type="radio"
                                                     name="surveyMethod"
-                                                    value="interview"
+                                                    value="สัมภาษณ์"
                                                     checked={
                                                         part1Data.surveyMethod ===
-                                                        "interview"
+                                                        "สัมภาษณ์"
                                                     }
                                                     onChange={(e) =>
                                                         handlePart1Change(
@@ -423,7 +423,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                         />
                                     </div>
 
-                                    {part1Data.surveyMethod === "interview" && (
+                                    {part1Data.surveyMethod === "สัมภาษณ์" && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
                                             <label className="font-semibold block text-slate-900">
                                                 ชื่อผู้สัมภาษณ์
@@ -460,10 +460,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                 <input
                                                     type="radio"
                                                     name="bloodSugarKnown"
-                                                    value="known"
+                                                    value="ทราบ"
                                                     checked={
                                                         part1Data.bloodSugarKnown ===
-                                                        "known"
+                                                        "ทราบ"
                                                     }
                                                     onChange={(e) =>
                                                         handlePart1Change(
@@ -479,7 +479,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                             </label>
 
                                             {part1Data.bloodSugarKnown ===
-                                                "known" && (
+                                                "ทราบ" && (
                                                 <div className="ml-8 space-y-3 animate-in fade-in slide-in-from-top-2">
                                                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                                         <span className="text-slate-700 min-w-[200px]">
@@ -540,10 +540,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                             <input
                                                 type="radio"
                                                 name="bloodSugarKnown"
-                                                value="unknown"
+                                                value="ไม่ทราบ"
                                                 checked={
                                                     part1Data.bloodSugarKnown ===
-                                                    "unknown"
+                                                    "ไม่ทราบ"
                                                 }
                                                 onChange={(e) =>
                                                     handlePart1Change(
@@ -572,10 +572,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                             <input
                                                 type="radio"
                                                 name="visitDoctor"
-                                                value="always"
+                                                value="ทุกครั้ง"
                                                 checked={
                                                     part1Data.visitDoctor ===
-                                                    "always"
+                                                    "ทุกครั้ง"
                                                 }
                                                 onChange={(e) =>
                                                     handlePart1Change(
@@ -595,10 +595,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                                 <input
                                                     type="radio"
                                                     name="visitDoctor"
-                                                    value="sometimes"
+                                                    value="ไม่ทุกครั้ง"
                                                     checked={
                                                         part1Data.visitDoctor ===
-                                                        "sometimes"
+                                                        "ไม่ทุกครั้ง"
                                                     }
                                                     onChange={(e) =>
                                                         handlePart1Change(
@@ -614,7 +614,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                             </label>
 
                                             {part1Data.visitDoctor ===
-                                                "sometimes" && (
+                                                "ไม่ทุกครั้ง" && (
                                                 <div className="ml-8 animate-in fade-in slide-in-from-top-2">
                                                     <textarea
                                                         value={

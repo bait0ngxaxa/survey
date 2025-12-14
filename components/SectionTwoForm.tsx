@@ -151,14 +151,14 @@ export default function SectionTwoForm({
             errors.push("กรุณาเลือกการอยู่อาศัย (ข้อ 13)");
         }
         if (
-            (formData.livingArrangement === "spouse_child" ||
-                formData.livingArrangement === "relative_friend") &&
+            (formData.livingArrangement === "อยู่กับคู่สมรสและบุตร/หลาน" ||
+                formData.livingArrangement === "อยู่กับญาติ/เพื่อน") &&
             !formData.livingMembers
         ) {
             errors.push("กรุณากรอกจำนวนสมาชิก (ข้อ 13)");
         }
         if (
-            formData.livingArrangement === "other" &&
+            formData.livingArrangement === "อื่น ๆ" &&
             !formData.livingArrangementOther
         ) {
             errors.push("กรุณาระบุการอยู่อาศัย (ข้อ 13)");
@@ -185,10 +185,10 @@ export default function SectionTwoForm({
         if (!formData.alcohol) {
             errors.push("กรุณาเลือกการดื่มแอลกอฮอล์ (ข้อ 17)");
         }
-        if (formData.alcohol === "quit" && !formData.alcoholYears) {
+        if (formData.alcohol === "เลิกดื่มแล้ว" && !formData.alcoholYears) {
             errors.push("กรุณากรอกจำนวนปีที่เลิกดื่ม (ข้อ 17)");
         }
-        if (formData.alcohol === "regular" && !formData.alcoholDays) {
+        if (formData.alcohol === "ดื่มเป็นประจำ" && !formData.alcoholDays) {
             errors.push("กรุณากรอกจำนวนวันที่ดื่มต่อสัปดาห์ (ข้อ 17)");
         }
 
@@ -196,10 +196,10 @@ export default function SectionTwoForm({
         if (!formData.smoking) {
             errors.push("กรุณาเลือกการสูบบุหรี่ (ข้อ 18)");
         }
-        if (formData.smoking === "quit" && !formData.smokingYears) {
+        if (formData.smoking === "เลิกสูบแล้ว" && !formData.smokingYears) {
             errors.push("กรุณากรอกจำนวนปีที่เลิกสูบ (ข้อ 18)");
         }
-        if (formData.smoking === "regular" && !formData.smokingAmount) {
+        if (formData.smoking === "สูบเป็นประจำ" && !formData.smokingAmount) {
             errors.push("กรุณากรอกจำนวนมวนที่สูบต่อวัน (ข้อ 18)");
         }
 
@@ -207,7 +207,7 @@ export default function SectionTwoForm({
         if (!formData.otherDiseases) {
             errors.push("กรุณาเลือกว่ามีโรคอื่นร่วมด้วยหรือไม่ (ข้อ 19)");
         }
-        if (formData.otherDiseases === "yes" && !formData.otherDiseasesList) {
+        if (formData.otherDiseases === "มี" && !formData.otherDiseasesList) {
             errors.push("กรุณาระบุรายชื่อโรค (ข้อ 19)");
         }
 
@@ -839,10 +839,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="livingArrangement"
-                                    value="spouse_child"
+                                    value="อยู่กับคู่สมรสและบุตร/หลาน"
                                     checked={
                                         formData.livingArrangement ===
-                                        "spouse_child"
+                                        "อยู่กับคู่สมรสและบุตร/หลาน"
                                     }
                                     onChange={(e) =>
                                         handleChange(
@@ -856,7 +856,7 @@ export default function SectionTwoForm({
                                     อยู่กับคู่สมรสและบุตร/หลาน
                                 </span>
                                 {formData.livingArrangement ===
-                                    "spouse_child" && (
+                                    "อยู่กับคู่สมรสและบุตร/หลาน" && (
                                     <div className="flex items-center gap-2">
                                         <span className="text-slate-900">
                                             จำนวนสมาชิกทั้งหมด
@@ -882,10 +882,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="livingArrangement"
-                                    value="relative_friend"
+                                    value="อยู่กับญาติ/เพื่อน"
                                     checked={
                                         formData.livingArrangement ===
-                                        "relative_friend"
+                                        "อยู่กับญาติ/เพื่อน"
                                     }
                                     onChange={(e) =>
                                         handleChange(
@@ -899,7 +899,7 @@ export default function SectionTwoForm({
                                     อยู่กับญาติ/เพื่อน
                                 </span>
                                 {formData.livingArrangement ===
-                                    "relative_friend" && (
+                                    "อยู่กับญาติ/เพื่อน" && (
                                     <div className="flex items-center gap-2">
                                         <span className="text-slate-900">
                                             จำนวนสมาชิกทั้งหมด
@@ -925,9 +925,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="livingArrangement"
-                                    value="alone"
+                                    value="อยู่คนเดียว"
                                     checked={
-                                        formData.livingArrangement === "alone"
+                                        formData.livingArrangement ===
+                                        "อยู่คนเดียว"
                                     }
                                     onChange={(e) =>
                                         handleChange(
@@ -945,9 +946,9 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="livingArrangement"
-                                    value="other"
+                                    value="อื่น ๆ"
                                     checked={
-                                        formData.livingArrangement === "other"
+                                        formData.livingArrangement === "อื่น ๆ"
                                     }
                                     onChange={(e) =>
                                         handleChange(
@@ -958,7 +959,7 @@ export default function SectionTwoForm({
                                     className="text-blue-600 focus:ring-blue-500"
                                 />
                                 <span className="text-slate-900">อื่นๆ</span>
-                                {formData.livingArrangement === "other" && (
+                                {formData.livingArrangement === "อื่น ๆ" && (
                                     <input
                                         type="text"
                                         placeholder="ระบุ"
@@ -1123,8 +1124,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="alcohol"
-                                    value="never"
-                                    checked={formData.alcohol === "never"}
+                                    value="ไม่เคยดื่มเลย"
+                                    checked={
+                                        formData.alcohol === "ไม่เคยดื่มเลย"
+                                    }
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
@@ -1138,8 +1141,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="alcohol"
-                                    value="quit"
-                                    checked={formData.alcohol === "quit"}
+                                    value="เลิกดื่มแล้ว"
+                                    checked={
+                                        formData.alcohol === "เลิกดื่มแล้ว"
+                                    }
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
@@ -1158,7 +1163,9 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
-                                    disabled={formData.alcohol !== "quit"}
+                                    disabled={
+                                        formData.alcohol !== "เลิกดื่มแล้ว"
+                                    }
                                 />
                                 <span className="text-slate-900">ปี</span>
                             </label>
@@ -1166,8 +1173,11 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="alcohol"
-                                    value="rarely"
-                                    checked={formData.alcohol === "rarely"}
+                                    value="ดื่มบ้างนานๆ ครั้ง"
+                                    checked={
+                                        formData.alcohol ===
+                                        "ดื่มบ้างนานๆ ครั้ง"
+                                    }
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
@@ -1181,8 +1191,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="alcohol"
-                                    value="regular"
-                                    checked={formData.alcohol === "regular"}
+                                    value="ดื่มเป็นประจำ"
+                                    checked={
+                                        formData.alcohol === "ดื่มเป็นประจำ"
+                                    }
                                     onChange={(e) =>
                                         handleChange("alcohol", e.target.value)
                                     }
@@ -1201,7 +1213,9 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
-                                    disabled={formData.alcohol !== "regular"}
+                                    disabled={
+                                        formData.alcohol !== "ดื่มเป็นประจำ"
+                                    }
                                 />
                                 <span className="text-slate-900">วัน</span>
                             </label>
@@ -1218,8 +1232,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="smoking"
-                                    value="never"
-                                    checked={formData.smoking === "never"}
+                                    value="ไม่เคยสูบเลย"
+                                    checked={
+                                        formData.smoking === "ไม่เคยสูบเลย"
+                                    }
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
@@ -1233,8 +1249,8 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="smoking"
-                                    value="quit"
-                                    checked={formData.smoking === "quit"}
+                                    value="เลิกสูบแล้ว"
+                                    checked={formData.smoking === "เลิกสูบแล้ว"}
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
@@ -1253,7 +1269,9 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
-                                    disabled={formData.smoking !== "quit"}
+                                    disabled={
+                                        formData.smoking !== "เลิกสูบแล้ว"
+                                    }
                                 />
                                 <span className="text-slate-900">ปี</span>
                             </label>
@@ -1261,8 +1279,10 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="smoking"
-                                    value="rarely"
-                                    checked={formData.smoking === "rarely"}
+                                    value="สูบบ้างนานๆ ครั้ง"
+                                    checked={
+                                        formData.smoking === "สูบบ้างนานๆ ครั้ง"
+                                    }
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
@@ -1276,15 +1296,17 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="smoking"
-                                    value="regular"
-                                    checked={formData.smoking === "regular"}
+                                    value="สูบเป็นประจำ"
+                                    checked={
+                                        formData.smoking === "สูบเป็นประจำ"
+                                    }
                                     onChange={(e) =>
                                         handleChange("smoking", e.target.value)
                                     }
                                     className="text-blue-600 focus:ring-blue-500"
                                 />
                                 <span className="text-slate-900">
-                                    สูบเป็นประจำทุกวัน วันละ
+                                    สูบเป็นประจำ วันละ
                                 </span>
                                 <input
                                     type="number"
@@ -1296,7 +1318,9 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
-                                    disabled={formData.smoking !== "regular"}
+                                    disabled={
+                                        formData.smoking !== "สูบเป็นประจำ"
+                                    }
                                 />
                                 <span className="text-slate-900">มวน</span>
                             </label>
@@ -1314,8 +1338,8 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="otherDiseases"
-                                    value="no"
-                                    checked={formData.otherDiseases === "no"}
+                                    value="ไม่มี"
+                                    checked={formData.otherDiseases === "ไม่มี"}
                                     onChange={(e) =>
                                         handleChange(
                                             "otherDiseases",
@@ -1330,8 +1354,8 @@ export default function SectionTwoForm({
                                 <input
                                     type="radio"
                                     name="otherDiseases"
-                                    value="yes"
-                                    checked={formData.otherDiseases === "yes"}
+                                    value="มี"
+                                    checked={formData.otherDiseases === "มี"}
                                     onChange={(e) =>
                                         handleChange(
                                             "otherDiseases",
@@ -1353,7 +1377,7 @@ export default function SectionTwoForm({
                                             e.target.value
                                         )
                                     }
-                                    disabled={formData.otherDiseases !== "yes"}
+                                    disabled={formData.otherDiseases !== "มี"}
                                 />
                             </label>
                         </div>

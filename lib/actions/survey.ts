@@ -20,40 +20,9 @@ export interface SurveySubmissionInput {
     sectionFour: SectionFourData;
 }
 
-// คำนวณคะแนนรวมและแบ่งตาม section
-function calculateScores(answers: Record<number, number>) {
-    const totalScore = Object.values(answers).reduce(
-        (sum, score) => sum + score,
-        0
-    );
-
-    // แบ่ง section ตาม question id ranges (ปรับตามโครงสร้างจริงของ Part4)
-    // ตัวอย่างการแบ่ง section - ควรปรับตาม part4Data.ts
-    const sections: Record<string, number[]> = {
-        daily_activities: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        symptoms: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-        psychosocial: [
-            21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-        ],
-        satisfaction: [36, 37, 38, 39, 40, 41, 42, 43, 44, 45],
-    };
-
-    const scoreBySection: Record<string, number> = {};
-    for (const [sectionName, questionIds] of Object.entries(sections)) {
-        scoreBySection[sectionName] = questionIds.reduce((sum, id) => {
-            return sum + (answers[id] || 0);
-        }, 0);
-    }
-
-    return { totalScore, scoreBySection };
-}
-
-// แปลผลคะแนน
-function interpretScore(totalScore: number): string {
-    // ตัวอย่างการแปลผล - ควรปรับตามเกณฑ์จริง
-    if (totalScore <= 90) return "ผลลัพธ์ต่ำ";
-    if (totalScore <= 180) return "ผลลัพธ์ปานกลาง";
-    return "ผลลัพธ์ดี";
+// คำนวณคะแนนรวม
+function calculateTotalScore(answers: Record<number, number>): number {
+    return Object.values(answers).reduce((sum, score) => sum + score, 0);
 }
 
 // Helper function to safely parse date
@@ -73,10 +42,7 @@ export async function submitSurvey(input: SurveySubmissionInput) {
     try {
         const { userId } = await auth();
 
-        const { totalScore, scoreBySection } = calculateScores(
-            input.sectionFour.answers
-        );
-        const interpretation = interpretScore(totalScore);
+        const totalScore = calculateTotalScore(input.sectionFour.answers);
 
         // สร้างหรือค้นหา Patient
         let patient;
@@ -155,8 +121,6 @@ export async function submitSurvey(input: SurveySubmissionInput) {
                 hospital: input.hospital || null,
                 submittedByUserId: userId || null,
                 totalScorePart4: totalScore,
-                scoreBySection: scoreBySection,
-                interpretationResult: interpretation,
                 rawAnswers: rawAnswers,
             },
         });
@@ -165,8 +129,6 @@ export async function submitSurvey(input: SurveySubmissionInput) {
             success: true,
             submissionId: submission.id,
             totalScore,
-            scoreBySection,
-            interpretation,
         };
     } catch (error) {
         console.error("Error submitting survey:", error);

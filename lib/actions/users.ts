@@ -19,7 +19,6 @@ export interface UserSubmission {
     region: string;
     createdAt: Date;
     totalScore: number | null;
-    interpretation: string | null;
 }
 
 // Get all users with submission counts
@@ -136,7 +135,6 @@ export async function getUserSubmissionsList(
             region: s.region,
             createdAt: s.createdAt,
             totalScore: s.totalScorePart4,
-            interpretation: s.interpretationResult,
         }));
 
         return { success: true, data: userSubmissions };

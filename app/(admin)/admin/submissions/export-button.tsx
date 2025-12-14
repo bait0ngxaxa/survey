@@ -20,69 +20,6 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
         }`;
     };
 
-    const translateAlcohol = (value: string) => {
-        const map: Record<string, string> = {
-            never: "ไม่เคยดื่มเลย",
-            quit: "เคยดื่มแต่เลิกแล้ว",
-            rarely: "ดื่มบ้างนานๆ ครั้ง",
-            regular: "ดื่มเป็นประจำ",
-        };
-        return map[value] || value || "";
-    };
-
-    const translateSmoking = (value: string) => {
-        const map: Record<string, string> = {
-            never: "ไม่เคยสูบเลย",
-            quit: "เคยสูบแต่เลิกแล้ว",
-            rarely: "สูบบ้างนานๆ ครั้ง",
-            regular: "สูบเป็นประจำทุกวัน",
-        };
-        return map[value] || value || "";
-    };
-
-    const translateLivingArrangement = (value: string) => {
-        const map: Record<string, string> = {
-            spouse_child: "อยู่กับคู่สมรสและบุตร/หลาน",
-            relative_friend: "อยู่กับญาติ/เพื่อน",
-            alone: "อยู่คนเดียว",
-            other: "อื่นๆ",
-        };
-        return map[value] || value || "";
-    };
-
-    const translateOtherDiseases = (value: string) => {
-        const map: Record<string, string> = {
-            yes: "มี",
-            no: "ไม่มี",
-        };
-        return map[value] || value || "";
-    };
-
-    const translateVisitDoctor = (value: string) => {
-        const map: Record<string, string> = {
-            always: "ทุกครั้ง",
-            sometimes: "ไม่ทุกครั้ง",
-            never: "ไม่เคยพบแพทย์ตามนัด",
-        };
-        return map[value] || value || "";
-    };
-
-    const translateSurveyMethod = (value: string) => {
-        const map: Record<string, string> = {
-            interview: "สัมภาษณ์",
-            self: "ตอบเอง",
-        };
-        return map[value] || value || "";
-    };
-
-    const translateBloodSugarKnown = (value: string) => {
-        const map: Record<string, string> = {
-            known: "ทราบ",
-            unknown: "ไม่ทราบ",
-        };
-        return map[value] || value || "";
-    };
-
     const translateRegion = (value: string) => {
         const map: Record<string, string> = {
             central: "ทีมกลาง",
@@ -127,7 +64,7 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     ID: s.id,
                     เขตสุขภาพ: translateRegion(s.region),
 
-                    วิธีเก็บข้อมูล: translateSurveyMethod(part1.surveyMethod),
+                    วิธีเก็บข้อมูล: part1.surveyMethod || "",
 
                     ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
                         patient?.lastName || ""
@@ -136,12 +73,10 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     // Part 1
                     ผู้สัมภาษณ์: part1.interviewerName || "",
 
-                    ทราบระดับน้ำตาล: translateBloodSugarKnown(
-                        part1.bloodSugarKnown
-                    ),
+                    ทราบระดับน้ำตาล: part1.bloodSugarKnown || "",
                     "ระดับน้ำตาลในเลือด Fasting": part1.fastingLevel || "",
                     "ระดับน้ำตาลสะสม HbA1c": part1.hba1cLevel || "",
-                    พบแพทย์ตามนัด: translateVisitDoctor(part1.visitDoctor),
+                    พบแพทย์ตามนัด: part1.visitDoctor || "",
                     เหตุผลไม่พบแพทย์: part1.notVisitReason || "",
 
                     // Demographics
@@ -184,12 +119,10 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
 
                     // Living
                     สถานะการอยู่อาศัย:
-                        sec2.livingArrangement === "other" &&
+                        sec2.livingArrangement === "อื่น ๆ" &&
                         sec2.livingArrangementOther
                             ? `อื่นๆ: ${sec2.livingArrangementOther}`
-                            : translateLivingArrangement(
-                                  sec2.livingArrangement
-                              ),
+                            : sec2.livingArrangement || "",
                     จำนวนสมาชิก: sec2.livingMembers || "",
                     การสนับสนุนจากครอบครัว: sec2.familySupport || "",
                     การสนับสนุนจากที่ทำงาน: sec2.workSupport || "",
@@ -201,36 +134,37 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
 
                     // Lifestyle - Alcohol (merge based on value)
                     ดื่มแอลกอฮอล์:
-                        translateAlcohol(sec2.alcohol) +
-                        (sec2.alcohol === "quit" && sec2.alcoholYears
+                        (sec2.alcohol || "") +
+                        (sec2.alcohol === "เลิกดื่มแล้ว" && sec2.alcoholYears
                             ? ` (${sec2.alcoholYears} ปี)`
                             : "") +
-                        (sec2.alcohol === "regular" && sec2.alcoholDays
+                        (sec2.alcohol === "ดื่มเป็นประจำ" && sec2.alcoholDays
                             ? ` (${sec2.alcoholDays} วัน/สัปดาห์)`
                             : ""),
 
                     // Lifestyle - Smoking (merge based on value)
                     สูบบุหรี่:
-                        translateSmoking(sec2.smoking) +
-                        (sec2.smoking === "quit" && sec2.smokingYears
+                        (sec2.smoking || "") +
+                        (sec2.smoking === "เลิกสูบแล้ว" && sec2.smokingYears
                             ? ` (${sec2.smokingYears} ปี)`
                             : "") +
-                        (sec2.smoking === "regular" && sec2.smokingAmount
+                        (sec2.smoking === "สูบเป็นประจำ" && sec2.smokingAmount
                             ? ` (${sec2.smokingAmount} มวน/วัน)`
                             : ""),
 
                     // Health Conditions - Merge other diseases with list
                     โรคอื่นๆ:
-                        translateOtherDiseases(sec2.otherDiseases) +
-                        (sec2.otherDiseases === "yes" && sec2.otherDiseasesList
+                        (sec2.otherDiseases || "") +
+                        (sec2.otherDiseases === "มี" && sec2.otherDiseasesList
                             ? `: ${sec2.otherDiseasesList}`
                             : ""),
                     ภาวะแทรกซ้อน:
                         (Array.isArray(sec2.complications)
                             ? sec2.complications.join("; ")
                             : "") +
-                        (sec2.complicationsOther
-                            ? `; อื่นๆ: ${sec2.complicationsOther}`
+                        (sec2.complications?.includes("อื่น ๆ") &&
+                        sec2.complicationsOther
+                            ? `: ${sec2.complicationsOther}`
                             : ""),
 
                     // Screenings
