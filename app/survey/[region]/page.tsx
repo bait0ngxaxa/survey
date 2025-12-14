@@ -24,5 +24,5 @@ export default async function SurveyPage({ params }: SurveyPageProps) {
         return notFound();
     }
 
-    return <SurveyForm config={config} />;
+    return <SurveyForm config={config} region={region} />;
 }

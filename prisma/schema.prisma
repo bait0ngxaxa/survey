@@ -1,0 +1,52 @@
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Patient {
+  id           String             @id @default(uuid())
+  nationalId   String?            @unique // เลขบัตร ปชช. (ควรเข้ารหัสถ้าเป็นไปได้)
+  firstName    String?
+  lastName     String?
+  gender       String?
+  birthDate    DateTime?
+  phone        String?
+  addressData  Json? // เก็บที่อยู่และข้อมูลอื่นๆ จาก Part 1 ถ้ามีเยอะ
+  submissions  SurveySubmission[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model SurveySubmission {
+  id                   String   @id @default(uuid())
+  patientId            String
+  patient              Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  // Context การเก็บข้อมูล
+  region               String   // "phetchabun" | "satun" | "lopburi" | "central"
+  hospital             String?  // ชื่อโรงพยาบาลที่เก็บข้อมูล
+  submittedByUserId    String?  // userId ของ User ที่บันทึก (อ้างอิงจาก Clerk)
+  
+  // ข้อมูลจากการทำแบบสอบถาม
+  totalScorePart4      Int?
+  
+  // เก็บคำตอบดิบทั้งหมดเผื่อคำนวณใหม่
+  rawAnswers           Json?    // e.g. {"q1": 5, "q2": 1, ...}
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Indexes สำหรับ query performance
+  @@index([patientId])
+  @@index([region])
+  @@index([createdAt])
+  @@index([submittedByUserId])
+}
+

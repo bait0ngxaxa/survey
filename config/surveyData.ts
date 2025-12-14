@@ -1,3 +1,11 @@
+import {
+    phetchabunPart4Data,
+    satunPart4Data,
+    lopburiPart4Data,
+    centralPart4Data,
+    Part4Section,
+} from "./part4Data";
+
 export type Part2Question = {
     id: number;
     text: string;
@@ -6,6 +14,7 @@ export type Part2Question = {
 export type SurveyConfig = {
     title: string;
     part2Questions: Part2Question[];
+    part4Questions: Part4Section[];
 };
 
 const defaultPart2Questions: Part2Question[] = [
@@ -76,24 +85,28 @@ export const surveyData: Record<string, SurveyConfig> = {
     phetchabun: {
         title: "แบบสอบถาม - บริบทพื้นที่เพชรบูรณ์",
         part2Questions: phetchabunQuestions,
+        part4Questions: phetchabunPart4Data,
     },
     satun: {
         title: "แบบสอบถาม - บริบทพื้นที่สตูล",
         part2Questions: satunQuestions,
+        part4Questions: satunPart4Data,
     },
     lopburi: {
         title: "แบบสอบถาม - บริบทพื้นที่ลพบุรี",
         part2Questions: lopburiQuestions,
+        part4Questions: lopburiPart4Data,
     },
     central: {
         title: "แบบสอบถาม - บริบทคนไทยทีมกลาง",
         part2Questions: centralQuestions,
+        part4Questions: centralPart4Data,
     },
 };
 
 export const regions = [
-    { id: "phetchabun", name: "บริบทพื้นที่เพชรบูรณ์", color: "bg-teal-500" },
-    { id: "satun", name: "บริบทพื้นที่สตูล", color: "bg-orange-500" },
-    { id: "lopburi", name: "บริบทพื้นที่ลพบุรี", color: "bg-purple-500" },
+    // { id: "phetchabun", name: "บริบทพื้นที่เพชรบูรณ์", color: "bg-teal-500" },
+    // { id: "satun", name: "บริบทพื้นที่สตูล", color: "bg-orange-500" },
+    // { id: "lopburi", name: "บริบทพื้นที่ลพบุรี", color: "bg-purple-500" },
     { id: "central", name: "บริบทคนไทยทีมกลาง", color: "bg-blue-500" },
 ];
