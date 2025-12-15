@@ -6,7 +6,6 @@ import {
     ChevronDown,
     ChevronUp,
     Calendar,
-    MapPin,
     User,
 } from "lucide-react";
 import { regions } from "@/config/surveyData";

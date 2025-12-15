@@ -37,7 +37,6 @@ interface SectionTwoFormProps {
     onChange: (data: SectionTwoData) => void;
     onNext: () => void;
     onBack: () => void;
-    region: string;
 }
 
 export default function SectionTwoForm({
@@ -45,12 +44,11 @@ export default function SectionTwoForm({
     onChange,
     onNext,
     onBack,
-    region,
 }: SectionTwoFormProps) {
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
-    const handleChange = (field: keyof SectionTwoData, value: any) => {
+    const handleChange = (field: keyof SectionTwoData, value: unknown) => {
         onChange({ ...formData, [field]: value });
     };
 
@@ -58,13 +56,6 @@ export default function SectionTwoForm({
         onChange({
             ...formData,
             screenings: { ...formData.screenings, [field]: value },
-        });
-    };
-
-    const handleAdviceSourceChange = (field: string, value: string) => {
-        onChange({
-            ...formData,
-            adviceSources: { ...formData.adviceSources, [field]: value },
         });
     };
 

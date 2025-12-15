@@ -1,15 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-    Search,
-    Users,
-    Eye,
-    X,
-    FileText,
-    Calendar,
-    MapPin,
-} from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Search, Eye, X, Calendar, MapPin } from "lucide-react";
 import {
     getStaffUsers,
     getUserSubmissionsList,
@@ -28,18 +20,36 @@ export default function AdminUsersPage() {
     );
     const [loadingSubmissions, setLoadingSubmissions] = useState(false);
 
-    useEffect(() => {
-        loadUsers();
-    }, []);
-
-    const loadUsers = async (query?: string) => {
+    const loadUsers = useCallback(async (query?: string) => {
         setLoading(true);
         const result = await getStaffUsers(query);
         if (result.success) {
             setUsers(result.data);
         }
         setLoading(false);
-    };
+    }, []);
+
+    // Initial data load on mount
+    useEffect(() => {
+        let cancelled = false;
+
+        const fetchInitialUsers = async () => {
+            setLoading(true);
+            const result = await getStaffUsers("");
+            if (!cancelled && result.success) {
+                setUsers(result.data);
+            }
+            if (!cancelled) {
+                setLoading(false);
+            }
+        };
+
+        void fetchInitialUsers();
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const handleSearch = () => {
         loadUsers(searchQuery);
@@ -400,7 +410,6 @@ export default function AdminUsersPage() {
                                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm text-slate-500">
                                                         <span className="font-mono text-xs bg-slate-200 px-2 py-0.5 rounded">
                                                             {sub.id.slice(0, 8)}
-                                                            ...
                                                         </span>
                                                         <span className="flex items-center gap-1">
                                                             <MapPin size={14} />

@@ -9,8 +9,8 @@ import {
     centralGroups,
     centralUISteps,
     centralNegativeQuestions,
-    getRegionConfig,
 } from "@/config/part4Data";
+import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
 
 interface SectionFourFormProps {
     data: Part4Section[];
@@ -20,12 +20,10 @@ interface SectionFourFormProps {
     onSubmit: () => void | Promise<void>;
     isSubmitting?: boolean;
     region?: string;
-    recommendations?: Record<string, any>;
-    onRecommendationsChange?: (recs: Record<string, any>) => void;
-    additionalInfo?: Record<string, any>;
-    onAdditionalInfoChange?: (info: Record<string, any>) => void;
-    respondentName?: string;
-    interviewerName?: string;
+    recommendations?: RecommendationsData;
+    onRecommendationsChange?: (recs: RecommendationsData) => void;
+    additionalInfo?: AdditionalInfoData;
+    onAdditionalInfoChange?: (info: AdditionalInfoData) => void;
 }
 
 export default function SectionFourForm({
@@ -39,8 +37,6 @@ export default function SectionFourForm({
     onRecommendationsChange,
     additionalInfo = {},
     onAdditionalInfoChange,
-    respondentName,
-    interviewerName,
     isSubmitting: isSubmittingProp = false,
 }: SectionFourFormProps) {
     const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -58,7 +54,10 @@ export default function SectionFourForm({
         onAnswer(questionId, score);
     };
 
-    const handleAdditionalInfoChange = (key: string, value: any) => {
+    const handleAdditionalInfoChange = (
+        key: string,
+        value: boolean | string
+    ) => {
         if (onAdditionalInfoChange) {
             onAdditionalInfoChange({ ...additionalInfo, [key]: value });
         }
@@ -100,9 +99,10 @@ export default function SectionFourForm({
         if (currentUIStep.containedGroups.includes(9)) {
             const group9Avg = getGroupAverage([24, 25, 26]);
             if (group9Avg > 0 && group9Avg <= 2) {
+                const q9Topic = additionalInfo.q9Topic;
                 if (
-                    !additionalInfo.q9Topic ||
-                    additionalInfo.q9Topic.trim() === ""
+                    !q9Topic ||
+                    (typeof q9Topic === "string" && q9Topic.trim() === "")
                 ) {
                     return false;
                 }
@@ -116,7 +116,7 @@ export default function SectionFourForm({
         if (!isCentral || !onRecommendationsChange) return;
 
         const currentUIStep = centralUISteps[currentStep];
-        let newRecs = { ...recommendations };
+        const newRecs = { ...recommendations };
 
         // Process all analytic groups contained in this UI step
         currentUIStep.containedGroups.forEach((groupId: number) => {
@@ -209,7 +209,7 @@ export default function SectionFourForm({
                         relatedUnit = "พยาบาล / LTC";
                         break;
                     case 2:
-                        let actions = [];
+                        const actions = [];
                         if (additionalInfo.movementLimit)
                             actions.push("ส่งต่อนักกายภาพ");
                         if (additionalInfo.tired)
@@ -272,9 +272,9 @@ export default function SectionFourForm({
                                   tired: additionalInfo.tired,
                               }
                             : analyticGroup.id === 9
-                            ? { topic: additionalInfo.q9Topic }
-                            : null
-                        : null,
+                            ? { topic: String(additionalInfo.q9Topic || "") }
+                            : undefined
+                        : undefined,
             };
         });
 
@@ -535,7 +535,7 @@ export default function SectionFourForm({
                             ต้องการทราบเรื่องใดเพิ่มเติม:
                         </label>
                         <textarea
-                            value={additionalInfo?.q9Topic || ""}
+                            value={String(additionalInfo?.q9Topic || "")}
                             onChange={(e) =>
                                 handleAdditionalInfoChange(
                                     "q9Topic",
@@ -635,7 +635,7 @@ export default function SectionFourForm({
             </div>
 
             <div className="space-y-8">
-                {data.map((section, sectionIndex) => (
+                {data.map((section) => (
                     <div
                         key={section.id}
                         className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"

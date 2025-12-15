@@ -7,8 +7,6 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
-    FileText,
-    MapPin,
     User,
     Search,
 } from "lucide-react";
@@ -145,7 +143,6 @@ export default async function SubmissionsPage({
                                                 {item.id
                                                     .slice(0, 8)
                                                     .toUpperCase()}
-                                                ...
                                             </code>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">

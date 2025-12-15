@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 
 interface ConfirmExitModalProps {
@@ -18,17 +17,7 @@ export default function ConfirmExitModal({
     title = "ออกจากแบบสอบถาม?",
     message = "ข้อมูลที่กรอกไว้จะไม่ถูกบันทึก คุณต้องการออกจากหน้านี้ใช่หรือไม่?",
 }: ConfirmExitModalProps) {
-    const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        if (isOpen) {
-            setShowModal(true);
-        } else {
-            setShowModal(false);
-        }
-    }, [isOpen]);
-
-    if (!showModal) return null;
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center">

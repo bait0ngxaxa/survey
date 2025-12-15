@@ -18,21 +18,21 @@ export default function QuestionSlider({
 
     return (
         <div
-            className={`group p-6 rounded-2xl transition-all duration-300 hover:shadow-md ${
+            className={`group p-4 sm:p-6 rounded-2xl transition-all duration-300 hover:shadow-md ${
                 hasUnanswered
                     ? "bg-red-50 border border-red-200"
                     : "bg-white border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/10"
             }`}
         >
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 sm:gap-8">
                 {/* Question Header */}
-                <div className="flex gap-5 items-start">
+                <div className="flex gap-3 sm:gap-5 items-start">
                     <div className="flex-none pt-1">
-                        <span className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-lg shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                        <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-base sm:text-lg shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
                             {id}
                         </span>
                     </div>
-                    <p className="text-gray-800 font-medium text-xl leading-relaxed">
+                    <p className="text-gray-800 font-medium text-base sm:text-xl leading-relaxed">
                         {text}
                     </p>
                 </div>
@@ -98,8 +98,27 @@ export default function QuestionSlider({
                             onTouchEnd={(e) =>
                                 onChange(parseInt(e.currentTarget.value))
                             }
-                            className="w-full relative z-10 cursor-pointer"
+                            className="w-full relative z-20 cursor-pointer"
                         />
+
+                        {/* Clickable Dots */}
+                        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between px-[2px] z-10">
+                            {[1, 2, 3, 4, 5, 6].map((num) => (
+                                <button
+                                    key={num}
+                                    type="button"
+                                    onClick={() => onChange(num)}
+                                    className={`w-5 h-5 rounded-full transition-all duration-200 border-2 hover:scale-125 hover:shadow-lg ${
+                                        value === num
+                                            ? "bg-indigo-600 border-indigo-600 scale-110 shadow-md"
+                                            : value && value > num
+                                            ? "bg-indigo-400 border-indigo-400"
+                                            : "bg-white border-gray-300 hover:border-indigo-400 hover:bg-indigo-50"
+                                    }`}
+                                    aria-label={`เลือกคะแนน ${num}`}
+                                />
+                            ))}
+                        </div>
 
                         {/* Progress indicator */}
                         <div className="absolute top-1/2 left-0 right-0 h-3 -translate-y-1/2 flex gap-1 pointer-events-none">

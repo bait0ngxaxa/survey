@@ -6,15 +6,15 @@ interface RadioGroupProps {
     value: string;
     options: string[];
     onChange: (value: string) => void;
-    // For "other" option with text input
+
     hasOther?: boolean;
     otherValue?: string;
     onOtherChange?: (value: string) => void;
-    otherTriggerValues?: string[]; // Which option values trigger the other input
-    // Layout
+    otherTriggerValues?: string[];
+
     layout?: "horizontal" | "vertical" | "grid";
     gridCols?: number;
-    // Styling
+
     className?: string;
 }
 
@@ -32,8 +32,6 @@ export default function RadioGroup({
     gridCols = 2,
     className = "",
 }: RadioGroupProps) {
-    const showOtherInput = hasOther && otherTriggerValues.includes(value);
-
     const containerClass =
         layout === "horizontal"
             ? "flex flex-wrap gap-4"

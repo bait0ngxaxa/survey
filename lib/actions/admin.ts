@@ -2,8 +2,7 @@
 
 import prisma from "@/lib/prisma";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 
 // Check if user is admin
 async function checkAdmin() {

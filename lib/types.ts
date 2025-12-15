@@ -97,7 +97,84 @@ export interface MedicalRecordData {
     diabetesDurationMonths: string;
 }
 
+// ===== Report Data Types =====
+
+export interface ReportStepData {
+    id?: number;
+    dimension?: string;
+    questionsLabel?: string;
+    label: string;
+    action: string;
+    criteria: string;
+    relatedUnit: string;
+    avgScore?: number;
+    averageScore?: number;
+    additionalInfo?: AdditionalInfoData;
+}
+
+export interface AdditionalInfoData {
+    movementLimit?: boolean;
+    tired?: boolean;
+    topic?: string;
+    [key: string]: boolean | string | undefined;
+}
+
+export interface ReportData {
+    [key: `step_${number}`]: ReportStepData;
+}
+
+export interface RecommendationsData {
+    [key: string]: ReportStepData;
+}
+
+// ===== Raw Answers from Database =====
+
+export interface RawAnswers {
+    part1?: Part1Data;
+    sectionTwo?: SectionTwoData;
+    medicalRecord?: MedicalRecordData;
+    sectionFour?: Record<number, number>;
+    reportData?: ReportData;
+}
+
 export interface SectionFourData {
     answers: Record<number, number>;
-    reportData?: Record<string, any>;
+    reportData?: ReportData;
+}
+
+// ===== Patient Types =====
+
+export interface PatientData {
+    id: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    nationalId?: string | null;
+    gender?: string | null;
+}
+
+// ===== Type Guards =====
+
+export function isRawAnswers(data: unknown): data is RawAnswers {
+    return data !== null && typeof data === "object";
+}
+
+export function isReportData(data: unknown): data is ReportData {
+    if (!data || typeof data !== "object") return false;
+    return Object.keys(data).some((key) => key.startsWith("step_"));
+}
+
+export function isReportStepData(data: unknown): data is ReportStepData {
+    if (!data || typeof data !== "object") return false;
+    const step = data as Record<string, unknown>;
+    return typeof step.action === "string" || typeof step.label === "string";
+}
+
+export function asRawAnswers(data: unknown): RawAnswers {
+    if (isRawAnswers(data)) return data;
+    return {};
+}
+
+export function asReportData(data: unknown): ReportData | undefined {
+    if (isReportData(data)) return data;
+    return undefined;
 }

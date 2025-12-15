@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { AlertCircle, X } from "lucide-react";
 
 interface AlertModalProps {
@@ -16,19 +15,6 @@ export default function AlertModal({
     title = "แจ้งเตือน",
     message,
 }: AlertModalProps) {
-    const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        if (isOpen) {
-            setShowModal(true);
-        } else {
-            // Small delay to allow animation to finish before removing from DOM if we were doing unmounting animation
-            // But here we rely on the parent to control `isOpen`.
-            // For simple structure, we can just sync state.
-            setShowModal(false);
-        }
-    }, [isOpen]);
-
     if (!isOpen) return null;
 
     return (

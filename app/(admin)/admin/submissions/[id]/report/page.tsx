@@ -3,6 +3,7 @@ import { Check, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PrintButton from "@/components/PrintButton";
+import { asRawAnswers, ReportData } from "@/lib/types";
 
 export default async function SubmissionReportPage({
     params,
@@ -17,8 +18,8 @@ export default async function SubmissionReportPage({
     }
 
     // Parse report data from rawAnswers
-    const rawAnswers = submission.rawAnswers as any;
-    const reportData = rawAnswers?.reportData || rawAnswers?.sectionFourReport; // Handle potential naming variations if any
+    const rawAnswers = asRawAnswers(submission.rawAnswers);
+    const reportData: ReportData | undefined = rawAnswers?.reportData;
 
     // Fallback if no report data (e.g. old submissions)
     if (!reportData) {
