@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { ChevronLeft, Check } from "lucide-react";
 import AlertModal from "@/components/AlertModal";
-import { Part4Section } from "@/config/part4Data";
+import { QuestionSlider } from "@/components/ui/form";
+import {
+    Part4Section,
+    centralGroups,
+    centralUISteps,
+    centralNegativeQuestions,
+} from "@/config/part4Data";
+import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
 
 interface SectionFourFormProps {
     data: Part4Section[];
@@ -13,197 +20,11 @@ interface SectionFourFormProps {
     onSubmit: () => void | Promise<void>;
     isSubmitting?: boolean;
     region?: string;
-    recommendations?: Record<string, any>;
-    onRecommendationsChange?: (recs: Record<string, any>) => void;
-    additionalInfo?: Record<string, any>;
-    onAdditionalInfoChange?: (info: Record<string, any>) => void;
-    respondentName?: string;
-    interviewerName?: string;
+    recommendations?: RecommendationsData;
+    onRecommendationsChange?: (recs: RecommendationsData) => void;
+    additionalInfo?: AdditionalInfoData;
+    onAdditionalInfoChange?: (info: AdditionalInfoData) => void;
 }
-
-// Group definitions for Central region logic
-const CENTRAL_GROUPS = [
-    {
-        id: 1,
-        questions: [1],
-        label: "ข้อที่ 1\nความสามารถทำกิจวัตรประจำวัน", // Adjusted label for display
-        questionsLabel: "1",
-        dimension: "การทำงาน\nของร่างกาย",
-    },
-    {
-        id: 2,
-        questions: [2, 3],
-        label: "ข้อที่ 2-3\nการเคลื่อนไหว / ความทนทาน",
-        questionsLabel: "2-3",
-        dimension: "การทำงาน\nของร่างกาย",
-    },
-    {
-        id: 3,
-        questions: [4, 5, 6, 7],
-        label: "ข้อที่ 4-7\nความรุนแรงของอาการ",
-        questionsLabel: "4-7",
-        dimension: "อาการของโรค",
-    },
-    {
-        id: 4,
-        questions: [8, 9, 10],
-        label: "ข้อที่ 8-10\nความกังวล/ผลกระทบทางใจ",
-        questionsLabel: "8-10",
-        dimension: "สุขภาพจิตใจ",
-    },
-    {
-        id: 5,
-        questions: [11, 12, 14, 16],
-        label: "ข้อที่ 11, 12, 14, 16\nการจัดการโรค/พฤติกรรมสุขภาพ",
-        questionsLabel: "11,12,14,16",
-        dimension: "การดูแลตนเอง",
-    },
-    {
-        id: 6,
-        questions: [13, 15],
-        label: "ข้อที่ 13, 15\nการตัดสินใจ/การรับมือ",
-        questionsLabel: "13,15",
-        dimension: "การดูแลตนเอง",
-    },
-    {
-        id: 7,
-        questions: [17, 18, 19, 20],
-        label: "ข้อที่ 17-20\nบทบาททางสังคม/ความเครียด",
-        questionsLabel: "17-20",
-        dimension: "สังคม",
-    },
-    {
-        id: 8,
-        questions: [21, 22, 23],
-        label: "ข้อที่ 21-23\nการประเมินสุขภาพตนเอง",
-        questionsLabel: "21-23",
-        dimension: "สุขภาพโดยรวม",
-    },
-    {
-        id: 9,
-        questions: [24, 25, 26],
-        label: "ข้อที่ 24-26\nความเข้าใจ/ข้อมูลการรักษา",
-        questionsLabel: "24-26",
-        dimension: "ความพึงพอใจ",
-    },
-    {
-        id: 10,
-        questions: [27, 28, 29],
-        label: "ข้อที่ 27-29\nการตัดสินใจ/ความยืดหยุ่น",
-        questionsLabel: "27-29",
-        dimension: "ความพึงพอใจ",
-    },
-];
-
-// UI Steps for Central region (7 steps)
-const CENTRAL_UI_STEPS = [
-    {
-        questions: [1, 2, 3],
-        containedGroups: [1, 2],
-        title: "ข้อ 1-3 มิติการทำงานของร่างกาย (Physical Function)",
-        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
-
-ตอนที่ 1 การทำงานของร่างกาย
-เป็นการประเมินว่าใน 1 เดือนที่ผ่านมาท่านทำกิจกรรมต่าง ๆ ต่อไปนี้ในชีวิตประจำวันได้บ่อยแค่ไหน โดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ทำไม่ได้เลย หมายถึง ท่านทำกิจกรรมนั้นไม่ได้เลย
-คะแนน 2 = ทำได้นาน ๆ ครั้ง หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 1 วันต่อสัปดาห์
-คะแนน 3 = ทำได้บางครั้ง หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 2-3 วันต่อสัปดาห์
-คะแนน 4 = ทำได้บ่อย ๆ หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 4 วันต่อสัปดาห์
-คะแนน 5 = ทำได้เกือบทุกวัน หมายถึง ท่านทำกิจกรรมนั้นได้ประมาณ 5-6 วันต่อสัปดาห์
-คะแนน 6 = ทำได้ทุกวัน หมายถึง ท่านทำกิจกรรมนั้นได้ทุกวัน`,
-    },
-    {
-        questions: [4, 5, 6, 7],
-        containedGroups: [3],
-        title: "ข้อ 4-7 มิติอาการของโรค (Symptoms)",
-        description: `ใน 1 เดือนที่ผ่านมาท่านมีอาการต่างๆต่อไปนี้บ่อยแค่ไหน
-
-ตอนที่ 2 เกี่ยวกับอาการของโรค
-เป็นการประเมินว่าใน 1 เดือนที่ผ่านมาท่านมีอาการต่างๆ ต่อไปนี้บ่อยแค่ไหน โดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ไม่มีเลย หมายถึง ท่านไม่มีอาการต่างๆ นั้นเกิดขึ้นเลย
-คะแนน 2 = มีนานๆ ครั้ง หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นประมาณ 1 ครั้งต่อสัปดาห์
-คะแนน 3 = มีบางครั้ง หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นประมาณ 2-3 ครั้งต่อสัปดาห์
-คะแนน 4 = มีบ่อยๆ หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นประมาณ 4 ครั้งต่อสัปดาห์
-คะแนน 5 = มีเกือบทุกวัน หมายถึง ท่านมีอาการต่างๆนั้นเกิดขึ้นประมาณ 5-6 ครั้งต่อสัปดาห์
-คะแนน 6 = มีทุกวัน หมายถึง ท่านมีอาการต่างๆ นั้นเกิดขึ้นทุกวัน`,
-    },
-    {
-        questions: [8, 9, 10],
-        containedGroups: [4],
-        title: "ข้อที่ 8-10 มิติสุขภาพทางด้านจิตใจ (Psychological Well-being)",
-        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
-
-ตอนที่ 3 เกี่ยวกับเรื่องทางด้านจิตใจ
-เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
-คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
-คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
-คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
-คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
-คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
-    },
-    {
-        questions: [11, 12, 13, 14, 15, 16], // Combined G5 and G6 questions as requested (11-16)
-        containedGroups: [5, 6],
-        title: "ข้อ 11-16 มิติทางด้านบทบาทการดูแลตนเอง (Self - care management)",
-        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
-
-ตอนที่ 4 เกี่ยวกับเรื่อง การจัดการดูแลตนเอง
-เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
-คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
-คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
-คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
-คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
-คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
-    },
-    {
-        questions: [17, 18, 19, 20],
-        containedGroups: [7],
-        title: "ข้อ 17-20 มิติทางด้านสังคม(Social well-being)",
-        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
-
-ตอนที่ 5 เกี่ยวกับเรื่องทางสังคม
-เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
-คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
-คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
-คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
-คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
-คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
-    },
-    {
-        questions: [21, 22, 23],
-        containedGroups: [8],
-        title: "ข้อ 21-23 มิติสุขภาพโดยรวม(Global judgments of health)",
-        description: `ข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน มากน้อยแค่ไหนในช่วง 1 เดือน ที่ผ่านมา
-
-ตอนที่ 6 เกี่ยวกับเรื่องสุขภาพโดยรวม
-เป็นการประเมินว่าข้อความต่อไปนี้ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านมากน้อยแค่ไหน ในช่วง 1 เดือน ที่ผ่านมาโดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ไม่ตรงเลย หมายถึง ข้อความนั้นไม่ตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านเลย
-คะแนน 2 = ตรงน้อยมาก หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 1 ส่วนใน 5 ส่วน
-คะแนน 3 = ตรงบ้าง หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 2 ส่วนใน 5 ส่วน
-คะแนน 4 = ตรงพอสมควร หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 3 ส่วนใน 5 ส่วน
-คะแนน 5 = ตรงเกือบทั้งหมดหมายถึงข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่าน 4 ส่วนใน 5 ส่วน
-คะแนน 6 = ตรงทั้งหมด หมายถึง ข้อความนั้นตรงกับความเป็นจริงที่เกิดขึ้นกับตัวท่านทั้งหมด`,
-    },
-    {
-        questions: [24, 25, 26, 27, 28, 29], // Combined G9 and G10
-        containedGroups: [9, 10],
-        title: "ข้อ 24-29 มิติความพึงพอใจต่อการรักษาและการดูแล(Satisfaction with care and flexibility of treatment)",
-        description: `ท่านพึงพอใจต่อการดูแลรักษาและการควบคุม เบาหวาน ของท่านและบุคคลากรทางการแพทย์มากน้อยแค่ไหน
-
-ตอนที่ 7 เกี่ยวกับความพึงพอใจต่อการดูแลรักษา
-เป็นการประเมินว่าท่านพึงพอใจต่อการดูแลรักษาและการควบคุมเบาหวานของ ท่านและบุคคลากรทางการแพทย์มากน้อยแค่ไหนในเรื่องต่อไปนี้
-โดยมีเกณฑ์การให้คะแนน ดังนี้
-คะแนน 1 = ไม่พอใจเลย หมายถึง ท่านไม่พึงพอใจต่อเรื่องนั้นเลย
-คะแนน 2 = พอใจน้อยมาก หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 1 ส่วนใน 5 ส่วน
-คะแนน 3 = พอใจบ้าง หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 2 ส่วนใน 5 ส่วน
-คะแนน 4 = พอใจพอสมควร หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 3 ส่วนใน 5 ส่วน
-คะแนน 5 = พอใจมาก หมายถึง ท่านพึงพอใจต่อเรื่องนั้น 4 ส่วนใน 5 ส่วน
-คะแนน 6 = พอใจมากที่สุด หมายถึง ท่านพึงพอใจต่อเรื่องนั้นมากที่สุด`,
-    },
-];
 
 export default function SectionFourForm({
     data,
@@ -216,27 +37,12 @@ export default function SectionFourForm({
     onRecommendationsChange,
     additionalInfo = {},
     onAdditionalInfoChange,
-    respondentName,
-    interviewerName,
     isSubmitting: isSubmittingProp = false,
 }: SectionFourFormProps) {
     const [isAlertOpen, setIsAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
-
-    // Use prop if available, otherwise local state (though we prefer prop now)
-    // We can just use the prop directly for the loading indicator.
-    // But we need to handle the "handleConfirmSubmit" logic.
-
-    // We'll keep a local one just in case parent doesn't provide it,
-    // OR just rely on the prop + local "optimistic" loading if needed.
-    // Actually, let's purely rely on the prop if provided, or fallback to local.
-    // But mixing them is messy.
-    // Let's assume we will pass it from parent.
-    // For backward compatibility or testing, we can keep local state but sync it?
-    // Simpler: user clicked -> set local true. Parent props update -> effectively true.
-    // If we use prop, use prop.
 
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
 
@@ -248,19 +54,20 @@ export default function SectionFourForm({
         onAnswer(questionId, score);
     };
 
-    const handleAdditionalInfoChange = (key: string, value: any) => {
+    const handleAdditionalInfoChange = (
+        key: string,
+        value: boolean | string
+    ) => {
         if (onAdditionalInfoChange) {
             onAdditionalInfoChange({ ...additionalInfo, [key]: value });
         }
     };
 
-    const NEGATIVE_QUESTIONS = [4, 5, 6, 7, 8, 19, 20, 21, 22];
-
     const getGroupAverage = (questionIds: number[]) => {
         if (questionIds.length === 0) return 0;
         const sum = questionIds.reduce((acc, id) => {
             let score = answers[id] || 0;
-            if (NEGATIVE_QUESTIONS.includes(id) && score > 0) {
+            if (centralNegativeQuestions.includes(id) && score > 0) {
                 score = 7 - score;
             }
             return acc + score;
@@ -271,7 +78,7 @@ export default function SectionFourForm({
     const validateCurrentStep = () => {
         if (!isCentral) return true;
 
-        const currentUIStep = CENTRAL_UI_STEPS[currentStep];
+        const currentUIStep = centralUISteps[currentStep];
         for (const qId of currentUIStep.questions) {
             if (!answers[qId]) {
                 return false;
@@ -292,9 +99,10 @@ export default function SectionFourForm({
         if (currentUIStep.containedGroups.includes(9)) {
             const group9Avg = getGroupAverage([24, 25, 26]);
             if (group9Avg > 0 && group9Avg <= 2) {
+                const q9Topic = additionalInfo.q9Topic;
                 if (
-                    !additionalInfo.q9Topic ||
-                    additionalInfo.q9Topic.trim() === ""
+                    !q9Topic ||
+                    (typeof q9Topic === "string" && q9Topic.trim() === "")
                 ) {
                     return false;
                 }
@@ -307,12 +115,12 @@ export default function SectionFourForm({
     const processStepLogic = () => {
         if (!isCentral || !onRecommendationsChange) return;
 
-        const currentUIStep = CENTRAL_UI_STEPS[currentStep];
-        let newRecs = { ...recommendations };
+        const currentUIStep = centralUISteps[currentStep];
+        const newRecs = { ...recommendations };
 
         // Process all analytic groups contained in this UI step
-        currentUIStep.containedGroups.forEach((groupId) => {
-            const analyticGroup = CENTRAL_GROUPS.find((g) => g.id === groupId);
+        currentUIStep.containedGroups.forEach((groupId: number) => {
+            const analyticGroup = centralGroups.find((g) => g.id === groupId);
             if (!analyticGroup) return;
 
             let action = "";
@@ -401,7 +209,7 @@ export default function SectionFourForm({
                         relatedUnit = "พยาบาล / LTC";
                         break;
                     case 2:
-                        let actions = [];
+                        const actions = [];
                         if (additionalInfo.movementLimit)
                             actions.push("ส่งต่อนักกายภาพ");
                         if (additionalInfo.tired)
@@ -464,9 +272,9 @@ export default function SectionFourForm({
                                   tired: additionalInfo.tired,
                               }
                             : analyticGroup.id === 9
-                            ? { topic: additionalInfo.q9Topic }
-                            : null
-                        : null,
+                            ? { topic: String(additionalInfo.q9Topic || "") }
+                            : undefined
+                        : undefined,
             };
         });
 
@@ -475,13 +283,9 @@ export default function SectionFourForm({
 
     const handleNext = () => {
         if (isCentral) {
-            // If it was the last step (summary), we submit.
-            // BUT, per new requirement, we don't want a summary step anymore.
-            // We want a confirmation modal on the last question step.
-
             // Check if we are on the last question step
             const isLastQuestionStep =
-                currentStep === CENTRAL_UI_STEPS.length - 1;
+                currentStep === centralUISteps.length - 1;
 
             if (isLastQuestionStep) {
                 if (!validateCurrentStep()) {
@@ -537,143 +341,13 @@ export default function SectionFourForm({
     };
 
     const renderQuestion = (q: { id: number; text: string }) => (
-        <div
+        <QuestionSlider
             key={q.id}
-            className={`group p-6 rounded-2xl transition-all duration-300 hover:shadow-md ${
-                Object.keys(answers).length > 0 && !answers[q.id]
-                    ? "bg-red-50 border border-red-200"
-                    : "bg-white border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/10"
-            }`}
-        >
-            <div className="flex flex-col gap-8">
-                <div className="flex gap-5 items-start">
-                    <div className="flex-none pt-1">
-                        <span className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-lg shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-                            {q.id}
-                        </span>
-                    </div>
-                    <p className="text-gray-800 font-medium text-xl leading-relaxed">
-                        {q.text}
-                    </p>
-                </div>
-
-                <div className="px-2 sm:px-8 pb-4">
-                    <div className="relative py-4">
-                        <div className="absolute top-1/2 left-0 right-0 h-3 bg-gray-100 rounded-full -translate-y-1/2 shadow-inner"></div>
-
-                        <style jsx>{`
-                            input[type="range"] {
-                                -webkit-appearance: none;
-                                width: 100%;
-                                background: transparent;
-                            }
-                            input[type="range"]::-webkit-slider-thumb {
-                                -webkit-appearance: none;
-                                height: 32px;
-                                width: 32px;
-                                border-radius: 50%;
-                                background: #ffffff;
-                                border: 4px solid #4f46e5;
-                                cursor: pointer;
-                                margin-top: -12px;
-                                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                                transition: all 0.2s;
-                            }
-                            input[type="range"]::-webkit-slider-thumb:hover {
-                                transform: scale(1.1);
-                                box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-                            }
-                            input[type="range"]::-webkit-slider-runnable-track {
-                                width: 100%;
-                                height: 8px;
-                                cursor: pointer;
-                                background: transparent;
-                            }
-                            input[type="range"]:focus {
-                                outline: none;
-                            }
-                        `}</style>
-                        <input
-                            type="range"
-                            min="1"
-                            max="6"
-                            step="1"
-                            value={answers[q.id] || 0}
-                            onChange={(e) =>
-                                handleAnswer(q.id, parseInt(e.target.value))
-                            }
-                            onClick={(e) => {
-                                // Force update to handle initial click on "1" if value was undefined/0
-                                handleAnswer(
-                                    q.id,
-                                    parseInt(e.currentTarget.value)
-                                );
-                            }}
-                            onTouchEnd={(e) => {
-                                // Force update for touch devices on initial tap
-                                handleAnswer(
-                                    q.id,
-                                    parseInt(e.currentTarget.value)
-                                );
-                            }}
-                            className="w-full relative z-10 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
-                            style={{ opacity: 1 }}
-                        />
-                        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between px-1 pointer-events-none w-full">
-                            {[1, 2, 3, 4, 5, 6].map((tick) => (
-                                <div
-                                    key={tick}
-                                    className={`w-4 h-4 rounded-full border-4 border-white shadow-sm transition-colors duration-300 ${
-                                        answers[q.id] >= tick
-                                            ? "bg-indigo-500 scale-110"
-                                            : "bg-gray-200"
-                                    } z-0`}
-                                ></div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="flex justify-between mt-6 text-sm font-medium">
-                        <span className="text-gray-400">1 (น้อยที่สุด)</span>
-                        <div
-                            className={`flex flex-col items-center transition-all duration-300 ${
-                                answers[q.id]
-                                    ? "opacity-100 -translate-y-1"
-                                    : "opacity-0"
-                            }`}
-                        >
-                            <span className="text-3xl font-black text-indigo-600">
-                                {answers[q.id]}
-                            </span>
-                            <span className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
-                                คะแนนที่เลือก
-                            </span>
-                        </div>
-                        <span className="text-gray-400">6 (มากที่สุด)</span>
-                    </div>
-
-                    <div className="flex justify-between px-0.5 mt-2">
-                        {[1, 2, 3, 4, 5, 6].map((num) => (
-                            <button
-                                key={num}
-                                type="button"
-                                onClick={() => handleAnswer(q.id, num)}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm transition-all duration-200 cursor-pointer ${
-                                    answers[q.id] === num
-                                        ? "bg-indigo-100 text-indigo-700 font-bold shadow-inner ring-2 ring-indigo-500 ring-offset-2 scale-110"
-                                        : "text-gray-400 hover:text-gray-600 hover:bg-gray-50 hover:scale-110 hover:shadow-md border border-transparent hover:border-gray-200"
-                                }`}
-                                aria-label={`Select score ${num}`}
-                                title={`เลือกคะแนน ${num}`}
-                            >
-                                {num}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
+            id={q.id}
+            text={q.text}
+            value={answers[q.id]}
+            onChange={(score) => handleAnswer(q.id, score)}
+        />
     );
 
     const handleConfirmSubmit = async () => {
@@ -684,8 +358,6 @@ export default function SectionFourForm({
 
         try {
             await onSubmit();
-            // If success, likely unmounts or navigates.
-            // If parent updates prop, isSubmitting remains true.
         } catch (error) {
             console.error("Error submitting:", error);
             // Reset local
@@ -701,22 +373,23 @@ export default function SectionFourForm({
     };
 
     if (isCentral) {
-        const currentUIStep = CENTRAL_UI_STEPS[currentStep];
+        const currentUIStep = centralUISteps[currentStep];
         const displayQuestions = data
             .flatMap((s) => s.questions)
             .filter((q) => currentUIStep.questions.includes(q.id));
 
         // Calculate conditional checks for display
+        // Show extra questions ONLY when ALL questions in group have score = 1 (average = 1)
         let showGroup2Extra = false;
         let showGroup9Extra = false;
 
         if (currentUIStep.containedGroups.includes(2)) {
             const avg = getGroupAverage([2, 3]);
-            showGroup2Extra = avg > 0 && avg <= 2;
+            showGroup2Extra = avg === 1;
         }
         if (currentUIStep.containedGroups.includes(9)) {
             const avg = getGroupAverage([24, 25, 26]);
-            showGroup9Extra = avg > 0 && avg <= 2;
+            showGroup9Extra = avg === 1;
         }
 
         return (
@@ -788,7 +461,7 @@ export default function SectionFourForm({
                         </div>
                         <span className="self-end md:self-start text-sm font-medium text-gray-500 whitespace-nowrap bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">
                             ขั้นตอนที่ {currentStep + 1} /{" "}
-                            {CENTRAL_UI_STEPS.length}
+                            {centralUISteps.length}
                         </span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
@@ -797,7 +470,7 @@ export default function SectionFourForm({
                             style={{
                                 width: `${
                                     ((currentStep + 1) /
-                                        CENTRAL_UI_STEPS.length) *
+                                        centralUISteps.length) *
                                     100
                                 }%`,
                             }}
@@ -862,7 +535,7 @@ export default function SectionFourForm({
                             ต้องการทราบเรื่องใดเพิ่มเติม:
                         </label>
                         <textarea
-                            value={additionalInfo?.q9Topic || ""}
+                            value={String(additionalInfo?.q9Topic || "")}
                             onChange={(e) =>
                                 handleAdditionalInfoChange(
                                     "q9Topic",
@@ -962,7 +635,7 @@ export default function SectionFourForm({
             </div>
 
             <div className="space-y-8">
-                {data.map((section, sectionIndex) => (
+                {data.map((section) => (
                     <div
                         key={section.id}
                         className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"

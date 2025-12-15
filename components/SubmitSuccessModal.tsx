@@ -6,14 +6,12 @@ import { useRouter } from "next/navigation";
 
 interface SubmitSuccessModalProps {
     isOpen: boolean;
-    onClose?: () => void;
     redirectTo?: string;
     autoRedirectDelay?: number; // milliseconds
 }
 
 export default function SubmitSuccessModal({
     isOpen,
-    onClose,
     redirectTo = "/dashboard",
     autoRedirectDelay = 3000,
 }: SubmitSuccessModalProps) {

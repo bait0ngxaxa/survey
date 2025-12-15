@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { CheckCircle, X } from "lucide-react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
@@ -10,26 +10,32 @@ export default function SuccessModal() {
     const router = useRouter();
     const pathname = usePathname();
 
-    useEffect(() => {
-        if (searchParams.get("loggedIn") === "true") {
-            setIsOpen(true);
-
-            // Auto close after 3 seconds
-            const timer = setTimeout(() => {
-                handleClose();
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [searchParams]);
-
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setIsOpen(false);
-        // Remove the query param without refreshing the page
+
         const newParams = new URLSearchParams(searchParams.toString());
         newParams.delete("loggedIn");
         router.replace(`${pathname}?${newParams.toString()}`);
-    };
+    }, [searchParams, router, pathname]);
+
+    const shouldShowModal = searchParams.get("loggedIn") === "true";
+
+    useEffect(() => {
+        if (shouldShowModal && !isOpen) {
+            const openTimer = setTimeout(() => setIsOpen(true), 0);
+            return () => clearTimeout(openTimer);
+        }
+    }, [shouldShowModal, isOpen]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const timer = setTimeout(() => {
+            handleClose();
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [isOpen, handleClose]);
 
     if (!isOpen) return null;
 

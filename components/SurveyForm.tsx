@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Suspense } from "react";
-import { ChevronRight, ChevronLeft, Check } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import SubmitSuccessModal from "@/components/SubmitSuccessModal";
 import AlertModal from "@/components/AlertModal";
 import ConfirmExitModal from "@/components/ConfirmExitModal";
@@ -12,7 +12,13 @@ import SectionFourForm from "./SectionFourForm";
 import Introduction from "./Introduction";
 import { SurveyConfig } from "@/config/surveyData";
 import { submitSurvey } from "@/lib/actions/survey";
-import { Part1Data, SectionTwoData, MedicalRecordData } from "@/lib/types";
+import {
+    Part1Data,
+    SectionTwoData,
+    MedicalRecordData,
+    RecommendationsData,
+    AdditionalInfoData,
+} from "@/lib/types";
 
 interface SurveyFormProps {
     config: SurveyConfig;
@@ -158,10 +164,10 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
     const [sectionFourAnswers, setSectionFourAnswers] = useState<
         Record<number, number>
     >({});
-    const [recommendations, setRecommendations] = useState<Record<string, any>>(
+    const [recommendations, setRecommendations] = useState<RecommendationsData>(
         {}
-    ); // Changed to any to support structured object
-    const [additionalInfo, setAdditionalInfo] = useState<Record<string, any>>(
+    );
+    const [additionalInfo, setAdditionalInfo] = useState<AdditionalInfoData>(
         {}
     );
 
@@ -190,7 +196,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
         // Push a dummy state to history to intercept back button
         window.history.pushState({ surveyInProgress: true }, "");
 
-        const handlePopState = (e: PopStateEvent) => {
+        const handlePopState = () => {
             // User pressed back button, show confirmation modal
             setIsExitModalOpen(true);
             // Push state again to prevent immediate navigation
@@ -208,7 +214,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
 
     const handleConfirmExit = useCallback(() => {
         setIsExitModalOpen(false);
-        // Navigate to dashboard
+
         window.location.href = "/dashboard";
     }, []);
 
@@ -278,7 +284,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                 medicalRecord: medicalRecordData,
                 sectionFour: {
                     answers: sectionFourAnswers,
-                    reportData: recommendations, // Pass the report data
+                    reportData: recommendations,
                 },
             });
 
@@ -666,7 +672,6 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                         onChange={setSectionTwoData}
                         onNext={() => setStep(4)}
                         onBack={() => setStep(1)}
-                        region={region}
                     />
                 ) : step === 3 ? (
                     <MedicalRecordForm
@@ -692,8 +697,6 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                         onRecommendationsChange={setRecommendations}
                         additionalInfo={additionalInfo}
                         onAdditionalInfoChange={setAdditionalInfo}
-                        respondentName={sectionTwoData.respondentName}
-                        interviewerName={part1Data.interviewerName}
                         isSubmitting={isSubmitting}
                     />
                 )}

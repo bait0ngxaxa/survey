@@ -4,6 +4,14 @@ import { useState } from "react";
 import { FileSpreadsheet } from "lucide-react";
 import { getSubmissions } from "@/lib/actions/admin";
 import * as XLSX from "xlsx";
+import {
+    RawAnswers,
+    PatientData,
+    ReportData,
+    asRawAnswers,
+    Part1Data,
+    SectionTwoData,
+} from "@/lib/types";
 
 interface ExportButtonProps {
     regionFilter?: string;
@@ -12,7 +20,7 @@ interface ExportButtonProps {
 export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
 
-    const getActionText = (report: any, stepId: number) => {
+    const getActionText = (report: ReportData, stepId: number) => {
         const step = report[`step_${stepId}`];
         if (!step || !step.action) return "";
         return `${step.label?.split("\n")[0] || `ข้อ ${stepId}`}: ${
@@ -46,17 +54,13 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
 
             // ===== SHEET 1: ข้อมูลทั่วไป =====
             const generalData = submissions.map((s) => {
-                const raw: any = s.rawAnswers || {};
-                const sec2 = raw.sectionTwo || {};
-                const part1 = raw.part1 || {};
-                const patient = s.patient as any;
+                const raw: RawAnswers = asRawAnswers(s.rawAnswers);
+                const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
+                const part1: Partial<Part1Data> = raw.part1 || {};
+                const patient = s.patient as PatientData | null;
                 const dateObj = new Date(s.createdAt);
-                const screenings = sec2.screenings || {};
-                const report = raw.reportData || raw.sectionFourReport || {};
-
-                // // Extract additionalInfo from reportData
-                // const step2Info = report.step_2?.additionalInfo || {};
-                // const step9Info = report.step_9?.additionalInfo || {};
+                const screenings: Partial<SectionTwoData["screenings"]> =
+                    sec2.screenings || {};
 
                 return {
                     วันที่: dateObj.toLocaleDateString("th-TH"),
@@ -167,24 +171,49 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                             ? `: ${sec2.complicationsOther}`
                             : ""),
 
-                    // Screenings
-                    ตรวจร่างกาย: screenings.physical || "",
-                    ตรวจเท้า: screenings.foot || "",
-                    ตรวจตา: screenings.eye || "",
-                    ตรวจปัสสาวะ: screenings.urine || "",
-                    ตรวจไขมัน: screenings.lipid || "",
-                    ตรวจฟัน: screenings.dental || "",
-                    "ตรวจ HbA1c": screenings.hba1c || "",
+                    // Screenings - include "other" text if selected
+                    ตรวจร่างกาย:
+                        screenings.physical === "อื่น ๆ" &&
+                        screenings.physicalOther
+                            ? `อื่น ๆ: ${screenings.physicalOther}`
+                            : screenings.physical || "",
+                    ตรวจเท้า:
+                        screenings.foot === "อื่น ๆ" && screenings.footOther
+                            ? `อื่น ๆ: ${screenings.footOther}`
+                            : screenings.foot || "",
+                    ตรวจตา:
+                        screenings.eye === "อื่น ๆ" && screenings.eyeOther
+                            ? `อื่น ๆ: ${screenings.eyeOther}`
+                            : screenings.eye || "",
+                    ตรวจปัสสาวะ:
+                        screenings.urine === "อื่น ๆ" && screenings.urineOther
+                            ? `อื่น ๆ: ${screenings.urineOther}`
+                            : screenings.urine || "",
+                    ตรวจไขมัน:
+                        screenings.lipid === "อื่น ๆ" && screenings.lipidOther
+                            ? `อื่น ๆ: ${screenings.lipidOther}`
+                            : screenings.lipid || "",
+                    ตรวจฟัน:
+                        screenings.dental === "อื่น ๆ" && screenings.dentalOther
+                            ? `อื่น ๆ: ${screenings.dentalOther}`
+                            : screenings.dental || "",
+                    "ตรวจ HbA1c":
+                        screenings.hba1c === "อื่น ๆ" && screenings.hba1cOther
+                            ? `อื่น ๆ: ${screenings.hba1cOther}`
+                            : screenings.hba1c || "",
+                    ตรวจอื่นๆ:
+                        screenings.other && screenings.otherText
+                            ? `${screenings.other}: ${screenings.otherText}`
+                            : screenings.other || "",
                 };
             });
 
             // ===== SHEET 2: สรุป 7 มิติ =====
             const promsData = submissions.map((s) => {
-                const raw: any = s.rawAnswers || {};
-                const report = raw.reportData || raw.sectionFourReport || {};
-                const sec2 = raw.sectionTwo || {};
-                const part1 = raw.part1 || {};
-                const patient = s.patient as any;
+                const raw: RawAnswers = asRawAnswers(s.rawAnswers);
+                const report = (raw.reportData || {}) as ReportData;
+                const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
+                const patient = s.patient as PatientData | null;
                 const dateObj = new Date(s.createdAt);
 
                 // Extract additionalInfo from reportData
