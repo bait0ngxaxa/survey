@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import AlertModal from "@/components/AlertModal";
-import { QuestionSlider } from "@/components/ui/form";
+import { QuestionSlider, FormNavigation } from "@/components/ui/form";
 import {
     Part4Section,
     centralGroups,
@@ -449,24 +449,24 @@ export default function SectionFourForm({
                     </div>
                 )}
 
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+                <div className="bg-white rounded-3xl p-6 shadow-xl shadow-sky-100/50 border border-slate-100">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
                         <div className="flex-1 w-full md:mr-4">
-                            <span className="text-xl font-bold text-blue-600 tracking-wide uppercase whitespace-pre-line block">
+                            <span className="text-xl font-bold text-sky-600 tracking-wide uppercase whitespace-pre-line block">
                                 {currentUIStep.title}
                             </span>
-                            <div className="text-gray-600 mt-2 text-lg whitespace-pre-line bg-gray-50 p-4 rounded-lg w-full">
+                            <div className="text-slate-600 mt-3 text-lg whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-100">
                                 {currentUIStep.description}
                             </div>
                         </div>
-                        <span className="self-end md:self-start text-sm font-medium text-gray-500 whitespace-nowrap bg-white px-3 py-1 rounded-full border border-gray-100 shadow-sm">
+                        <span className="self-end md:self-start text-sm font-medium text-slate-500 whitespace-nowrap bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-sm">
                             ขั้นตอนที่ {currentStep + 1} /{" "}
                             {centralUISteps.length}
                         </span>
                     </div>
-                    <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-blue-600 transition-all duration-500 ease-out"
+                            className="h-full bg-sky-500 transition-all duration-500 ease-out"
                             style={{
                                 width: `${
                                     ((currentStep + 1) /
@@ -483,8 +483,8 @@ export default function SectionFourForm({
                 </div>
 
                 {showGroup2Extra && (
-                    <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 animate-in fade-in">
-                        <h3 className="text-lg font-bold text-orange-800 mb-4">
+                    <div className="bg-sky-50 border border-sky-200 rounded-2xl p-6 animate-in fade-in">
+                        <h3 className="text-lg font-bold text-sky-800 mb-4">
                             ข้อมูลเพิ่มเติม (เนื่องจากผลลัพธ์ต่ำ)
                         </h3>
                         <div className="space-y-3">
@@ -500,7 +500,7 @@ export default function SectionFourForm({
                                             e.target.checked
                                         )
                                     }
-                                    className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
+                                    className="w-5 h-5 text-sky-600 rounded focus:ring-sky-500"
                                 />
                                 <span className="text-gray-800">
                                     มีข้อจำกัดด้านการเคลื่อนไหว
@@ -516,7 +516,7 @@ export default function SectionFourForm({
                                             e.target.checked
                                         )
                                     }
-                                    className="w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
+                                    className="w-5 h-5 text-sky-600 rounded focus:ring-sky-500"
                                 />
                                 <span className="text-gray-800">
                                     ออกแรงแล้วเหนื่อย
@@ -527,8 +527,8 @@ export default function SectionFourForm({
                 )}
 
                 {showGroup9Extra && (
-                    <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6 animate-in fade-in">
-                        <h3 className="text-lg font-bold text-orange-800 mb-2">
+                    <div className="bg-sky-50 border border-sky-200 rounded-2xl p-6 animate-in fade-in">
+                        <h3 className="text-lg font-bold text-sky-800 mb-2">
                             ข้อมูลเพิ่มเติม
                         </h3>
                         <label className="block text-gray-700 mb-2">
@@ -542,27 +542,18 @@ export default function SectionFourForm({
                                     e.target.value
                                 )
                             }
-                            className="w-full p-3 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                            className="w-full p-3 border border-sky-200 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-slate-900 placeholder:text-slate-400"
                             rows={3}
                             placeholder="ระบุเรื่องที่ต้องการทราบ..."
                         />
                     </div>
                 )}
 
-                <div className="flex justify-between items-center pt-6">
-                    <button
-                        onClick={handleBack}
-                        className="px-8 py-3 bg-white border border-gray-300 rounded-xl text-gray-600 hover:bg-gray-50 font-semibold"
-                    >
-                        ย้อนกลับ
-                    </button>
-                    <button
-                        onClick={handleNext}
-                        className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-xl transition-all"
-                    >
-                        ถัดไป
-                    </button>
-                </div>
+                <FormNavigation
+                    onBack={handleBack}
+                    onNext={handleNext}
+                    showBack={true}
+                />
             </div>
         );
     }
@@ -624,12 +615,14 @@ export default function SectionFourForm({
                 </div>
             )}
 
-            <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-xl overflow-hidden">
-                <div className="py-8 px-8 text-white">
-                    <h1 className="text-3xl font-bold mb-4">
+            <div className="bg-white rounded-3xl shadow-xl shadow-sky-100/50 border border-slate-100 overflow-hidden">
+                <div className="py-10 px-8 text-center bg-white border-b border-slate-100">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 mb-4 leading-tight">
                         แบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2{" "}
                         <br />
-                        โดยผู้ป่วยเป็นคนรายงาน
+                        <span className="text-sky-600 block mt-2">
+                            “โดยผู้ป่วยเป้นคนรายงาน”
+                        </span>
                     </h1>
                 </div>
             </div>
@@ -645,7 +638,7 @@ export default function SectionFourForm({
                                 <h2 className="text-2xl font-bold text-indigo-900 mb-3">
                                     {section.title}
                                 </h2>
-                                <p className="text-gray-600 text-lg leading-relaxed bg-gray-50/80 p-4 rounded-xl border border-gray-100/50">
+                                <p className="text-slate-600 text-lg leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
                                     {section.description}
                                 </p>
                             </div>
@@ -659,21 +652,14 @@ export default function SectionFourForm({
                 ))}
             </div>
 
-            <div className="bg-white rounded-3xl shadow-xl p-8 border-t border-gray-100 flex justify-between items-center">
-                <button
-                    onClick={onBack}
-                    className="px-8 py-4 bg-white border-2 border-gray-200 rounded-2xl text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 font-bold transition-all flex items-center gap-3 shadow-sm hover:shadow-md active:scale-95"
-                >
-                    <ChevronLeft size={24} />
-                    <span className="text-lg">ย้อนกลับ</span>
-                </button>
-                <button
-                    onClick={handleNext}
-                    className="px-10 py-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-2xl hover:from-blue-700 hover:to-indigo-700 font-bold shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 transition-all flex items-center gap-3 transform hover:-translate-y-1 active:translate-y-0 active:scale-95"
-                >
-                    <span className="text-lg">บันทึกข้อมูล</span>
-                    <Check size={24} />
-                </button>
+            <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <FormNavigation
+                    onBack={onBack}
+                    onNext={handleNext}
+                    nextLabel="บันทึกข้อมูล"
+                    isSubmit={true}
+                    isLoading={isSubmitting}
+                />
             </div>
         </div>
     );

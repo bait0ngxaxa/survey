@@ -15,19 +15,21 @@ export default function FormSection({
 }: FormSectionProps) {
     return (
         <div
-            className={`bg-white rounded-2xl shadow-xl overflow-hidden ${className}`}
+            className={`bg-white rounded-4xl shadow-xl shadow-sky-100/50 border border-slate-100 overflow-hidden ${className}`}
         >
-            <div className="bg-linear-to-r from-blue-600 to-indigo-700 py-6 px-4 sm:py-8 sm:px-8">
-                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            <div className="bg-white py-8 px-8 border-b border-slate-100">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
                     {title}
                 </h1>
                 {description && (
-                    <p className="text-blue-100 text-base sm:text-lg">
+                    <p className="text-sky-600 text-lg font-medium bg-sky-50 inline-block px-4 py-1.5 rounded-full">
                         {description}
                     </p>
                 )}
             </div>
-            <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">{children}</div>
+            <div className="p-4 sm:p-10 space-y-8 sm:space-y-10">
+                {children}
+            </div>
         </div>
     );
 }

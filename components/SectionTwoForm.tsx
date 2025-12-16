@@ -171,7 +171,7 @@ export default function SectionTwoForm({
 
                 {/* 7. Support Source (Conditional) */}
                 {formData.occupation === "ไม่ได้ประกอบอาชีพ" && (
-                    <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="bg-sky-50 p-4 rounded-xl border border-sky-100">
                         <RadioGroup
                             name="supportSource"
                             label="7. ถ้าท่านไม่ได้ทำงาน ท่านได้รับการส่งเสียเลี้ยงดูจากใคร"

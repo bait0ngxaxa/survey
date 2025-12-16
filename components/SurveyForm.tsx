@@ -10,6 +10,7 @@ import SectionTwoForm from "./SectionTwoForm";
 import MedicalRecordForm from "./MedicalRecordForm";
 import SectionFourForm from "./SectionFourForm";
 import Introduction from "./Introduction";
+import { FormSection, TextInput, RadioGroup } from "@/components/ui/form";
 import { SurveyConfig } from "@/config/surveyData";
 import { submitSurvey } from "@/lib/actions/survey";
 import {
@@ -339,114 +340,80 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                     <Introduction onStart={() => setStep(1)} />
                 ) : step === 1 ? (
                     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
-                        {/* Header */}
-                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                            <div className="bg-linear-to-r from-blue-600 to-indigo-700 py-8 px-8">
-                                <h1 className="text-3xl font-bold text-white mb-2">
-                                    {config.title}
-                                </h1>
-                                <p className="text-blue-100 text-lg">
-                                    ส่วนที่ 1: ข้อมูลทั่วไป
-                                </p>
-                            </div>
-
-                            <form className="p-8 space-y-10">
-                                <p className="text-slate-700 italic border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50 rounded-r-lg font-medium">
-                                    ก่อนที่ท่านจะตอบแบบสอบถามชุดนี้
-                                    ผู้วิจัยอยากทราบว่า
-                                </p>
+                        <FormSection
+                            title={config.title}
+                            description="ส่วนที่ 1: ข้อมูลทั่วไป"
+                        >
+                            <div className="space-y-10">
+                                <div className="p-6 bg-sky-50 rounded-2xl border border-sky-100 flex items-start gap-4">
+                                    <div className="p-2 bg-sky-100 rounded-full text-sky-600 mt-1">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="M12 16v-4" />
+                                            <path d="M12 8h.01" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sky-900 font-semibold text-lg mb-1">
+                                            คำชี้แจง
+                                        </h3>
+                                        <p className="text-sky-700 leading-relaxed">
+                                            ก่อนที่ท่านจะตอบแบบสอบถามชุดนี้
+                                            ผู้วิจัยอยากทราบข้อมูลเบื้องต้นเกี่ยวกับวิธีการเก็บข้อมูล
+                                        </p>
+                                    </div>
+                                </div>
 
                                 {/* Pre-Survey Questions */}
-                                <div className="space-y-6 border-b border-slate-200 pb-8">
-                                    <div className="space-y-2">
-                                        <label className="font-semibold block text-slate-900">
-                                            วิธีการเก็บข้อมูล
-                                        </label>
-                                        <div className="flex gap-6">
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="surveyMethod"
-                                                    value="ตอบด้วยตนเอง"
-                                                    checked={
-                                                        part1Data.surveyMethod ===
-                                                        "ตอบด้วยตนเอง"
-                                                    }
-                                                    onChange={(e) =>
-                                                        handlePart1Change(
-                                                            "surveyMethod",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                <span className="text-slate-800">
-                                                    ตอบด้วยตนเอง
-                                                </span>
-                                            </label>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="surveyMethod"
-                                                    value="สัมภาษณ์"
-                                                    checked={
-                                                        part1Data.surveyMethod ===
-                                                        "สัมภาษณ์"
-                                                    }
-                                                    onChange={(e) =>
-                                                        handlePart1Change(
-                                                            "surveyMethod",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                <span className="text-slate-800">
-                                                    สัมภาษณ์
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </div>
+                                <div className="space-y-8 pb-8 border-b border-slate-100">
+                                    <RadioGroup
+                                        name="surveyMethod"
+                                        label="วิธีการเก็บข้อมูล"
+                                        value={part1Data.surveyMethod || ""}
+                                        options={["ตอบด้วยตนเอง", "สัมภาษณ์"]}
+                                        onChange={(v) =>
+                                            handlePart1Change("surveyMethod", v)
+                                        }
+                                        layout="horizontal"
+                                    />
 
-                                    <div className="space-y-2">
-                                        <label className="font-semibold block text-slate-900">
-                                            ชื่อผู้ให้ข้อมูล
-                                        </label>
-                                        <input
-                                            type="text"
-                                            placeholder="ระบุชื่อ-นามสกุล"
-                                            value={
-                                                sectionTwoData.respondentName
-                                            }
-                                            onChange={(e) =>
-                                                setSectionTwoData((prev) => ({
-                                                    ...prev,
-                                                    respondentName:
-                                                        e.target.value,
-                                                }))
-                                            }
-                                            className="w-full p-3 rounded-lg border border-slate-300 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder-slate-400"
-                                        />
-                                    </div>
+                                    <TextInput
+                                        label="ชื่อผู้ให้ข้อมูล"
+                                        placeholder="ระบุชื่อ-นามสกุล"
+                                        value={sectionTwoData.respondentName}
+                                        onChange={(v) =>
+                                            setSectionTwoData((prev) => ({
+                                                ...prev,
+                                                respondentName: v,
+                                            }))
+                                        }
+                                    />
 
                                     {part1Data.surveyMethod === "สัมภาษณ์" && (
-                                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                            <label className="font-semibold block text-slate-900">
-                                                ชื่อผู้สัมภาษณ์
-                                            </label>
-                                            <input
-                                                type="text"
+                                        <div className="animate-in fade-in slide-in-from-top-2">
+                                            <TextInput
+                                                label="ชื่อผู้สัมภาษณ์"
                                                 placeholder="ระบุชื่อ-นามสกุลผู้สัมภาษณ์"
                                                 value={
-                                                    part1Data.interviewerName
+                                                    part1Data.interviewerName ||
+                                                    ""
                                                 }
-                                                onChange={(e) =>
+                                                onChange={(v) =>
                                                     handlePart1Change(
                                                         "interviewerName",
-                                                        e.target.value
+                                                        v
                                                     )
                                                 }
-                                                className="w-full p-3 rounded-lg border border-slate-300 focus:border-blue-500 outline-none transition-all text-slate-900 placeholder-slate-400"
                                             />
                                         </div>
                                     )}
@@ -454,87 +421,94 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
 
                                 {/* 1. Blood Sugar Knowledge */}
                                 <div className="space-y-4">
-                                    <label className="text-lg font-semibold text-slate-900 block">
+                                    <label className="text-xl font-bold text-slate-800 block">
                                         1.
                                         ท่านทราบผลการตรวจระดับน้ำตาลในเลือดและค่าน้ำตาลสะสมของท่านในครั้งนี้หรือไม่
                                         อย่างไร
                                     </label>
-                                    <div className="pl-4 space-y-4">
+                                    <div className="space-y-4 pt-2">
                                         {/* Option 1: Known */}
-                                        <div className="space-y-3">
+                                        <div
+                                            className={`transition-all duration-300 rounded-xl border p-4 ${
+                                                part1Data.bloodSugarKnown ===
+                                                "ทราบ"
+                                                    ? "bg-sky-50 border-sky-200 shadow-sm"
+                                                    : "bg-white border-slate-200 hover:border-sky-200"
+                                            }`}
+                                        >
                                             <label className="flex items-center gap-3 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="bloodSugarKnown"
-                                                    value="ทราบ"
-                                                    checked={
-                                                        part1Data.bloodSugarKnown ===
-                                                        "ทราบ"
-                                                    }
-                                                    onChange={(e) =>
-                                                        handlePart1Change(
-                                                            "bloodSugarKnown",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
-                                                />
-                                                <span className="text-slate-800">
+                                                <div className="relative flex items-center justify-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="bloodSugarKnown"
+                                                        value="ทราบ"
+                                                        checked={
+                                                            part1Data.bloodSugarKnown ===
+                                                            "ทราบ"
+                                                        }
+                                                        onChange={(e) =>
+                                                            handlePart1Change(
+                                                                "bloodSugarKnown",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-sky-500 checked:bg-sky-500 transition-all focus:ring-4 focus:ring-sky-100 outline-none"
+                                                    />
+                                                    <div className="absolute w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                                                </div>
+                                                <span className="text-slate-800 font-medium text-lg">
                                                     1. ทราบ
                                                 </span>
                                             </label>
 
                                             {part1Data.bloodSugarKnown ===
                                                 "ทราบ" && (
-                                                <div className="ml-8 space-y-3 animate-in fade-in slide-in-from-top-2">
-                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                                        <span className="text-slate-700 min-w-[200px]">
+                                                <div className="mt-4 ml-8 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                                        <span className="text-slate-600 min-w-[220px]">
                                                             1.1
                                                             ระดับน้ำตาลในเลือด
                                                             (Fasting) =
                                                         </span>
-                                                        <input
-                                                            type="text"
+                                                        <TextInput
                                                             value={
                                                                 part1Data.fastingLevel
                                                             }
-                                                            onChange={(e) =>
+                                                            onChange={(v) =>
                                                                 handlePart1Change(
                                                                     "fastingLevel",
-                                                                    e.target
-                                                                        .value
+                                                                    v
                                                                 )
                                                             }
-                                                            className="flex-1 w-full max-w-[200px] border-b border-slate-400 focus:border-blue-500 outline-none px-2 py-1 text-center font-medium bg-transparent text-slate-900 placeholder-slate-400"
+                                                            inline
                                                             placeholder="ระบุค่า"
+                                                            inputClassName="w-32"
                                                         />
-                                                        <span className="text-slate-700">
-                                                            มิลลิกรัม/เดซิลิตร
-                                                            (mg/dl)
+                                                        <span className="text-slate-500 text-sm">
+                                                            mg/dl
                                                         </span>
                                                     </div>
-                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                                        <span className="text-slate-700 min-w-[200px]">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                                                        <span className="text-slate-600 min-w-[220px]">
                                                             1.2 ระดับน้ำตาลสะสม
                                                             (HbA1c) =
                                                         </span>
-                                                        <input
-                                                            type="text"
+                                                        <TextInput
                                                             value={
                                                                 part1Data.hba1cLevel
                                                             }
-                                                            onChange={(e) =>
+                                                            onChange={(v) =>
                                                                 handlePart1Change(
                                                                     "hba1cLevel",
-                                                                    e.target
-                                                                        .value
+                                                                    v
                                                                 )
                                                             }
-                                                            className="flex-1 w-full max-w-[200px] border-b border-slate-400 focus:border-blue-500 outline-none px-2 py-1 text-center font-medium bg-transparent text-slate-900 placeholder-slate-400"
+                                                            inline
                                                             placeholder="ระบุค่า"
+                                                            inputClassName="w-32"
                                                         />
-                                                        <span className="text-slate-700">
-                                                            เปอร์เซ็นต์ (%)
+                                                        <span className="text-slate-500 text-sm">
+                                                            %
                                                         </span>
                                                     </div>
                                                 </div>
@@ -542,97 +516,131 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                         </div>
 
                                         {/* Option 2: Unknown */}
-                                        <label className="flex items-center gap-3 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="bloodSugarKnown"
-                                                value="ไม่ทราบ"
-                                                checked={
-                                                    part1Data.bloodSugarKnown ===
-                                                    "ไม่ทราบ"
-                                                }
-                                                onChange={(e) =>
-                                                    handlePart1Change(
-                                                        "bloodSugarKnown",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
-                                            />
-                                            <span className="text-slate-800">
-                                                2. ไม่ทราบ
-                                            </span>
-                                        </label>
+                                        <div
+                                            className={`transition-all duration-300 rounded-xl border p-4 ${
+                                                part1Data.bloodSugarKnown ===
+                                                "ไม่ทราบ"
+                                                    ? "bg-sky-50 border-sky-200 shadow-sm"
+                                                    : "bg-white border-slate-200 hover:border-sky-200"
+                                            }`}
+                                        >
+                                            <label className="flex items-center gap-3 cursor-pointer">
+                                                <div className="relative flex items-center justify-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="bloodSugarKnown"
+                                                        value="ไม่ทราบ"
+                                                        checked={
+                                                            part1Data.bloodSugarKnown ===
+                                                            "ไม่ทราบ"
+                                                        }
+                                                        onChange={(e) =>
+                                                            handlePart1Change(
+                                                                "bloodSugarKnown",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-sky-500 checked:bg-sky-500 transition-all focus:ring-4 focus:ring-sky-100 outline-none"
+                                                    />
+                                                    <div className="absolute w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                                                </div>
+                                                <span className="text-slate-800 font-medium text-lg">
+                                                    2. ไม่ทราบ
+                                                </span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="border-t border-slate-200" />
+                                <div className="border-t border-slate-100" />
 
                                 {/* 2. Doctor Visits */}
                                 <div className="space-y-4">
-                                    <label className="text-lg font-semibold text-slate-900 block">
+                                    <label className="text-xl font-bold text-slate-800 block">
                                         2. ท่านมาพบแพทย์ตามนัดทุกครั้งหรือไม่
                                     </label>
-                                    <div className="pl-4 space-y-4">
-                                        <label className="flex items-center gap-3 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name="visitDoctor"
-                                                value="ทุกครั้ง"
-                                                checked={
-                                                    part1Data.visitDoctor ===
-                                                    "ทุกครั้ง"
-                                                }
-                                                onChange={(e) =>
-                                                    handlePart1Change(
-                                                        "visitDoctor",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
-                                            />
-                                            <span className="text-slate-800">
-                                                1. ทุกครั้ง
-                                            </span>
-                                        </label>
-
-                                        <div className="space-y-3">
+                                    <div className="space-y-4 pt-2">
+                                        <div
+                                            className={`transition-all duration-300 rounded-xl border p-4 ${
+                                                part1Data.visitDoctor ===
+                                                "ทุกครั้ง"
+                                                    ? "bg-sky-50 border-sky-200 shadow-sm"
+                                                    : "bg-white border-slate-200 hover:border-sky-200"
+                                            }`}
+                                        >
                                             <label className="flex items-center gap-3 cursor-pointer">
-                                                <input
-                                                    type="radio"
-                                                    name="visitDoctor"
-                                                    value="ไม่ทุกครั้ง"
-                                                    checked={
-                                                        part1Data.visitDoctor ===
-                                                        "ไม่ทุกครั้ง"
-                                                    }
-                                                    onChange={(e) =>
-                                                        handlePart1Change(
-                                                            "visitDoctor",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    className="w-5 h-5 text-blue-600 focus:ring-blue-500 border-slate-300"
-                                                />
-                                                <span className="text-slate-800">
+                                                <div className="relative flex items-center justify-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="visitDoctor"
+                                                        value="ทุกครั้ง"
+                                                        checked={
+                                                            part1Data.visitDoctor ===
+                                                            "ทุกครั้ง"
+                                                        }
+                                                        onChange={(e) =>
+                                                            handlePart1Change(
+                                                                "visitDoctor",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-sky-500 checked:bg-sky-500 transition-all focus:ring-4 focus:ring-sky-100 outline-none"
+                                                    />
+                                                    <div className="absolute w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                                                </div>
+                                                <span className="text-slate-800 font-medium text-lg">
+                                                    1. ทุกครั้ง
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        <div
+                                            className={`transition-all duration-300 rounded-xl border p-4 ${
+                                                part1Data.visitDoctor ===
+                                                "ไม่ทุกครั้ง"
+                                                    ? "bg-sky-50 border-sky-200 shadow-sm"
+                                                    : "bg-white border-slate-200 hover:border-sky-200"
+                                            }`}
+                                        >
+                                            <label className="flex items-center gap-3 cursor-pointer">
+                                                <div className="relative flex items-center justify-center">
+                                                    <input
+                                                        type="radio"
+                                                        name="visitDoctor"
+                                                        value="ไม่ทุกครั้ง"
+                                                        checked={
+                                                            part1Data.visitDoctor ===
+                                                            "ไม่ทุกครั้ง"
+                                                        }
+                                                        onChange={(e) =>
+                                                            handlePart1Change(
+                                                                "visitDoctor",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        className="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-sky-500 checked:bg-sky-500 transition-all focus:ring-4 focus:ring-sky-100 outline-none"
+                                                    />
+                                                    <div className="absolute w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
+                                                </div>
+                                                <span className="text-slate-800 font-medium text-lg">
                                                     2. ไม่ทุกครั้ง เพราะ
                                                 </span>
                                             </label>
 
                                             {part1Data.visitDoctor ===
                                                 "ไม่ทุกครั้ง" && (
-                                                <div className="ml-8 animate-in fade-in slide-in-from-top-2">
-                                                    <textarea
+                                                <div className="mt-4 ml-8 animate-in fade-in slide-in-from-top-2">
+                                                    <TextInput
+                                                        type="textarea"
                                                         value={
                                                             part1Data.notVisitReason
                                                         }
-                                                        onChange={(e) =>
+                                                        onChange={(v) =>
                                                             handlePart1Change(
                                                                 "notVisitReason",
-                                                                e.target.value
+                                                                v
                                                             )
                                                         }
-                                                        className="w-full p-3 rounded-lg border border-slate-300 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-900 placeholder-slate-400"
                                                         placeholder="ระบุสาเหตุ..."
                                                         rows={3}
                                                     />
@@ -641,30 +649,29 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* Footer */}
-                                <div className="pt-8 flex justify-end gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            (window.location.href =
-                                                "/dashboard")
-                                        }
-                                        className="px-8 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold transition-all shadow-sm"
-                                    >
-                                        ยกเลิก
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleNext}
-                                        className="px-8 py-3 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
-                                    >
-                                        ถัดไป
-                                        <ChevronRight size={20} />
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            {/* Footer */}
+                            <div className="pt-8 flex justify-end gap-4 border-t border-slate-100 mt-8">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        (window.location.href = "/dashboard")
+                                    }
+                                    className="px-8 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold transition-all shadow-sm"
+                                >
+                                    ยกเลิก
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleNext}
+                                    className="px-8 py-3 bg-sky-600 text-white rounded-xl hover:bg-sky-700 font-semibold shadow-lg hover:shadow-sky-200/50 transition-all flex items-center gap-2"
+                                >
+                                    ถัดไป
+                                    <ChevronRight size={20} />
+                                </button>
+                            </div>
+                        </FormSection>
                     </div>
                 ) : step === 2 ? (
                     <SectionTwoForm

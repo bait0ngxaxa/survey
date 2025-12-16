@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText, Info } from "lucide-react";
 
 interface IntroductionProps {
     onStart: () => void;
@@ -7,51 +7,59 @@ interface IntroductionProps {
 export default function Introduction({ onStart }: IntroductionProps) {
     return (
         <div className="max-w-4xl mx-auto animate-in fade-in zoom-in-95 duration-500">
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                <div className="bg-linear-to-r from-blue-900 to-indigo-900 py-12 px-8 text-center relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-full bg-white/5 backdrop-blur-3xl"></div>
-                    <div className="relative z-10">
-                        <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight tracking-tight">
-                            การวิจัยเรื่อง
-                            <br />
-                            “การวิจัยและพัฒนาเครื่องมือรายงานโดยผู้ป่วย
-                            <br />
-                            <span className="text-blue-200 text-2xl md:text-3xl mt-2 block font-normal">
-                                (Patient Report Outcomes Measurement)
-                            </span>
-                        </h1>
-                        <p className="text-blue-100 text-xl font-medium">
-                            เพื่อใช้ในการพัฒนาระบบบริการแบบเน้นคุณค่าสำหรับผู้ป่วยเบาหวาน
-                        </p>
+            <div className="bg-white rounded-4xl shadow-xl shadow-sky-100/50 border border-slate-100 overflow-hidden">
+                {/* Header */}
+                <div className="bg-white py-12 px-6 sm:px-12 border-b border-slate-100 text-center">
+                    <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <FileText className="w-8 h-8 text-sky-600" />
                     </div>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 mb-4 leading-tight">
+                        การวิจัยเรื่อง
+                        <br />
+                        <span className="text-sky-600 block mt-2">
+                            “การวิจัยและพัฒนาเครื่องมือรายงานโดยผู้ป่วย”
+                        </span>
+                    </h1>
+                    <p className="text-slate-500 text-lg sm:text-xl font-medium mt-4">
+                        (Patient Report Outcomes Measurement)
+                    </p>
+                    <p className="text-slate-600 mt-4 max-w-2xl mx-auto">
+                        เพื่อใช้ในการพัฒนาระบบบริการแบบเน้นคุณค่าสำหรับผู้ป่วยเบาหวาน
+                    </p>
                 </div>
 
-                <div className="p-8 md:p-12 space-y-8 text-center">
+                {/* Content */}
+                <div className="p-8 sm:p-12 space-y-8">
                     <div className="space-y-6 max-w-2xl mx-auto">
-                        <p className="text-gray-600 text-lg leading-relaxed">
-                            ข้อมูลที่ได้จากการศึกษาครั้งนี้จะเป็นประโยชน์ในการพัฒนาเครื่องมือสำหรับการ
-                            รายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
-                        </p>
+                        <div className="flex gap-4 items-start p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <Info className="w-6 h-6 text-sky-600 shrink-0 mt-1" />
+                            <div className="space-y-2">
+                                <p className="text-slate-700 leading-relaxed font-medium">
+                                    ข้อมูลที่ได้จากการศึกษาครั้งนี้จะเป็นประโยชน์ในการพัฒนาเครื่องมือสำหรับการ
+                                    รายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
+                                </p>
+                            </div>
+                        </div>
 
-                        <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                            <p className="text-blue-800 font-medium text-lg">
-                                โดยข้อมูลทั้งหมดจะปิดเป็นความลับ
+                        <div className="bg-sky-50 p-6 rounded-2xl border border-sky-100 text-center">
+                            <p className="text-sky-800 font-medium text-lg">
+                                ข้อมูลทั้งหมดจะปิดเป็นความลับ
                                 <br />
                                 และใช้เฉพาะสำหรับการวิจัยครั้งนี้เท่านั้น
                             </p>
                         </div>
 
-                        <p className="text-gray-600 text-lg">
+                        <p className="text-slate-500 text-center leading-relaxed">
                             ผู้วิจัยขอขอบพระคุณ ทุกท่านเป็นอย่างสูง
                             <br />
                             ที่ท่านกรุณาสละเวลาร่วมตอบแบบสอบถามในครั้งนี้
                         </p>
                     </div>
 
-                    <div className="pt-8">
+                    <div className="pt-4 flex justify-center">
                         <button
                             onClick={onStart}
-                            className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-linear-to-r from-blue-600 to-indigo-600 rounded-full hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg hover:shadow-xl hover:-translate-y-1 active:translate-y-0"
+                            className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-sky-600 rounded-2xl hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-200/50 hover:-translate-y-0.5 active:translate-y-0"
                         >
                             <span>เริ่มทำแบบสอบถาม</span>
                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

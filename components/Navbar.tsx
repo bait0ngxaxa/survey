@@ -6,29 +6,39 @@ export default function Navbar() {
     const { user } = useUser();
 
     return (
-        <nav className="absolute top-0 right-0 p-4 z-50">
+        <nav className="absolute top-0 right-0 w-full p-6 z-50 flex justify-end pointer-events-none">
             <SignedIn>
-                <div className="flex items-center gap-3 bg-white/80 backdrop-blur-md px-1 py-1 pr-4 rounded-full shadow-sm border border-gray-100 transition-all hover:bg-white hover:shadow-md">
+                <div className="pointer-events-auto flex items-center gap-4 bg-white/70 backdrop-blur-xl px-2 py-2 pr-5 rounded-full shadow-sm border border-white/50 transition-all hover:bg-white/90 hover:shadow-md hover:scale-[1.02]">
                     {/* Admin Link */}
                     {user?.publicMetadata?.role === "admin" && (
                         <a
                             href="/admin"
-                            className="bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-blue-700 transition-colors mr-2"
+                            className="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20"
                         >
-                            Admin
+                            Admin Board
                         </a>
                     )}
 
-                    <span className="text-gray-700 font-medium text-sm pl-2">
-                        {user?.fullName}
-                    </span>
-                    <UserButton
-                        appearance={{
-                            elements: {
-                                avatarBox: "w-8 h-8",
-                            },
-                        }}
-                    />
+                    <div className="flex flex-col text-right mr-2 hidden sm:block">
+                        <span className="text-slate-900 font-semibold text-sm leading-none">
+                            {user?.firstName}
+                        </span>
+                        <span className="text-slate-500 text-[10px] uppercase tracking-wider font-medium">
+                            {user?.publicMetadata?.role === "admin"
+                                ? "Administrator"
+                                : "User"}
+                        </span>
+                    </div>
+
+                    <div className="ring-2 ring-white rounded-full shadow-sm">
+                        <UserButton
+                            appearance={{
+                                elements: {
+                                    avatarBox: "w-9 h-9",
+                                },
+                            }}
+                        />
+                    </div>
                 </div>
             </SignedIn>
         </nav>

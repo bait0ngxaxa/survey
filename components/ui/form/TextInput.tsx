@@ -28,10 +28,10 @@ export default function TextInput({
     prefix,
 }: TextInputProps) {
     const baseInputClass =
-        "border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-slate-900";
+        "border border-slate-200 rounded-xl p-3 focus:ring-4 focus:ring-sky-100 focus:border-sky-500 outline-none transition-all duration-300 text-slate-800 placeholder-slate-400 bg-white hover:border-sky-200";
 
     const inlineInputClass =
-        "border border-slate-300 rounded p-2 text-center text-slate-900";
+        "border border-slate-200 rounded-lg p-2 text-center text-slate-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-500 outline-none transition-all duration-300 bg-white hover:border-sky-200";
 
     const inputClass = inline
         ? `${inlineInputClass} w-24 ${inputClassName}`

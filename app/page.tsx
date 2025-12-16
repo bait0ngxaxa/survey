@@ -3,92 +3,104 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import SuccessModal from "@/components/SuccessModal";
+import { ArrowRight, ShieldCheck, Activity, Award } from "lucide-react";
 
 export default function Home() {
     return (
-        <div className="flex flex-col min-h-screen relative overflow-hidden bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
-            {/* Background Decorations */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-blue-100/40 blur-3xl" />
-                <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-indigo-100/40 blur-3xl animate-pulse delay-1000" />
-                <div className="absolute -bottom-[10%] left-[20%] w-[60%] h-[40%] rounded-full bg-slate-200/40 blur-3xl" />
-            </div>
-
+        <div className="flex flex-col min-h-screen bg-white selection:bg-sky-100 selection:text-sky-900 font-sans">
             <Suspense fallback={null}>
                 <SuccessModal />
             </Suspense>
 
-            {/* Hero Section */}
-            <main className="grow flex flex-col items-center justify-center p-6 text-center relative z-10">
-                <div className="max-w-4xl w-full bg-white/70 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-blue-900/10 p-8 md:p-16 border border-white/60 animate-in fade-in zoom-in-95 duration-700">
-                    <div className="mb-10 flex justify-center">
+            {/* Abstract Background Elements - Lighter/Cleaner Blue Tones */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-linear-to-b from-sky-50/60 to-white rounded-full blur-3xl opacity-70" />
+                <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+            </div>
+
+            {/* Header Spacer (Navbar is absolute) - Reduced height */}
+            <div className="h-10" />
+
+            <main className="relative z-10 flex flex-col items-center justify-start grow px-6 pb-10 pt-4 md:pt-10 text-center">
+                {/* Single Hero Section */}
+                <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8 animate-in slide-in-from-bottom-5 fade-in duration-1000">
+                    {/* Logo */}
+                    <div className="relative w-48 h-48 md:w-64 md:h-64 mb-4 drop-shadow-xl">
+                        <div className="absolute inset-0 bg-sky-100/50 blur-3xl rounded-full scale-110" />
                         <Image
-                            src="/logo_hhi.jpg"
+                            src="/logo_h.png"
                             alt="HHI Logo"
-                            width={180}
-                            height={180}
+                            fill
                             className="object-contain"
                             priority
                         />
                     </div>
 
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-8 leading-tight tracking-tight">
-                        การวิจัยและพัฒนาเครื่องมือ
-                        <span className="block text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600 mt-2 pb-2">
-                            รายงานโดยผู้ป่วย
-                        </span>
-                        <span className="text-xl md:text-2xl font-medium text-slate-500 block mt-2">
-                            (Patient Report Outcomes Measurement)
-                            <br className="hidden md:block" />
-                            เพื่อใช้ในการพัฒนาระบบบริการแบบเน้นคุณค่าสำหรับผู้ป่วยเบาหวาน
-                        </span>
-                    </h1>
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-100 shadow-sm text-sky-700 text-sm font-semibold tracking-wide uppercase">
+                        <Award className="w-4 h-4 text-sky-500" />
+                        Patient Reported Outcomes Measurement
+                    </div>
 
-                    <SignedIn>
-                        <div className="flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                    {/* Text Content */}
+                    <div className="space-y-6 max-w-3xl">
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-800 leading-[1.1]">
+                            การวิจัยและพัฒนา
+                            <span className="block mt-2 text-transparent bg-clip-text bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500">
+                                เครื่องมือ PROMs
+                            </span>
+                        </h1>
+
+                        <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto">
+                            ระบบรวบรวมข้อมูลผลลัพธ์ที่รายงานโดยผู้ป่วย <br />
+                            (Patient Reported Outcomes Measurement)
+                            เพื่อยกระดับการบริการ <br />
+                            และคุณภาพชีวิตสำหรับผู้ป่วยเบาหวาน
+                        </p>
+                    </div>
+
+                    {/* CTAs */}
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full pt-4">
+                        <SignedIn>
                             <Link
                                 href="/dashboard"
-                                className="group relative inline-flex items-center justify-center px-10 py-4 text-lg font-semibold text-white transition-all duration-300 bg-linear-to-r from-blue-600 to-indigo-600 rounded-full hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-1 active:translate-y-0 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+                                className="group relative inline-flex items-center justify-center min-w-[200px] px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-sky-600 rounded-full hover:bg-sky-500 hover:shadow-xl hover:shadow-sky-500/30 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-sky-200"
                             >
-                                <span className="relative z-10">
-                                    เริ่มทำแบบสอบถาม
-                                </span>
-                                <div className="absolute inset-0 h-full w-full rounded-full bg-linear-to-r from-blue-400 to-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                <svg
-                                    className="relative z-10 w-5 h-5 ml-2 -mr-1 transition-transform duration-300 group-hover:translate-x-1"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
+                                เริ่มทำแบบสอบถาม
+                                <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                             </Link>
-                        </div>
-                    </SignedIn>
+                        </SignedIn>
 
-                    <SignedOut>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                        <SignedOut>
                             <SignInButton forceRedirectUrl="/?loggedIn=true">
-                                <button className="w-full sm:w-auto px-10 py-3.5 text-lg font-semibold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-full hover:shadow-xl hover:shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-300 active:scale-95">
-                                    เข้าสู่ระบบ
+                                <button className="group relative inline-flex items-center justify-center min-w-[200px] px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-linear-to-r from-sky-500 to-blue-500 rounded-full hover:shadow-xl hover:shadow-blue-400/30 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-sky-100">
+                                    เข้าสู่ระบบเพื่อใช้งาน
+                                    <ArrowRight className="ml-2 w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </SignInButton>
+                        </SignedOut>
+                    </div>
+
+                    {/* Trust Indicators */}
+                    <div className="pt-12 flex items-center justify-center gap-8 text-slate-300 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest">
+                            <ShieldCheck className="w-5 h-5 text-sky-400" />
+                            Secure Data
                         </div>
-                    </SignedOut>
+                        <div className="w-1 h-1 bg-slate-200 rounded-full" />
+                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest">
+                            <Activity className="w-5 h-5 text-blue-400" />
+                            Clinical Standard
+                        </div>
+                    </div>
                 </div>
             </main>
 
-            {/* Footer */}
             <footer className="py-8 text-center text-slate-400 text-sm relative z-10">
                 <p>
                     © {new Date().getFullYear()}{" "}
-                    สถาบันพัฒนาระบบบริการสุขภาพองค์รวม
+                    สถาบันพัฒนาระบบบริการสุขภาพองค์รวม (HHI)
                 </p>
-                <p className="mt-1 opacity-60">สงวนลิขสิทธิ์</p>
             </footer>
         </div>
     );
