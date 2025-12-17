@@ -23,7 +23,7 @@ export default function Navbar() {
                         <span className="text-slate-900 font-semibold text-sm leading-none">
                             {user?.firstName}
                         </span>
-                        <span className="text-slate-500 text-[10px] uppercase tracking-wider font-medium">
+                        <span className="text-slate-500 text-[10px] uppercase tracking-wider font-medium ml-2">
                             {user?.publicMetadata?.role === "admin"
                                 ? "Administrator"
                                 : "User"}

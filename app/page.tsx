@@ -1,17 +1,11 @@
-import { Suspense } from "react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import SuccessModal from "@/components/SuccessModal";
-import { ArrowRight, ShieldCheck, Activity, Award } from "lucide-react";
+import { ArrowRight, Award } from "lucide-react";
 
 export default function Home() {
     return (
         <div className="flex flex-col min-h-screen bg-white selection:bg-sky-100 selection:text-sky-900 font-sans">
-            <Suspense fallback={null}>
-                <SuccessModal />
-            </Suspense>
-
             {/* Abstract Background Elements - Lighter/Cleaner Blue Tones */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-linear-to-b from-sky-50/60 to-white rounded-full blur-3xl opacity-70" />
@@ -44,7 +38,7 @@ export default function Home() {
 
                     {/* Text Content */}
                     <div className="space-y-6 max-w-3xl">
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-800 leading-[1.1]">
+                        <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight text-slate-800 leading-[1.1]">
                             การวิจัยและพัฒนา
                             <span className="block mt-2 text-transparent bg-clip-text bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500">
                                 เครื่องมือ PROMs
@@ -72,26 +66,13 @@ export default function Home() {
                         </SignedIn>
 
                         <SignedOut>
-                            <SignInButton forceRedirectUrl="/?loggedIn=true">
+                            <SignInButton forceRedirectUrl="/dashboard?loggedIn=true">
                                 <button className="group relative inline-flex items-center justify-center min-w-[200px] px-8 py-4 text-lg font-bold text-white transition-all duration-300 bg-linear-to-r from-sky-500 to-blue-500 rounded-full hover:shadow-xl hover:shadow-blue-400/30 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-sky-100">
-                                    เข้าสู่ระบบเพื่อใช้งาน
+                                    เข้าสู่ระบบ
                                     <ArrowRight className="ml-2 w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </SignInButton>
                         </SignedOut>
-                    </div>
-
-                    {/* Trust Indicators */}
-                    <div className="pt-12 flex items-center justify-center gap-8 text-slate-300 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest">
-                            <ShieldCheck className="w-5 h-5 text-sky-400" />
-                            Secure Data
-                        </div>
-                        <div className="w-1 h-1 bg-slate-200 rounded-full" />
-                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest">
-                            <Activity className="w-5 h-5 text-blue-400" />
-                            Clinical Standard
-                        </div>
                     </div>
                 </div>
             </main>
@@ -99,7 +80,7 @@ export default function Home() {
             <footer className="py-8 text-center text-slate-400 text-sm relative z-10">
                 <p>
                     © {new Date().getFullYear()}{" "}
-                    สถาบันพัฒนาระบบบริการสุขภาพองค์รวม (HHI)
+                    สถาบันพัฒนาระบบบริการสุขภาพองค์รวม
                 </p>
             </footer>
         </div>

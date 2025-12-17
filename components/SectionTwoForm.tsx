@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import AlertModal from "@/components/AlertModal";
+import { useAlert, useFormField } from "@/hooks";
 import {
     RadioGroup,
     TextInput,
@@ -45,12 +45,14 @@ export default function SectionTwoForm({
     onNext,
     onBack,
 }: SectionTwoFormProps) {
-    const [isAlertOpen, setIsAlertOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
+    const {
+        isOpen: isAlertOpen,
+        message: alertMessage,
+        showAlert,
+        closeAlert,
+    } = useAlert();
 
-    const handleChange = (field: keyof SectionTwoData, value: unknown) => {
-        onChange({ ...formData, [field]: value });
-    };
+    const { handleChange } = useFormField(formData, onChange);
 
     const handleScreeningChange = (field: string, value: string) => {
         onChange({
@@ -62,8 +64,7 @@ export default function SectionTwoForm({
     const handleNext = () => {
         const validation = validateSectionTwo(formData);
         if (!validation.isValid) {
-            setAlertMessage(validation.errors[0]);
-            setIsAlertOpen(true);
+            showAlert(validation.errors[0]);
             return;
         }
         onNext();
@@ -73,7 +74,7 @@ export default function SectionTwoForm({
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
             <AlertModal
                 isOpen={isAlertOpen}
-                onClose={() => setIsAlertOpen(false)}
+                onClose={closeAlert}
                 message={alertMessage}
             />
 

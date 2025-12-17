@@ -2,9 +2,10 @@ import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import SuccessModal from "@/components/SuccessModal";
+import LoginSuccessModal from "@/components/LoginSuccessModal";
 import SubmissionHistory from "@/components/SubmissionHistory";
 import { regions } from "@/config/surveyData";
+import { getRegionColorStyles } from "@/config/regionStyles";
 import { getUserSubmissions } from "@/lib/actions/survey";
 import { MapPin, ArrowRight } from "lucide-react";
 
@@ -46,66 +47,14 @@ export default async function DashboardPage() {
 
             <div className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <Suspense fallback={null}>
-                    <SuccessModal />
+                    <LoginSuccessModal />
                 </Suspense>
 
                 <DashboardHeader />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
                     {regions.map((region, index) => {
-                        // Define explicit styles for each color to prevent Tailwind purging
-                        // and ensure contrast correctness
-                        interface ColorStyleConfig {
-                            border: string;
-                            shadow: string;
-                            blob: string;
-                            iconBg: string;
-                            iconText: string;
-                            iconGlow: string;
-                            button: string;
-                        }
-                        const colorStyles: Record<string, ColorStyleConfig> = {
-                            "bg-blue-500": {
-                                border: "group-hover:to-blue-400 group-hover:from-blue-200",
-                                shadow: "hover:shadow-blue-500/20",
-                                blob: "bg-blue-50",
-                                iconBg: "bg-blue-50 group-hover:bg-blue-100",
-                                iconText: "text-blue-600",
-                                iconGlow: "bg-blue-200/30",
-                                button: "group-hover:bg-blue-600",
-                            },
-                            "bg-teal-500": {
-                                border: "group-hover:to-teal-400 group-hover:from-teal-200",
-                                shadow: "hover:shadow-teal-500/20",
-                                blob: "bg-teal-50",
-                                iconBg: "bg-teal-50 group-hover:bg-teal-100",
-                                iconText: "text-teal-600",
-                                iconGlow: "bg-teal-200/30",
-                                button: "group-hover:bg-teal-600",
-                            },
-                            "bg-orange-500": {
-                                border: "group-hover:to-orange-400 group-hover:from-orange-200",
-                                shadow: "hover:shadow-orange-500/20",
-                                blob: "bg-orange-50",
-                                iconBg: "bg-orange-50 group-hover:bg-orange-100",
-                                iconText: "text-orange-600",
-                                iconGlow: "bg-orange-200/30",
-                                button: "group-hover:bg-orange-600",
-                            },
-                            "bg-purple-500": {
-                                border: "group-hover:to-purple-400 group-hover:from-purple-200",
-                                shadow: "hover:shadow-purple-500/20",
-                                blob: "bg-purple-50",
-                                iconBg: "bg-purple-50 group-hover:bg-purple-100",
-                                iconText: "text-purple-600",
-                                iconGlow: "bg-purple-200/30",
-                                button: "group-hover:bg-purple-600",
-                            },
-                        };
-
-                        const styles =
-                            colorStyles[region.color] ||
-                            colorStyles["bg-blue-500"];
+                        const styles = getRegionColorStyles(region.color);
 
                         return (
                             <Link
