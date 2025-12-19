@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Eye, X, Calendar, MapPin } from "lucide-react";
+import { Search, Eye, X, Calendar, MapPin, User } from "lucide-react";
 import {
     getStaffUsers,
     getUserSubmissionsList,
@@ -76,22 +76,21 @@ export default function AdminUsersPage() {
         setUserSubmissions([]);
     };
 
-    const formatDate = (date: Date | null) => {
+    const formatDate = (date: Date | null, includeTime = false) => {
         if (!date) return "-";
+        if (includeTime) {
+            return new Date(date).toLocaleString("th-TH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+        }
         return new Date(date).toLocaleDateString("th-TH", {
             year: "numeric",
             month: "short",
             day: "numeric",
-        });
-    };
-
-    const formatDateTime = (date: Date) => {
-        return new Date(date).toLocaleString("th-TH", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
         });
     };
 
@@ -113,8 +112,9 @@ export default function AdminUsersPage() {
     const activeUsers = users.filter((u) => u.submissionCount > 0).length;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-4 py-8">
+        // Removed min-h-screen bg-gradient to allow layout background to show
+        <div className="animate-in slide-in-from-bottom-5 fade-in duration-700">
+            <div className="container mx-auto pb-8">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
@@ -126,41 +126,47 @@ export default function AdminUsersPage() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div className="bg-white rounded-xl shadow-md p-5 border border-slate-100">
-                        <div className="flex items-center gap-3">
-                            <div className="p-3 bg-blue-100 rounded-lg"></div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm p-6 border border-sky-100 hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-4">
+                            <div className="p-4 bg-sky-100 rounded-2xl text-sky-600">
+                                <User size={24} />
+                            </div>
                             <div>
-                                <p className="text-sm text-slate-500">
+                                <p className="text-sm text-slate-500 font-medium">
                                     ผู้ใช้ทั้งหมด
                                 </p>
-                                <p className="text-2xl font-bold text-slate-800">
+                                <p className="text-3xl font-bold text-slate-800">
                                     {users.length}
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl shadow-md p-5 border border-slate-100">
-                        <div className="flex items-center gap-3">
-                            <div className="p-3 bg-green-100 rounded-lg"></div>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm p-6 border border-sky-100 hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-4">
+                            <div className="p-4 bg-teal-100 rounded-2xl text-teal-600">
+                                <Eye size={24} />
+                            </div>
                             <div>
-                                <p className="text-sm text-slate-500">
+                                <p className="text-sm text-slate-500 font-medium">
                                     ผู้ใช้ที่กรอกข้อมูล
                                 </p>
-                                <p className="text-2xl font-bold text-slate-800">
+                                <p className="text-3xl font-bold text-slate-800">
                                     {activeUsers}
                                 </p>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl shadow-md p-5 border border-slate-100">
-                        <div className="flex items-center gap-3">
-                            <div className="p-3 bg-purple-100 rounded-lg"></div>
+                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm p-6 border border-sky-100 hover:shadow-md transition-shadow">
+                        <div className="flex items-center gap-4">
+                            <div className="p-4 bg-indigo-100 rounded-2xl text-indigo-600">
+                                <Calendar size={24} />
+                            </div>
                             <div>
-                                <p className="text-sm text-slate-500">
+                                <p className="text-sm text-slate-500 font-medium">
                                     Submissions ทั้งหมด
                                 </p>
-                                <p className="text-2xl font-bold text-slate-800">
+                                <p className="text-3xl font-bold text-slate-800">
                                     {totalSubmissions}
                                 </p>
                             </div>
@@ -169,7 +175,7 @@ export default function AdminUsersPage() {
                 </div>
 
                 {/* Search */}
-                <div className="bg-white rounded-xl shadow-md p-4 mb-6 border border-slate-100">
+                <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-sm p-4 mb-8 border border-sky-100">
                     <div className="flex gap-3">
                         <div className="relative flex-1">
                             <Search
@@ -182,12 +188,12 @@ export default function AdminUsersPage() {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={handleKeyPress}
-                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent bg-white/80"
                             />
                         </div>
                         <button
                             onClick={handleSearch}
-                            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            className="px-6 py-2.5 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors font-medium shadow-lg shadow-sky-600/20"
                         >
                             ค้นหา
                         </button>
@@ -195,7 +201,7 @@ export default function AdminUsersPage() {
                 </div>
 
                 {/* Users Table */}
-                <div className="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden">
+                <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                     {loading ? (
                         <div className="p-8 text-center">
                             <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
@@ -208,7 +214,7 @@ export default function AdminUsersPage() {
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-slate-50 border-b border-slate-200">
+                                <thead className="bg-sky-50/50 border-b border-sky-100">
                                     <tr>
                                         <th className="text-left py-4 px-6 font-semibold text-slate-700">
                                             ผู้ใช้
@@ -421,8 +427,9 @@ export default function AdminUsersPage() {
                                                             <Calendar
                                                                 size={14}
                                                             />
-                                                            {formatDateTime(
-                                                                sub.createdAt
+                                                            {formatDate(
+                                                                sub.createdAt,
+                                                                true
                                                             )}
                                                         </span>
                                                     </div>

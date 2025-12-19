@@ -38,6 +38,14 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
         return map[value] || value || "";
     };
 
+    const formatBirthDateThai = (dateStr: string | undefined) => {
+        if (!dateStr) return "";
+        const [year, month, day] = dateStr.split("-");
+        if (!year || !month || !day) return dateStr;
+        const buddhistYear = parseInt(year) + 543;
+        return `${day}/${month}/${buddhistYear}`;
+    };
+
     const handleExport = async () => {
         try {
             setLoading(true);
@@ -86,7 +94,7 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     // Demographics
                     เพศ: sec2.gender || patient?.gender || "",
                     อายุ: sec2.age || "",
-                    วันเกิด: sec2.birthDate || "",
+                    วันเกิด: formatBirthDateThai(sec2.birthDate),
                     การศึกษา:
                         (sec2.education === "อื่น ๆ" ||
                             sec2.education === "สูงกว่าปริญญาตรี") &&
@@ -201,10 +209,9 @@ export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                         screenings.hba1c === "อื่น ๆ" && screenings.hba1cOther
                             ? `อื่น ๆ: ${screenings.hba1cOther}`
                             : screenings.hba1c || "",
-                    ตรวจอื่นๆ:
-                        screenings.other && screenings.otherText
-                            ? `${screenings.other}: ${screenings.otherText}`
-                            : screenings.other || "",
+                    ตรวจอื่นๆ: screenings.otherText
+                        ? screenings.otherText
+                        : screenings.other || "",
                 };
             });
 

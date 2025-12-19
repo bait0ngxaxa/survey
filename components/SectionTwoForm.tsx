@@ -8,7 +8,9 @@ import {
     CheckboxGroup,
     FormSection,
     FormNavigation,
+    ThaiDatePicker,
 } from "@/components/ui/form";
+
 import { validateSectionTwo } from "@/lib/validation";
 import {
     GENDER_OPTIONS,
@@ -106,16 +108,12 @@ export default function SectionTwoForm({
                             inline
                             suffix="ปี"
                         />
-                        <span className="text-slate-900">
+                        <span className="text-slate-900 w-full sm:w-auto">
                             หรือ วัน/เดือน/ปี พ.ศ. เกิด
                         </span>
-                        <input
-                            type="date"
+                        <ThaiDatePicker
                             value={formData.birthDate}
-                            onChange={(e) =>
-                                handleChange("birthDate", e.target.value)
-                            }
-                            className="border rounded p-2 text-slate-900 border-slate-300"
+                            onChange={(v) => handleChange("birthDate", v)}
                         />
                     </div>
                 </div>

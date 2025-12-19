@@ -13,9 +13,10 @@ async function DashboardHeader() {
     return (
         <div className="mb-12 text-center max-w-4xl mx-auto animate-in slide-in-from-bottom-5 fade-in duration-700">
             <h1 className="text-3xl md:text-5xl font-bold text-slate-800 mb-6 leading-tight">
-                ยินดีต้อนรับสู่ระบบแบบสอบถาม
+                ยินดีต้อนรับสู่ระบบ <br />
+                แบบสอบถาม PROMs
                 <span className="block text-xl md:text-3xl font-semibold text-sky-600 mt-2">
-                    การรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
+                    เครื่องมือการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
                 </span>
             </h1>
             <p className="text-lg text-slate-500 bg-white/80 inline-block py-2 px-6 rounded-full border border-sky-100 shadow-sm backdrop-blur-sm">
@@ -42,7 +43,6 @@ export default async function DashboardPage() {
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute top-[-10%] left-[20%] w-[800px] h-[800px] bg-sky-50/60 rounded-full blur-3xl opacity-70" />
                 <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-3xl opacity-60" />
-                <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
             </div>
 
             <div className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

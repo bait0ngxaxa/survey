@@ -9,7 +9,6 @@ export default function Home() {
             {/* Abstract Background Elements - Lighter/Cleaner Blue Tones */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-linear-to-b from-sky-50/60 to-white rounded-full blur-3xl opacity-70" />
-                <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
             </div>
 
             {/* Header Spacer (Navbar is absolute) - Reduced height */}
@@ -19,7 +18,7 @@ export default function Home() {
                 {/* Single Hero Section */}
                 <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8 animate-in slide-in-from-bottom-5 fade-in duration-1000">
                     {/* Logo */}
-                    <div className="relative w-48 h-48 md:w-64 md:h-64 mb-4 drop-shadow-xl">
+                    <div className="relative w-56 h-56 md:w-72 md:h-72 mb-4 drop-shadow-xl">
                         <div className="absolute inset-0 bg-sky-100/50 blur-3xl rounded-full scale-110" />
                         <Image
                             src="/logo_h.png"
