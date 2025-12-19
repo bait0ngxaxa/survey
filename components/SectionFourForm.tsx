@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
 import AlertModal from "@/components/AlertModal";
+import ConfirmSubmitModal from "@/components/ConfirmSubmitModal";
 import { QuestionSlider, FormNavigation } from "@/components/ui/form";
 import {
-    Part4Section,
-    centralGroups,
-    centralUISteps,
-    centralNegativeQuestions,
-} from "@/config/part4Data";
+    useAlert,
+    useRecommendations,
+    useAsyncSubmit,
+    useConfirmModal,
+} from "@/hooks";
+import { Part4Section, centralUISteps } from "@/config/part4Data";
 import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
 
 interface SectionFourFormProps {
@@ -39,12 +40,28 @@ export default function SectionFourForm({
     onAdditionalInfoChange,
     isSubmitting: isSubmittingProp = false,
 }: SectionFourFormProps) {
-    const [isAlertOpen, setIsAlertOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const {
+        isOpen: isAlertOpen,
+        message: alertMessage,
+        showAlert,
+        closeAlert,
+    } = useAlert();
+    const {
+        isOpen: showConfirmModal,
+        open: openConfirmModal,
+        close: closeConfirmModal,
+    } = useConfirmModal();
     const [currentStep, setCurrentStep] = useState(0);
 
-    const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
+    const { isSubmitting: localIsSubmitting, execute: executeSubmit } =
+        useAsyncSubmit({
+            onError: (error) =>
+                showAlert(
+                    "เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง (" +
+                        error.message +
+                        ")"
+                ),
+        });
 
     const isSubmitting = isSubmittingProp || localIsSubmitting;
 
@@ -63,17 +80,14 @@ export default function SectionFourForm({
         }
     };
 
-    const getGroupAverage = (questionIds: number[]) => {
-        if (questionIds.length === 0) return 0;
-        const sum = questionIds.reduce((acc, id) => {
-            let score = answers[id] || 0;
-            if (centralNegativeQuestions.includes(id) && score > 0) {
-                score = 7 - score;
-            }
-            return acc + score;
-        }, 0);
-        return Math.round(sum / questionIds.length);
-    };
+    const { getGroupAverage, processGroupRecommendations } = useRecommendations(
+        {
+            answers,
+            additionalInfo,
+            recommendations,
+            onRecommendationsChange,
+        }
+    );
 
     const validateCurrentStep = () => {
         if (!isCentral) return true;
@@ -112,175 +126,6 @@ export default function SectionFourForm({
         return true;
     };
 
-    const processStepLogic = () => {
-        if (!isCentral || !onRecommendationsChange) return;
-
-        const currentUIStep = centralUISteps[currentStep];
-        const newRecs = { ...recommendations };
-
-        // Process all analytic groups contained in this UI step
-        currentUIStep.containedGroups.forEach((groupId: number) => {
-            const analyticGroup = centralGroups.find((g) => g.id === groupId);
-            if (!analyticGroup) return;
-
-            let action = "";
-            let relatedUnit = "";
-            const avgScore = getGroupAverage(analyticGroup.questions);
-
-            let criteria = "";
-            if (avgScore <= 2) criteria = "1-2";
-            else if (avgScore === 3) criteria = "3";
-            else criteria = "4-6";
-
-            // Reuse existing logic for actions/units
-            if (criteria === "4-6") {
-                action = "ติดตามตามรอบ";
-                switch (analyticGroup.id) {
-                    case 1:
-                        relatedUnit = "พยาบาล / LTC";
-                        break;
-                    case 2:
-                        relatedUnit = "นักกายภาพ/พยาบาล";
-                        break;
-                    case 3:
-                        relatedUnit = "พยาบาล/แพทย์";
-                        break;
-                    case 4:
-                        relatedUnit = "ทีม Mental Health";
-                        break;
-                    case 5:
-                        relatedUnit = "ทีม HL";
-                        break;
-                    case 6:
-                        relatedUnit = "พยาบาล / แพทย์";
-                        break;
-                    case 7:
-                        relatedUnit = "แพทย์/ Mental Health";
-                        break;
-                    case 8:
-                        relatedUnit = "แพทย์";
-                        break;
-                    case 9:
-                        relatedUnit = "ทีมบริการ";
-                        break;
-                    case 10:
-                        relatedUnit = "ทีม HL";
-                        break;
-                }
-            } else if (criteria === "3") {
-                action = "เฝ้าระวัง";
-                switch (analyticGroup.id) {
-                    case 1:
-                        relatedUnit = "พยาบาล / LTC";
-                        break;
-                    case 2:
-                        relatedUnit = "นักกายภาพ/พยาบาล";
-                        break;
-                    case 3:
-                        relatedUnit = "พยาบาล/แพทย์";
-                        break;
-                    case 4:
-                        relatedUnit = "ทีม Mental Health";
-                        break;
-                    case 5:
-                        relatedUnit = "ทีม HL";
-                        break;
-                    case 6:
-                        relatedUnit = "พยาบาล / แพทย์";
-                        break;
-                    case 7:
-                        relatedUnit = "แพทย์/ Mental Health";
-                        break;
-                    case 8:
-                        relatedUnit = "แพทย์";
-                        break;
-                    case 9:
-                        relatedUnit = "ทีมบริการ";
-                        break;
-                    case 10:
-                        relatedUnit = "ทีม HL";
-                        break;
-                }
-            } else {
-                // Criteria 1-2
-                switch (analyticGroup.id) {
-                    case 1:
-                        action = "ส่ง Manager เพื่อลงทะเบียน LTC";
-                        relatedUnit = "พยาบาล / LTC";
-                        break;
-                    case 2:
-                        const actions = [];
-                        if (additionalInfo.movementLimit)
-                            actions.push("ส่งต่อนักกายภาพ");
-                        if (additionalInfo.tired)
-                            actions.push("ส่งต่อ Manager หรือ แพทย์");
-                        if (actions.length === 0) actions.push("ถามเพิ่ม");
-                        action = actions.join(", ");
-                        relatedUnit = "นักกายภาพ/พยาบาล";
-                        break;
-                    case 3:
-                        action = "ส่ง Manager";
-                        relatedUnit = "พยาบาล/แพทย์";
-                        break;
-                    case 4:
-                        action = "Consult ทีม Mental Health";
-                        relatedUnit = "ทีม Mental Health";
-                        break;
-                    case 5:
-                        action = "ส่งเข้าร่วม Health Literacy Program";
-                        relatedUnit = "ทีม HL";
-                        break;
-                    case 6:
-                        action = "ส่งพบ Manager";
-                        relatedUnit = "พยาบาล / แพทย์";
-                        break;
-                    case 7:
-                        action =
-                            "ส่งพบ Manager หรือ ทีม Mental Health เพื่อประเมินภาวะเครียด";
-                        relatedUnit = "แพทย์/ Mental Health";
-                        break;
-                    case 8:
-                        action = "พบ Manager";
-                        relatedUnit = "แพทย์";
-                        break;
-                    case 9:
-                        action =
-                            "ถามเพิ่ม: ต้องการรู้เรื่องใดเพิ่มเติม แล้วส่ง Manager";
-                        relatedUnit = "ทีมบริการ";
-                        break;
-                    case 10:
-                        action = "ประเมินเพื่อส่งเข้า Health Literacy Program";
-                        relatedUnit = "ทีม HL";
-                        break;
-                }
-            }
-
-            newRecs[`step_${analyticGroup.id}`] = {
-                id: analyticGroup.id,
-                dimension: analyticGroup.dimension,
-                questionsLabel: analyticGroup.questionsLabel,
-                label: analyticGroup.label,
-                criteria: criteria,
-                averageScore: avgScore,
-                action: action,
-                relatedUnit: relatedUnit,
-                additionalInfo:
-                    avgScore <= 2
-                        ? analyticGroup.id === 2
-                            ? {
-                                  movementLimit: additionalInfo.movementLimit,
-                                  tired: additionalInfo.tired,
-                              }
-                            : analyticGroup.id === 9
-                            ? { topic: String(additionalInfo.q9Topic || "") }
-                            : undefined
-                        : undefined,
-            };
-        });
-
-        onRecommendationsChange(newRecs);
-    };
-
     const handleNext = () => {
         if (isCentral) {
             // Check if we are on the last question step
@@ -289,26 +134,25 @@ export default function SectionFourForm({
 
             if (isLastQuestionStep) {
                 if (!validateCurrentStep()) {
-                    setAlertMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
-                    setIsAlertOpen(true);
+                    showAlert("กรุณากรอกข้อมูลให้ครบถ้วน");
                     return;
                 }
 
-                // Process logic for the last step
-                processStepLogic();
+                const currentUIStep = centralUISteps[currentStep];
+                processGroupRecommendations(currentUIStep.containedGroups);
 
                 // Show confirmation modal
-                setShowConfirmModal(true);
+                openConfirmModal();
                 return;
             }
 
             if (!validateCurrentStep()) {
-                setAlertMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
-                setIsAlertOpen(true);
+                showAlert("กรุณากรอกข้อมูลให้ครบถ้วน");
                 return;
             }
 
-            processStepLogic();
+            const currentUIStep = centralUISteps[currentStep];
+            processGroupRecommendations(currentUIStep.containedGroups);
 
             setCurrentStep((prev) => prev + 1);
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -323,8 +167,7 @@ export default function SectionFourForm({
                 }
             }
             if (!allAnswered) {
-                setAlertMessage("กรุณากรอกข้อมูลให้ครบถ้วน");
-                setIsAlertOpen(true);
+                showAlert("กรุณากรอกข้อมูลให้ครบถ้วน");
                 return;
             }
             onSubmit();
@@ -352,24 +195,7 @@ export default function SectionFourForm({
 
     const handleConfirmSubmit = async () => {
         if (isSubmitting) return;
-
-        // Optimistically set local loading
-        setLocalIsSubmitting(true);
-
-        try {
-            await onSubmit();
-        } catch (error) {
-            console.error("Error submitting:", error);
-            // Reset local
-            setLocalIsSubmitting(false);
-
-            setAlertMessage(
-                "เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง (" +
-                    (error as Error).message +
-                    ")"
-            );
-            setIsAlertOpen(true);
-        }
+        await executeSubmit(() => onSubmit() as Promise<void>);
     };
 
     if (isCentral) {
@@ -396,58 +222,16 @@ export default function SectionFourForm({
             <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8">
                 <AlertModal
                     isOpen={isAlertOpen}
-                    onClose={() => setIsAlertOpen(false)}
+                    onClose={closeAlert}
                     message={alertMessage}
                 />
 
-                {/* Confirmation Modal */}
-                {showConfirmModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
-                        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
-                            <div className="text-center space-y-4">
-                                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    {isSubmitting ? (
-                                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                                    ) : (
-                                        <Check size={32} />
-                                    )}
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900">
-                                    {isSubmitting
-                                        ? "กำลังส่งข้อมูล..."
-                                        : "ยืนยันการส่งแบบสอบถาม?"}
-                                </h3>
-                                <p className="text-gray-500">
-                                    {isSubmitting
-                                        ? "กรุณารอสักครู่ ระบบกำลังบันทึกข้อมูลของท่าน"
-                                        : "ท่านได้ทำแบบสอบถามครบถ้วนแล้ว ต้องการส่งข้อมูลเลยหรือไม่"}
-                                </p>
-                                {!isSubmitting && (
-                                    <div className="flex gap-3 pt-4">
-                                        <button
-                                            onClick={() =>
-                                                setShowConfirmModal(false)
-                                            }
-                                            className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 font-semibold transition-colors"
-                                            disabled={isSubmitting}
-                                        >
-                                            กลับไปแก้ไข
-                                        </button>
-                                        <button
-                                            onClick={handleConfirmSubmit}
-                                            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-blue-200 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting
-                                                ? "กำลังส่ง..."
-                                                : "ยืนยันส่งข้อมูล"}
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <ConfirmSubmitModal
+                    isOpen={showConfirmModal}
+                    isSubmitting={isSubmitting}
+                    onClose={closeConfirmModal}
+                    onConfirm={handleConfirmSubmit}
+                />
 
                 <div className="bg-white rounded-3xl p-6 shadow-xl shadow-sky-100/50 border border-slate-100">
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
@@ -562,58 +346,16 @@ export default function SectionFourForm({
         <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8">
             <AlertModal
                 isOpen={isAlertOpen}
-                onClose={() => setIsAlertOpen(false)}
+                onClose={closeAlert}
                 message={alertMessage}
             />
 
-            {/* Confirmation Modal */}
-            {showConfirmModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
-                        <div className="text-center space-y-4">
-                            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                                {isSubmitting ? (
-                                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                                ) : (
-                                    <Check size={32} />
-                                )}
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900">
-                                {isSubmitting
-                                    ? "กำลังส่งข้อมูล..."
-                                    : "ยืนยันการส่งแบบสอบถาม?"}
-                            </h3>
-                            <p className="text-gray-500">
-                                {isSubmitting
-                                    ? "กรุณารอสักครู่ ระบบกำลังบันทึกข้อมูลของท่าน"
-                                    : "ท่านได้ทำแบบสอบถามครบถ้วนแล้ว ต้องการส่งข้อมูลเลยหรือไม่"}
-                            </p>
-                            {!isSubmitting && (
-                                <div className="flex gap-3 pt-4">
-                                    <button
-                                        onClick={() =>
-                                            setShowConfirmModal(false)
-                                        }
-                                        className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 font-semibold transition-colors"
-                                        disabled={isSubmitting}
-                                    >
-                                        กลับไปแก้ไข
-                                    </button>
-                                    <button
-                                        onClick={handleConfirmSubmit}
-                                        className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-blue-200 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting
-                                            ? "กำลังส่ง..."
-                                            : "ยืนยันส่งข้อมูล"}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ConfirmSubmitModal
+                isOpen={showConfirmModal}
+                isSubmitting={isSubmitting}
+                onClose={closeConfirmModal}
+                onConfirm={handleConfirmSubmit}
+            />
 
             <div className="bg-white rounded-3xl shadow-xl shadow-sky-100/50 border border-slate-100 overflow-hidden">
                 <div className="py-10 px-8 text-center bg-white border-b border-slate-100">

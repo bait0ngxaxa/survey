@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import AlertModal from "@/components/AlertModal";
+import { useAlert, useFormField } from "@/hooks";
 import {
     RadioGroup,
     TextInput,
     CheckboxGroup,
     FormSection,
     FormNavigation,
+    ThaiDatePicker,
 } from "@/components/ui/form";
+
 import { validateSectionTwo } from "@/lib/validation";
 import {
     GENDER_OPTIONS,
@@ -45,12 +47,14 @@ export default function SectionTwoForm({
     onNext,
     onBack,
 }: SectionTwoFormProps) {
-    const [isAlertOpen, setIsAlertOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
+    const {
+        isOpen: isAlertOpen,
+        message: alertMessage,
+        showAlert,
+        closeAlert,
+    } = useAlert();
 
-    const handleChange = (field: keyof SectionTwoData, value: unknown) => {
-        onChange({ ...formData, [field]: value });
-    };
+    const { handleChange } = useFormField(formData, onChange);
 
     const handleScreeningChange = (field: string, value: string) => {
         onChange({
@@ -62,8 +66,7 @@ export default function SectionTwoForm({
     const handleNext = () => {
         const validation = validateSectionTwo(formData);
         if (!validation.isValid) {
-            setAlertMessage(validation.errors[0]);
-            setIsAlertOpen(true);
+            showAlert(validation.errors[0]);
             return;
         }
         onNext();
@@ -73,7 +76,7 @@ export default function SectionTwoForm({
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
             <AlertModal
                 isOpen={isAlertOpen}
-                onClose={() => setIsAlertOpen(false)}
+                onClose={closeAlert}
                 message={alertMessage}
             />
 
@@ -105,16 +108,12 @@ export default function SectionTwoForm({
                             inline
                             suffix="ปี"
                         />
-                        <span className="text-slate-900">
+                        <span className="text-slate-900 w-full sm:w-auto">
                             หรือ วัน/เดือน/ปี พ.ศ. เกิด
                         </span>
-                        <input
-                            type="date"
+                        <ThaiDatePicker
                             value={formData.birthDate}
-                            onChange={(e) =>
-                                handleChange("birthDate", e.target.value)
-                            }
-                            className="border rounded p-2 text-slate-900 border-slate-300"
+                            onChange={(v) => handleChange("birthDate", v)}
                         />
                     </div>
                 </div>

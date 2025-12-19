@@ -2,6 +2,7 @@
 
 import { MedicalRecordData } from "@/lib/types";
 import { FormSection, TextInput, FormNavigation } from "@/components/ui/form";
+import { useFormField } from "@/hooks";
 
 interface MedicalRecordFormProps {
     formData: MedicalRecordData;
@@ -16,12 +17,9 @@ export default function MedicalRecordForm({
     onNext,
     onBack,
 }: MedicalRecordFormProps) {
-    const handleChange = (field: keyof MedicalRecordData, value: string) => {
-        onChange({ ...formData, [field]: value });
-    };
+    const { handleChange } = useFormField(formData, onChange);
 
     const handleNext = () => {
-        // Basic validation could be added here
         onNext();
     };
 

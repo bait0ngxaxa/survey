@@ -2,9 +2,10 @@ import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import SuccessModal from "@/components/SuccessModal";
+import LoginSuccessModal from "@/components/LoginSuccessModal";
 import SubmissionHistory from "@/components/SubmissionHistory";
 import { regions } from "@/config/surveyData";
+import { getRegionColorStyles } from "@/config/regionStyles";
 import { getUserSubmissions } from "@/lib/actions/survey";
 import { MapPin, ArrowRight } from "lucide-react";
 
@@ -12,9 +13,10 @@ async function DashboardHeader() {
     return (
         <div className="mb-12 text-center max-w-4xl mx-auto animate-in slide-in-from-bottom-5 fade-in duration-700">
             <h1 className="text-3xl md:text-5xl font-bold text-slate-800 mb-6 leading-tight">
-                ยินดีต้อนรับสู่ระบบแบบสอบถาม
+                ยินดีต้อนรับสู่ระบบ <br />
+                แบบสอบถาม PROMs
                 <span className="block text-xl md:text-3xl font-semibold text-sky-600 mt-2">
-                    การรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
+                    เครื่องมือการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
                 </span>
             </h1>
             <p className="text-lg text-slate-500 bg-white/80 inline-block py-2 px-6 rounded-full border border-sky-100 shadow-sm backdrop-blur-sm">
@@ -41,71 +43,18 @@ export default async function DashboardPage() {
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute top-[-10%] left-[20%] w-[800px] h-[800px] bg-sky-50/60 rounded-full blur-3xl opacity-70" />
                 <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-3xl opacity-60" />
-                <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
             </div>
 
             <div className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <Suspense fallback={null}>
-                    <SuccessModal />
+                    <LoginSuccessModal />
                 </Suspense>
 
                 <DashboardHeader />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
                     {regions.map((region, index) => {
-                        // Define explicit styles for each color to prevent Tailwind purging
-                        // and ensure contrast correctness
-                        interface ColorStyleConfig {
-                            border: string;
-                            shadow: string;
-                            blob: string;
-                            iconBg: string;
-                            iconText: string;
-                            iconGlow: string;
-                            button: string;
-                        }
-                        const colorStyles: Record<string, ColorStyleConfig> = {
-                            "bg-blue-500": {
-                                border: "group-hover:to-blue-400 group-hover:from-blue-200",
-                                shadow: "hover:shadow-blue-500/20",
-                                blob: "bg-blue-50",
-                                iconBg: "bg-blue-50 group-hover:bg-blue-100",
-                                iconText: "text-blue-600",
-                                iconGlow: "bg-blue-200/30",
-                                button: "group-hover:bg-blue-600",
-                            },
-                            "bg-teal-500": {
-                                border: "group-hover:to-teal-400 group-hover:from-teal-200",
-                                shadow: "hover:shadow-teal-500/20",
-                                blob: "bg-teal-50",
-                                iconBg: "bg-teal-50 group-hover:bg-teal-100",
-                                iconText: "text-teal-600",
-                                iconGlow: "bg-teal-200/30",
-                                button: "group-hover:bg-teal-600",
-                            },
-                            "bg-orange-500": {
-                                border: "group-hover:to-orange-400 group-hover:from-orange-200",
-                                shadow: "hover:shadow-orange-500/20",
-                                blob: "bg-orange-50",
-                                iconBg: "bg-orange-50 group-hover:bg-orange-100",
-                                iconText: "text-orange-600",
-                                iconGlow: "bg-orange-200/30",
-                                button: "group-hover:bg-orange-600",
-                            },
-                            "bg-purple-500": {
-                                border: "group-hover:to-purple-400 group-hover:from-purple-200",
-                                shadow: "hover:shadow-purple-500/20",
-                                blob: "bg-purple-50",
-                                iconBg: "bg-purple-50 group-hover:bg-purple-100",
-                                iconText: "text-purple-600",
-                                iconGlow: "bg-purple-200/30",
-                                button: "group-hover:bg-purple-600",
-                            },
-                        };
-
-                        const styles =
-                            colorStyles[region.color] ||
-                            colorStyles["bg-blue-500"];
+                        const styles = getRegionColorStyles(region.color);
 
                         return (
                             <Link

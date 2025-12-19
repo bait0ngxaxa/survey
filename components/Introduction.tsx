@@ -23,7 +23,7 @@ export default function Introduction({ onStart }: IntroductionProps) {
                     <p className="text-slate-500 text-lg sm:text-xl font-medium mt-4">
                         (Patient Report Outcomes Measurement)
                     </p>
-                    <p className="text-slate-600 mt-4 max-w-2xl mx-auto">
+                    <p className="text-slate-600 mt-4 max-w-2xl mx-auto font-medium">
                         เพื่อใช้ในการพัฒนาระบบบริการแบบเน้นคุณค่าสำหรับผู้ป่วยเบาหวาน
                     </p>
                 </div>

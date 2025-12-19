@@ -24,45 +24,67 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+        <div className="min-h-screen flex flex-col md:flex-row bg-white relative overflow-hidden font-sans selection:bg-sky-100 selection:text-sky-900">
+            {/* Background Elements - Consistent with Homepage */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[-10%] left-[0%] w-[1000px] h-[1000px] bg-sky-50/60 rounded-full blur-3xl opacity-70" />
+                <div className="absolute bottom-[-10%] right-[0%] w-[800px] h-[800px] bg-blue-50/50 rounded-full blur-3xl opacity-60" />
+            </div>
+
             {/* Sidebar */}
-            <aside className="w-full md:w-64 bg-white border-r border-gray-200 shrink-0">
-                <div className="h-16 flex items-center justify-center border-b border-gray-200 px-6">
-                    <h1 className="text-xl font-bold text-blue-600">
+            <aside className="relative z-20 w-full md:w-64 bg-white/70 backdrop-blur-xl border-r border-white/50 shadow-lg shadow-sky-100/20 shrink-0 flex flex-col">
+                <div className="h-16 flex items-center justify-center border-b border-sky-100 px-6 bg-white/50">
+                    <h1 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-sky-600 to-blue-600">
                         Admin Panel
                     </h1>
                 </div>
-                <nav className="p-4 space-y-2">
+                <nav className="p-4 space-y-2 grow">
                     <Link
                         href="/admin"
-                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-sky-50 hover:text-sky-600 rounded-xl transition-all duration-200 font-medium group"
                     >
-                        <LayoutDashboard size={20} />
-                        <span className="font-medium">Dashboard</span>
+                        <LayoutDashboard
+                            size={20}
+                            className="group-hover:scale-110 transition-transform"
+                        />
+                        <span>Dashboard</span>
                     </Link>
                     <Link
                         href="/admin/submissions"
-                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-sky-50 hover:text-sky-600 rounded-xl transition-all duration-200 font-medium group"
                     >
-                        <FileSpreadsheet size={20} />
-                        <span className="font-medium">Submissions</span>
+                        <FileSpreadsheet
+                            size={20}
+                            className="group-hover:scale-110 transition-transform"
+                        />
+                        <span>Submissions</span>
                     </Link>
                     <Link
                         href="/admin/users"
-                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-sky-50 hover:text-sky-600 rounded-xl transition-all duration-200 font-medium group"
                     >
-                        <Users size={20} />
-                        <span className="font-medium">Users</span>
+                        <Users
+                            size={20}
+                            className="group-hover:scale-110 transition-transform"
+                        />
+                        <span>Users</span>
                     </Link>
                 </nav>
-                <div className="p-4 border-t border-gray-200 mt-auto">
+                <div className="p-4 border-t border-sky-100 bg-white/50">
                     <div className="flex items-center gap-3 px-4 py-2">
-                        <UserButton />
+                        <UserButton
+                            appearance={{
+                                elements: {
+                                    avatarBox:
+                                        "w-9 h-9 border-2 border-white shadow-sm ring-2 ring-sky-100",
+                                },
+                            }}
+                        />
                         <div className="flex flex-col">
-                            <span className="text-sm font-bold text-gray-900">
+                            <span className="text-sm font-bold text-slate-800">
                                 Admin
                             </span>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-slate-500">
                                 {user?.firstName} {user?.lastName}
                             </span>
                         </div>
@@ -71,7 +93,7 @@ export default async function AdminLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-6 md:p-8 pt-16 md:pt-20 overflow-y-auto">
+            <main className="relative z-10 flex-1 p-6 md:p-8 overflow-y-auto">
                 <Suspense fallback={<Loading />}>{children}</Suspense>
             </main>
         </div>
