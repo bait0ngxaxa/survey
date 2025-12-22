@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Suspense } from "react";
-import { ChevronRight } from "lucide-react";
 import SubmitSuccessModal from "@/components/SubmitSuccessModal";
 import AlertModal from "@/components/AlertModal";
 import ConfirmExitModal from "@/components/ConfirmExitModal";
@@ -10,7 +9,12 @@ import SectionTwoForm from "./SectionTwoForm";
 import MedicalRecordForm from "./MedicalRecordForm";
 import SectionFourForm from "./SectionFourForm";
 import Introduction from "./Introduction";
-import { FormSection, TextInput, RadioGroup } from "@/components/ui/form";
+import {
+    FormSection,
+    TextInput,
+    RadioGroup,
+    FormNavigation,
+} from "@/components/ui/form";
 import { SurveyConfig } from "@/config/surveyData";
 import { submitSurvey } from "@/lib/actions/survey";
 import {
@@ -503,26 +507,15 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                 </div>
                             </div>
 
-                            {/* Footer */}
-                            <div className="pt-8 flex justify-end gap-4 border-t border-slate-100 mt-8">
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        (window.location.href = "/dashboard")
-                                    }
-                                    className="px-8 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold transition-all shadow-sm"
-                                >
-                                    ยกเลิก
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleNext}
-                                    className="px-8 py-3 bg-sky-600 text-white rounded-xl hover:bg-sky-700 font-semibold shadow-lg hover:shadow-sky-200/50 transition-all flex items-center gap-2"
-                                >
-                                    ถัดไป
-                                    <ChevronRight size={20} />
-                                </button>
-                            </div>
+                            <FormNavigation
+                                onBack={() =>
+                                    (window.location.href = "/dashboard")
+                                }
+                                onNext={handleNext}
+                                showBack={true}
+                                backLabel="ยกเลิก"
+                                nextLabel="ถัดไป"
+                            />
                         </FormSection>
                     </div>
                 ) : step === 2 ? (

@@ -6,7 +6,7 @@ export default function Navbar() {
     const { user } = useUser();
 
     return (
-        <nav className="absolute top-0 right-0 w-full p-6 z-50 flex justify-end pointer-events-none">
+        <nav className="relative sm:absolute top-0 right-0 w-full p-4 sm:p-6 z-50 flex justify-end bg-gradient-to-b from-blue-50 to-transparent sm:bg-none">
             <SignedIn>
                 <div className="pointer-events-auto flex items-center gap-4 bg-white/70 backdrop-blur-xl px-2 py-2 pr-5 rounded-full shadow-sm border border-white/50 transition-all hover:bg-white/90 hover:shadow-md hover:scale-[1.02]">
                     {/* Admin Link */}

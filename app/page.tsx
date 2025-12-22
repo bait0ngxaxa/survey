@@ -12,9 +12,9 @@ export default function Home() {
             </div>
 
             {/* Header Spacer (Navbar is absolute) - Reduced height */}
-            <div className="h-10" />
+            <div className="h-2 md:h-4" />
 
-            <main className="relative z-10 flex flex-col items-center justify-start grow px-6 pb-10 pt-4 md:pt-10 text-center">
+            <main className="relative z-10 flex flex-col items-center justify-start grow px-6 pb-10 pt-2 md:pt-4 text-center">
                 {/* Single Hero Section */}
                 <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8 animate-in slide-in-from-bottom-5 fade-in duration-1000">
                     {/* Logo */}

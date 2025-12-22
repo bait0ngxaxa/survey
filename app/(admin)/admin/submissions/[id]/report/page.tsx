@@ -1,8 +1,9 @@
 import { getSurveySubmission } from "@/lib/actions/survey";
-import { Check, ChevronLeft } from "lucide-react";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PrintButton from "@/components/PrintButton";
+import BackToSubmissionsButton from "@/components/BackToSubmissionsButton";
 import { asRawAnswers, ReportData } from "@/lib/types";
 
 export default async function SubmissionReportPage({
@@ -113,7 +114,7 @@ export default async function SubmissionReportPage({
     const renderedDimensions: Record<string, boolean> = {};
 
     return (
-        <div className="max-w-5xl mx-auto py-8 px-4 print:p-0">
+        <div className="max-w-5xl mx-auto py-8 pt-20 px-4 print:p-0">
             {/* Print Header - Hidden on Screen */}
             <div className="hidden print:block mb-6 text-center">
                 <h1 className="text-2xl font-bold">
@@ -135,14 +136,8 @@ export default async function SubmissionReportPage({
             </div>
 
             {/* Screen Header */}
-            <div className="flex items-center gap-3 mb-6 print:hidden">
-                <Link
-                    href="/admin/submissions"
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
-                >
-                    <ChevronLeft className="w-4 h-4 mr-1" />
-                    Back to Submissions
-                </Link>
+            <div className="relative z-50 flex items-center gap-3 mb-6 print:hidden">
+                <BackToSubmissionsButton />
                 <PrintButton />
             </div>
 
