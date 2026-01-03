@@ -1,5 +1,3 @@
-import { UserPublicMetadata } from "@clerk/types";
-
 declare global {
     interface CustomJwtSessionClaims {
         metadata: {

@@ -35,6 +35,7 @@ import {
     useAlert,
     useAsyncSubmit,
 } from "@/hooks";
+import { validateSectionOne } from "@/lib/validation";
 
 interface SurveyFormProps {
     config: SurveyConfig;
@@ -102,38 +103,13 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
     };
 
     const handleNext = () => {
-        if (!sectionTwoData.respondentName.trim()) {
-            showAlert("กรุณาระบุชื่อผู้ให้ข้อมูล (ตัวผู้ป่วย)");
-            return;
-        }
+        const validation = validateSectionOne({
+            part1Data,
+            respondentName: sectionTwoData.respondentName,
+        });
 
-        if (
-            part1Data.surveyMethod === "สัมภาษณ์" &&
-            !part1Data.interviewerName?.trim()
-        ) {
-            showAlert("กรุณาระบุชื่อผู้สัมภาษณ์");
-            return;
-        }
-
-        if (!part1Data.bloodSugarKnown) {
-            showAlert("กรุณาระบุว่าท่านทราบผลการตรวจระดับน้ำตาลหรือไม่");
-            return;
-        }
-        if (part1Data.bloodSugarKnown === "ทราบ") {
-            if (!part1Data.fastingLevel || !part1Data.hba1cLevel) {
-                showAlert("กรุณาระบุระดับน้ำตาลในเลือดและค่าน้ำตาลสะสม");
-                return;
-            }
-        }
-        if (!part1Data.visitDoctor) {
-            showAlert("กรุณาระบุว่าท่านมาพบแพทย์ตามนัดทุกครั้งหรือไม่");
-            return;
-        }
-        if (
-            part1Data.visitDoctor === "ไม่ทุกครั้ง" &&
-            !part1Data.notVisitReason
-        ) {
-            showAlert("กรุณาระบุสาเหตุที่ไม่ได้มาพบแพทย์ทุกครั้ง");
+        if (!validation.isValid && validation.errorMessage) {
+            showAlert(validation.errorMessage);
             return;
         }
 
