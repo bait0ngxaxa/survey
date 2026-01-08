@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { centralGroups, centralNegativeQuestions } from "@/config/part4Data";
+import { centralGroups, centralNegativeQuestions } from "@/config/part4";
 import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
 
 interface UseRecommendationsOptions {

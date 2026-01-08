@@ -1,11 +1,11 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-
 import { currentUser } from "@clerk/nextjs/server";
+import { GetSubmissionsParamsSchema } from "@/lib/schemas";
 
 // Check if user is admin
-async function checkAdmin() {
+async function checkAdmin(): Promise<void> {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
 
@@ -46,14 +46,23 @@ export async function getAdminStats() {
     };
 }
 
-export async function getSubmissions(
-    page = 1,
-    pageSize = 10,
-    regionFilter = "",
-    searchQuery = ""
-) {
+export async function getSubmissions(params?: unknown) {
     await checkAdmin();
 
+    // Validate parameters with Zod
+    const parsed = GetSubmissionsParamsSchema.safeParse(params || {});
+    if (!parsed.success) {
+        console.error("Validation error:", parsed.error.flatten());
+        return {
+            submissions: [],
+            total: 0,
+            totalPages: 0,
+            currentPage: 1,
+            error: "Invalid parameters",
+        };
+    }
+
+    const { page, pageSize, regionFilter, searchQuery } = parsed.data;
     const skip = (page - 1) * pageSize;
 
     // Build where clause

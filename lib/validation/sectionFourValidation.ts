@@ -1,5 +1,5 @@
 import { SectionFourData } from "../types";
-import { RegionConfig, RegionUIStep } from "@/config/part4Data";
+import { RegionConfig, RegionUIStep } from "@/config/part4";
 
 export interface ValidationResult {
     isValid: boolean;

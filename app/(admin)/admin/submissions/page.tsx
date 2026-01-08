@@ -30,12 +30,12 @@ export default async function SubmissionsPage({
     const currentPage = Number(params?.page) || 1;
     const regionFilter = params?.region || "";
     const searchQuery = params?.search || "";
-    const { submissions, totalPages } = await getSubmissions(
-        currentPage,
-        10,
+    const { submissions, totalPages } = await getSubmissions({
+        page: currentPage,
+        pageSize: 10,
         regionFilter,
-        searchQuery
-    );
+        searchQuery,
+    });
 
     const regions = ["", "central", "phetchabun", "satun", "lopburi"];
     const regionLabels: Record<string, string> = {

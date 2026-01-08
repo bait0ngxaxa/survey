@@ -5,306 +5,97 @@ import { FileSpreadsheet } from "lucide-react";
 import { getSubmissions } from "@/lib/actions/admin";
 import * as XLSX from "xlsx";
 import {
-    RawAnswers,
-    PatientData,
-    ReportData,
-    asRawAnswers,
-    Part1Data,
-    SectionTwoData,
-} from "@/lib/types";
+    transformToGeneralData,
+    transformToPromsData,
+    GeneralDataRow,
+    PromsDataRow,
+} from "@/lib/export-utils";
+import { PatientData } from "@/lib/types";
 
 interface ExportButtonProps {
     regionFilter?: string;
 }
 
+/**
+ * Creates an Excel workbook with two sheets from submission data
+ */
+function createWorkbook(
+    generalData: GeneralDataRow[],
+    promsData: PromsDataRow[]
+): XLSX.WorkBook {
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: ข้อมูลทั่วไป
+    const ws1 = XLSX.utils.json_to_sheet(generalData);
+    const colWidths1 = Object.keys(generalData[0] || {}).map((key) => ({
+        wch: Math.max(key.length, 15),
+    }));
+    ws1["!cols"] = colWidths1;
+    XLSX.utils.book_append_sheet(wb, ws1, "ข้อมูลทั่วไป");
+
+    // Sheet 2: สรุป 7 มิติ
+    const ws2 = XLSX.utils.json_to_sheet(promsData);
+    const colWidths2 = Object.keys(promsData[0] || {}).map((key) => ({
+        wch: Math.max(key.length, 20),
+    }));
+    ws2["!cols"] = colWidths2;
+    XLSX.utils.book_append_sheet(wb, ws2, "สรุป 7 มิติ");
+
+    return wb;
+}
+
+/**
+ * Generates filename with region suffix and current date
+ */
+function generateFilename(regionFilter: string): string {
+    const regionSuffix = regionFilter ? `_${regionFilter}` : "_all";
+    const dateStr = new Date().toISOString().split("T")[0];
+    return `survey_data${regionSuffix}_${dateStr}.xlsx`;
+}
+
 export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
 
-    const getActionText = (report: ReportData, stepId: number) => {
-        const step = report[`step_${stepId}`];
-        if (!step || !step.action) return "";
-        return `${step.label?.split("\n")[0] || `ข้อ ${stepId}`}: ${
-            step.action
-        }`;
-    };
-
-    const translateRegion = (value: string) => {
-        const map: Record<string, string> = {
-            central: "ทีมกลาง",
-            phetchabun: "เพชรบูรณ์",
-            satun: "สตูล",
-            lopburi: "ลพบุรี",
-        };
-        return map[value] || value || "";
-    };
-
-    const formatBirthDateThai = (dateStr: string | undefined) => {
-        if (!dateStr) return "";
-        const [year, month, day] = dateStr.split("-");
-        if (!year || !month || !day) return dateStr;
-        const buddhistYear = parseInt(year) + 543;
-        return `${day}/${month}/${buddhistYear}`;
-    };
-
-    const handleExport = async () => {
+    const handleExport = async (): Promise<void> => {
         try {
             setLoading(true);
-            const { submissions } = await getSubmissions(
-                1,
-                10000,
-                regionFilter
-            );
+
+            // Fetch all submissions
+            const { submissions } = await getSubmissions({
+                page: 1,
+                pageSize: 10000,
+                regionFilter,
+            });
 
             if (!submissions || submissions.length === 0) {
                 alert("ไม่พบข้อมูลสำหรับ export");
                 return;
             }
 
-            // ===== SHEET 1: ข้อมูลทั่วไป =====
-            const generalData = submissions.map((s) => {
-                const raw: RawAnswers = asRawAnswers(s.rawAnswers);
-                const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
-                const part1: Partial<Part1Data> = raw.part1 || {};
-                const patient = s.patient as PatientData | null;
-                const dateObj = new Date(s.createdAt);
-                const screenings: Partial<SectionTwoData["screenings"]> =
-                    sec2.screenings || {};
-
-                return {
-                    วันที่: dateObj.toLocaleDateString("th-TH"),
-                    เวลา: dateObj.toLocaleTimeString("th-TH"),
-                    ID: s.id,
-                    เขตสุขภาพ: translateRegion(s.region),
-
-                    วิธีเก็บข้อมูล: part1.surveyMethod || "",
-
-                    ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
-                        patient?.lastName || ""
-                    }`.trim(),
-
-                    // Part 1
-                    ผู้สัมภาษณ์: part1.interviewerName || "",
-
-                    ทราบระดับน้ำตาล: part1.bloodSugarKnown || "",
-                    "ระดับน้ำตาลในเลือด Fasting": part1.fastingLevel || "",
-                    "ระดับน้ำตาลสะสม HbA1c": part1.hba1cLevel || "",
-                    พบแพทย์ตามนัด: part1.visitDoctor || "",
-                    เหตุผลไม่พบแพทย์: part1.notVisitReason || "",
-
-                    // Demographics
-                    เพศ: sec2.gender || patient?.gender || "",
-                    อายุ: sec2.age || "",
-                    วันเกิด: formatBirthDateThai(sec2.birthDate),
-                    การศึกษา:
-                        (sec2.education === "อื่น ๆ" ||
-                            sec2.education === "สูงกว่าปริญญาตรี") &&
-                        sec2.educationOther
-                            ? `${sec2.education}: ${sec2.educationOther}`
-                            : sec2.education || "",
-                    สถานภาพสมรส: sec2.maritalStatus || "",
-                    อาชีพ:
-                        sec2.occupation === "อื่น ๆ" && sec2.occupationOther
-                            ? `อื่นๆ: ${sec2.occupationOther}`
-                            : sec2.occupation || "",
-                    รายได้เฉลี่ยต่อเดือน: sec2.income || "",
-                    "การส่งเสียเลี้ยงดู(กรณีไม่ได้ทำงาน)":
-                        sec2.supportSource === "อื่น ๆ" &&
-                        sec2.supportSourceOther
-                            ? `อื่นๆ: ${sec2.supportSourceOther}`
-                            : sec2.supportSource || "",
-                    เศรษฐกิจครอบครัว: sec2.financialStatus || "",
-
-                    // Diabetes Info
-                    "ระยะเวลาทราบว่าเป็นเบาหวาน (ปี)":
-                        sec2.diabetesDuration || "",
-                    อายุตอนเป็นเบาหวาน: sec2.diabetesAge || "",
-                    ประเภทการรักษา:
-                        sec2.treatmentType === "อื่น ๆ" && sec2.treatmentOther
-                            ? `อื่นๆ: ${sec2.treatmentOther}`
-                            : sec2.treatmentType || "",
-                    จำนวนยา: sec2.medicationCount || "",
-                    สิทธิรักษาของผู้ป่วย:
-                        sec2.paymentMethod === "อื่น ๆ" &&
-                        sec2.paymentMethodOther
-                            ? `อื่นๆ: ${sec2.paymentMethodOther}`
-                            : sec2.paymentMethod || "",
-
-                    // Living
-                    สถานะการอยู่อาศัย:
-                        sec2.livingArrangement === "อื่น ๆ" &&
-                        sec2.livingArrangementOther
-                            ? `อื่นๆ: ${sec2.livingArrangementOther}`
-                            : sec2.livingArrangement || "",
-                    จำนวนสมาชิก: sec2.livingMembers || "",
-                    การสนับสนุนจากครอบครัว: sec2.familySupport || "",
-                    การสนับสนุนจากที่ทำงาน: sec2.workSupport || "",
-
-                    // Diet
-                    "อาหาร 3 อย่างทานบ่อย": sec2.dietFood || "",
-                    "ขนม 3 อย่างทานบ่อย": sec2.dietSnack || "",
-                    "เครื่องดื่ม 3 อย่างทานบ่อย": sec2.dietDrink || "",
-
-                    // Lifestyle - Alcohol (merge based on value)
-                    ดื่มแอลกอฮอล์:
-                        (sec2.alcohol || "") +
-                        (sec2.alcohol === "เลิกดื่มแล้ว" && sec2.alcoholYears
-                            ? ` (${sec2.alcoholYears} ปี)`
-                            : "") +
-                        (sec2.alcohol === "ดื่มเป็นประจำ" && sec2.alcoholDays
-                            ? ` (${sec2.alcoholDays} วัน/สัปดาห์)`
-                            : ""),
-
-                    // Lifestyle - Smoking (merge based on value)
-                    สูบบุหรี่:
-                        (sec2.smoking || "") +
-                        (sec2.smoking === "เลิกสูบแล้ว" && sec2.smokingYears
-                            ? ` (${sec2.smokingYears} ปี)`
-                            : "") +
-                        (sec2.smoking === "สูบเป็นประจำ" && sec2.smokingAmount
-                            ? ` (${sec2.smokingAmount} มวน/วัน)`
-                            : ""),
-
-                    // Health Conditions - Merge other diseases with list
-                    โรคอื่นๆ:
-                        (sec2.otherDiseases || "") +
-                        (sec2.otherDiseases === "มี" && sec2.otherDiseasesList
-                            ? `: ${sec2.otherDiseasesList}`
-                            : ""),
-                    ภาวะแทรกซ้อน:
-                        (Array.isArray(sec2.complications)
-                            ? sec2.complications.join("; ")
-                            : "") +
-                        (sec2.complications?.includes("อื่น ๆ") &&
-                        sec2.complicationsOther
-                            ? `: ${sec2.complicationsOther}`
-                            : ""),
-
-                    // Screenings - include "other" text if selected
-                    ตรวจร่างกาย:
-                        screenings.physical === "อื่น ๆ" &&
-                        screenings.physicalOther
-                            ? `อื่น ๆ: ${screenings.physicalOther}`
-                            : screenings.physical || "",
-                    ตรวจเท้า:
-                        screenings.foot === "อื่น ๆ" && screenings.footOther
-                            ? `อื่น ๆ: ${screenings.footOther}`
-                            : screenings.foot || "",
-                    ตรวจตา:
-                        screenings.eye === "อื่น ๆ" && screenings.eyeOther
-                            ? `อื่น ๆ: ${screenings.eyeOther}`
-                            : screenings.eye || "",
-                    ตรวจปัสสาวะ:
-                        screenings.urine === "อื่น ๆ" && screenings.urineOther
-                            ? `อื่น ๆ: ${screenings.urineOther}`
-                            : screenings.urine || "",
-                    ตรวจไขมัน:
-                        screenings.lipid === "อื่น ๆ" && screenings.lipidOther
-                            ? `อื่น ๆ: ${screenings.lipidOther}`
-                            : screenings.lipid || "",
-                    ตรวจฟัน:
-                        screenings.dental === "อื่น ๆ" && screenings.dentalOther
-                            ? `อื่น ๆ: ${screenings.dentalOther}`
-                            : screenings.dental || "",
-                    "ตรวจ HbA1c":
-                        screenings.hba1c === "อื่น ๆ" && screenings.hba1cOther
-                            ? `อื่น ๆ: ${screenings.hba1cOther}`
-                            : screenings.hba1c || "",
-                    ตรวจอื่นๆ: screenings.otherText
-                        ? screenings.otherText
-                        : screenings.other || "",
-                };
-            });
-
-            // ===== SHEET 2: สรุป 7 มิติ =====
-            const promsData = submissions.map((s) => {
-                const raw: RawAnswers = asRawAnswers(s.rawAnswers);
-                const report = (raw.reportData || {}) as ReportData;
-                const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
-                const patient = s.patient as PatientData | null;
-                const dateObj = new Date(s.createdAt);
-
-                // Extract additionalInfo from reportData
-                const step2Info = report.step_2?.additionalInfo || {};
-                const step9Info = report.step_9?.additionalInfo || {};
-
-                // Group results by dimension
-                const dim1 = [
-                    getActionText(report, 1),
-                    getActionText(report, 2),
-                ]
-                    .filter(Boolean)
-                    .join("\n");
-                const dim2 = getActionText(report, 3);
-                const dim3 = getActionText(report, 4);
-                const dim4 = [
-                    getActionText(report, 5),
-                    getActionText(report, 6),
-                ]
-                    .filter(Boolean)
-                    .join("\n");
-                const dim5 = getActionText(report, 7);
-                const dim6 = getActionText(report, 8);
-                const dim7 = [
-                    getActionText(report, 9),
-                    getActionText(report, 10),
-                ]
-                    .filter(Boolean)
-                    .join("\n");
-
-                return {
-                    วันที่: dateObj.toLocaleDateString("th-TH"),
-                    เวลา: dateObj.toLocaleTimeString("th-TH"),
-                    ID: s.id,
-                    ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
-                        patient?.lastName || ""
-                    }`.trim(),
-                    เพศ: sec2.gender || patient?.gender || "",
-                    เขตสุขภาพ: translateRegion(s.region),
-
-                    "มิติที่ 1 (การทำงานของร่างกาย)": dim1,
-                    "ข้อจำกัดการเคลื่อนไหว (มิติ 1)": step2Info.movementLimit
-                        ? "มีข้อจำกัดด้านการเคลื่อนไหว"
-                        : "",
-                    "ออกแรงแล้วเหนื่อย (มิติ 1)": step2Info.tired
-                        ? "ออกแรงแล้วเหนื่อย"
-                        : "",
-                    "มิติที่ 2 (อาการของโรค)": dim2,
-                    "มิติที่ 3 (สุขภาพจิตใจ)": dim3,
-                    "มิติที่ 4 (การดูแลตนเอง)": dim4,
-                    "มิติที่ 5 (สังคม)": dim5,
-                    "มิติที่ 6 (สุขภาพโดยรวม)": dim6,
-                    "มิติที่ 7 (ความพึงพอใจ)": dim7,
-                    "ต้องการทราบเรื่องเพิ่ม (มิติ 7)": step9Info.topic || "",
-                };
-            });
-
-            // ===== CREATE WORKBOOK WITH 2 SHEETS =====
-            const wb = XLSX.utils.book_new();
-
-            // Sheet 1: ข้อมูลทั่วไป
-            const ws1 = XLSX.utils.json_to_sheet(generalData);
-            const colWidths1 = Object.keys(generalData[0] || {}).map((key) => ({
-                wch: Math.max(key.length, 15),
-            }));
-            ws1["!cols"] = colWidths1;
-            XLSX.utils.book_append_sheet(wb, ws1, "ข้อมูลทั่วไป");
-
-            // Sheet 2: สรุป 7 มิติ
-            const ws2 = XLSX.utils.json_to_sheet(promsData);
-            const colWidths2 = Object.keys(promsData[0] || {}).map((key) => ({
-                wch: Math.max(key.length, 20),
-            }));
-            ws2["!cols"] = colWidths2;
-            XLSX.utils.book_append_sheet(wb, ws2, "สรุป 7 มิติ");
-
-            // Export single file with 2 sheets
-            const regionSuffix = regionFilter ? `_${regionFilter}` : "_all";
-            XLSX.writeFile(
-                wb,
-                `survey_data${regionSuffix}_${
-                    new Date().toISOString().split("T")[0]
-                }.xlsx`
+            // Transform data for both sheets
+            const generalData = submissions.map((s) =>
+                transformToGeneralData({
+                    id: s.id,
+                    region: s.region,
+                    createdAt: s.createdAt,
+                    rawAnswers: s.rawAnswers,
+                    patient: s.patient as PatientData | null,
+                })
             );
+
+            const promsData = submissions.map((s) =>
+                transformToPromsData({
+                    id: s.id,
+                    region: s.region,
+                    createdAt: s.createdAt,
+                    rawAnswers: s.rawAnswers,
+                    patient: s.patient as PatientData | null,
+                })
+            );
+
+            // Create and export workbook
+            const workbook = createWorkbook(generalData, promsData);
+            XLSX.writeFile(workbook, generateFilename(regionFilter));
         } catch (error) {
             console.error("Export failed", error);
             alert("Export failed: " + (error as Error).message);

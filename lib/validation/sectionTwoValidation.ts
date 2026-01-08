@@ -6,7 +6,7 @@ export interface ValidationResult {
     errors: string[];
 }
 
-export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
+function validateDemographics(formData: SectionTwoData): string[] {
     const errors: string[] = [];
 
     // 1. Gender
@@ -67,6 +67,12 @@ export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
         errors.push("กรุณาเลือกเศรษฐกิจครอบครัว (ข้อ 8)");
     }
 
+    return errors;
+}
+
+function validateDiabetesInfo(formData: SectionTwoData): string[] {
+    const errors: string[] = [];
+
     // 9. Diabetes Duration (at least one: duration or age of onset)
     if (!formData.diabetesDuration && !formData.diabetesAge) {
         errors.push("กรุณากรอกระยะเวลาเป็นเบาหวานหรืออายุที่เริ่มเป็น (ข้อ 9)");
@@ -92,6 +98,12 @@ export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
     if (formData.paymentMethod === "อื่น ๆ" && !formData.paymentMethodOther) {
         errors.push("กรุณาระบุวิธีจ่ายค่ารักษาพยาบาล (ข้อ 12)");
     }
+
+    return errors;
+}
+
+function validateLivingAndSupport(formData: SectionTwoData): string[] {
+    const errors: string[] = [];
 
     // 13. Living Arrangement
     if (!formData.livingArrangement) {
@@ -128,6 +140,12 @@ export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
         );
     }
 
+    return errors;
+}
+
+function validateLifestyle(formData: SectionTwoData): string[] {
+    const errors: string[] = [];
+
     // 17. Alcohol
     if (!formData.alcohol) {
         errors.push("กรุณาเลือกการดื่มแอลกอฮอล์ (ข้อ 17)");
@@ -149,6 +167,12 @@ export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
     if (formData.smoking === "สูบเป็นประจำ" && !formData.smokingAmount) {
         errors.push("กรุณากรอกจำนวนมวนที่สูบต่อวัน (ข้อ 18)");
     }
+
+    return errors;
+}
+
+function validateHealthConditions(formData: SectionTwoData): string[] {
+    const errors: string[] = [];
 
     // 19. Other Diseases
     if (!formData.otherDiseases) {
@@ -176,6 +200,18 @@ export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
             errors.push(`กรุณาเลือกความถี่การตรวจ${label} (ข้อ 21)`);
         }
     }
+
+    return errors;
+}
+
+export function validateSectionTwo(formData: SectionTwoData): ValidationResult {
+    const errors: string[] = [
+        ...validateDemographics(formData),
+        ...validateDiabetesInfo(formData),
+        ...validateLivingAndSupport(formData),
+        ...validateLifestyle(formData),
+        ...validateHealthConditions(formData),
+    ];
 
     return {
         isValid: errors.length === 0,

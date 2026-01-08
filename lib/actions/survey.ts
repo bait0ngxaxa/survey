@@ -2,23 +2,10 @@
 
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-
 import {
-    Part1Data,
-    SectionTwoData,
-    MedicalRecordData,
-    SectionFourData,
-} from "@/lib/types";
-
-export interface SurveySubmissionInput {
-    region: string;
-    hospital?: string;
-    nationalId?: string;
-    part1: Part1Data;
-    sectionTwo: SectionTwoData;
-    medicalRecord: MedicalRecordData;
-    sectionFour: SectionFourData;
-}
+    SurveySubmissionInputSchema,
+    GetSubmissionsOptionsSchema,
+} from "@/lib/schemas";
 
 // คำนวณคะแนนรวม
 function calculateTotalScore(answers: Record<number, number>): number {
@@ -38,46 +25,71 @@ function parseDateSafely(dateString: string | undefined | null): Date | null {
     return date;
 }
 
-export async function submitSurvey(input: SurveySubmissionInput) {
+// Submit survey with Zod validation
+export async function submitSurvey(input: unknown) {
+    // Validate input with Zod
+    const parsed = SurveySubmissionInputSchema.safeParse(input);
+    if (!parsed.success) {
+        console.error("Validation error:", parsed.error.flatten());
+        return {
+            success: false,
+            error: "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่อีกครั้ง",
+        };
+    }
+
+    const validatedInput = parsed.data;
+
     try {
         const { userId } = await auth();
 
-        const totalScore = calculateTotalScore(input.sectionFour.answers);
+        const totalScore = calculateTotalScore(
+            validatedInput.sectionFour.answers
+        );
 
         // สร้างหรือค้นหา Patient
         let patient;
-        if (input.nationalId) {
+        if (validatedInput.nationalId) {
             patient = await prisma.patient.upsert({
-                where: { nationalId: input.nationalId },
+                where: { nationalId: validatedInput.nationalId },
                 update: {
                     firstName:
-                        input.sectionTwo.respondentName.split(" ")[0] || null,
+                        validatedInput.sectionTwo.respondentName.split(
+                            " "
+                        )[0] || null,
                     lastName:
-                        input.sectionTwo.respondentName
+                        validatedInput.sectionTwo.respondentName
                             .split(" ")
                             .slice(1)
                             .join(" ") || null,
-                    gender: input.sectionTwo.gender || null,
-                    birthDate: parseDateSafely(input.sectionTwo.birthDate),
+                    gender: validatedInput.sectionTwo.gender || null,
+                    birthDate: parseDateSafely(
+                        validatedInput.sectionTwo.birthDate
+                    ),
                     addressData: {
-                        livingArrangement: input.sectionTwo.livingArrangement,
-                        livingMembers: input.sectionTwo.livingMembers,
+                        livingArrangement:
+                            validatedInput.sectionTwo.livingArrangement,
+                        livingMembers: validatedInput.sectionTwo.livingMembers,
                     },
                 },
                 create: {
-                    nationalId: input.nationalId,
+                    nationalId: validatedInput.nationalId,
                     firstName:
-                        input.sectionTwo.respondentName.split(" ")[0] || null,
+                        validatedInput.sectionTwo.respondentName.split(
+                            " "
+                        )[0] || null,
                     lastName:
-                        input.sectionTwo.respondentName
+                        validatedInput.sectionTwo.respondentName
                             .split(" ")
                             .slice(1)
                             .join(" ") || null,
-                    gender: input.sectionTwo.gender || null,
-                    birthDate: parseDateSafely(input.sectionTwo.birthDate),
+                    gender: validatedInput.sectionTwo.gender || null,
+                    birthDate: parseDateSafely(
+                        validatedInput.sectionTwo.birthDate
+                    ),
                     addressData: {
-                        livingArrangement: input.sectionTwo.livingArrangement,
-                        livingMembers: input.sectionTwo.livingMembers,
+                        livingArrangement:
+                            validatedInput.sectionTwo.livingArrangement,
+                        livingMembers: validatedInput.sectionTwo.livingMembers,
                     },
                 },
             });
@@ -86,17 +98,22 @@ export async function submitSurvey(input: SurveySubmissionInput) {
             patient = await prisma.patient.create({
                 data: {
                     firstName:
-                        input.sectionTwo.respondentName.split(" ")[0] || null,
+                        validatedInput.sectionTwo.respondentName.split(
+                            " "
+                        )[0] || null,
                     lastName:
-                        input.sectionTwo.respondentName
+                        validatedInput.sectionTwo.respondentName
                             .split(" ")
                             .slice(1)
                             .join(" ") || null,
-                    gender: input.sectionTwo.gender || null,
-                    birthDate: parseDateSafely(input.sectionTwo.birthDate),
+                    gender: validatedInput.sectionTwo.gender || null,
+                    birthDate: parseDateSafely(
+                        validatedInput.sectionTwo.birthDate
+                    ),
                     addressData: {
-                        livingArrangement: input.sectionTwo.livingArrangement,
-                        livingMembers: input.sectionTwo.livingMembers,
+                        livingArrangement:
+                            validatedInput.sectionTwo.livingArrangement,
+                        livingMembers: validatedInput.sectionTwo.livingMembers,
                     },
                 },
             });
@@ -105,11 +122,11 @@ export async function submitSurvey(input: SurveySubmissionInput) {
         // สร้าง rawAnswers ที่รวมข้อมูลทั้งหมด (แปลงเป็น plain JSON object)
         const rawAnswers = JSON.parse(
             JSON.stringify({
-                part1: input.part1,
-                sectionTwo: input.sectionTwo,
-                medicalRecord: input.medicalRecord,
-                sectionFour: input.sectionFour.answers,
-                reportData: input.sectionFour.reportData,
+                part1: validatedInput.part1,
+                sectionTwo: validatedInput.sectionTwo,
+                medicalRecord: validatedInput.medicalRecord,
+                sectionFour: validatedInput.sectionFour.answers,
+                reportData: validatedInput.sectionFour.reportData,
             })
         );
 
@@ -117,8 +134,8 @@ export async function submitSurvey(input: SurveySubmissionInput) {
         const submission = await prisma.surveySubmission.create({
             data: {
                 patientId: patient.id,
-                region: input.region,
-                hospital: input.hospital || null,
+                region: validatedInput.region,
+                hospital: validatedInput.hospital || null,
                 submittedByUserId: userId || null,
                 totalScorePart4: totalScore,
                 rawAnswers: rawAnswers,
@@ -134,16 +151,18 @@ export async function submitSurvey(input: SurveySubmissionInput) {
         console.error("Error submitting survey:", error);
         return {
             success: false,
-            error:
-                error instanceof Error
-                    ? error.message
-                    : "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+            error: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
         };
     }
 }
 
 // ดึงข้อมูล submission ตาม id
 export async function getSurveySubmission(submissionId: string) {
+    // Validate submissionId format
+    if (!submissionId || typeof submissionId !== "string") {
+        return { success: false, error: "Invalid submission ID" };
+    }
+
     try {
         const submission = await prisma.surveySubmission.findUnique({
             where: { id: submissionId },
@@ -161,37 +180,39 @@ export async function getSurveySubmission(submissionId: string) {
         console.error("Error fetching submission:", error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
+            error: "เกิดข้อผิดพลาดในการดึงข้อมูล",
         };
     }
 }
 
 // ดึงรายการ submissions ทั้งหมด (สำหรับ admin/staff)
-export async function getSurveySubmissions(options?: {
-    region?: string;
-    hospital?: string;
-    startDate?: Date;
-    endDate?: Date;
-    limit?: number;
-    offset?: number;
-}) {
+export async function getSurveySubmissions(options?: unknown) {
     try {
         const { userId } = await auth();
         if (!userId) {
             return { success: false, error: "Unauthorized" };
         }
 
+        // Validate options with Zod
+        const parsed = GetSubmissionsOptionsSchema.safeParse(options || {});
+        if (!parsed.success) {
+            return { success: false, error: "Invalid options" };
+        }
+
+        const validatedOptions = parsed.data;
         const where: Record<string, unknown> = {};
 
-        if (options?.region) where.region = options.region;
-        if (options?.hospital) where.hospital = options.hospital;
-        if (options?.startDate || options?.endDate) {
+        if (validatedOptions.region) where.region = validatedOptions.region;
+        if (validatedOptions.hospital)
+            where.hospital = validatedOptions.hospital;
+        if (validatedOptions.startDate || validatedOptions.endDate) {
             where.createdAt = {};
-            if (options.startDate)
+            if (validatedOptions.startDate)
                 (where.createdAt as Record<string, Date>).gte =
-                    options.startDate;
-            if (options.endDate)
-                (where.createdAt as Record<string, Date>).lte = options.endDate;
+                    validatedOptions.startDate;
+            if (validatedOptions.endDate)
+                (where.createdAt as Record<string, Date>).lte =
+                    validatedOptions.endDate;
         }
 
         const [submissions, total] = await Promise.all([
@@ -207,8 +228,8 @@ export async function getSurveySubmissions(options?: {
                     },
                 },
                 orderBy: { createdAt: "desc" },
-                take: options?.limit || 50,
-                skip: options?.offset || 0,
+                take: validatedOptions.limit || 50,
+                skip: validatedOptions.offset || 0,
             }),
             prisma.surveySubmission.count({ where }),
         ]);
@@ -217,20 +238,23 @@ export async function getSurveySubmissions(options?: {
             success: true,
             data: submissions,
             total,
-            limit: options?.limit || 50,
-            offset: options?.offset || 0,
+            limit: validatedOptions.limit || 50,
+            offset: validatedOptions.offset || 0,
         };
     } catch (error) {
         console.error("Error fetching submissions:", error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
+            error: "เกิดข้อผิดพลาดในการดึงข้อมูล",
         };
     }
 }
 
 // ดึง submissions ของ user ที่ login อยู่ (สำหรับ Dashboard)
 export async function getUserSubmissions(limit: number = 10) {
+    // Validate limit
+    const validLimit = Math.min(Math.max(1, limit), 100);
+
     try {
         const { userId } = await auth();
         if (!userId) {
@@ -249,7 +273,7 @@ export async function getUserSubmissions(limit: number = 10) {
                 },
             },
             orderBy: { createdAt: "desc" },
-            take: limit,
+            take: validLimit,
         });
 
         return { success: true, data: submissions };
@@ -257,7 +281,7 @@ export async function getUserSubmissions(limit: number = 10) {
         console.error("Error fetching user submissions:", error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
+            error: "เกิดข้อผิดพลาดในการดึงข้อมูล",
             data: [],
         };
     }
