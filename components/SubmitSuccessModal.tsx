@@ -51,7 +51,7 @@ export default function SubmitSuccessModal({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 transform transition-all animate-in zoom-in-95 duration-300 relative">
                 <div className="flex flex-col items-center text-center">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 text-green-600">
+                    <div className="w-20 h-20 bg-sky-100 rounded-full flex items-center justify-center mb-6 text-sky-600">
                         <CheckCircle size={48} />
                     </div>
 
@@ -66,7 +66,7 @@ export default function SubmitSuccessModal({
 
                     <div className="text-sm text-gray-400">
                         กำลังนำท่านไปยังหน้าหลักใน{" "}
-                        <span className="font-bold text-blue-600">
+                        <span className="font-bold text-sky-600">
                             {countdown}
                         </span>{" "}
                         วินาที
@@ -74,7 +74,7 @@ export default function SubmitSuccessModal({
 
                     <button
                         onClick={() => router.push(redirectTo)}
-                        className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold transition-all"
+                        className="mt-6 px-6 py-3 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-xl hover:from-cyan-500 hover:via-sky-500 hover:to-blue-500 font-semibold transition-all shadow-lg shadow-sky-200"
                     >
                         ไปยังหน้าหลัก
                     </button>

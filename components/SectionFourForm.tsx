@@ -182,7 +182,7 @@ export default function SectionFourForm({
             getGroupAverage([24, 25, 26]) === 1;
 
         return (
-            <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8">
+            <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8 relative z-10">
                 <AlertModal
                     isOpen={isAlertOpen}
                     onClose={closeAlert}
@@ -238,7 +238,7 @@ export default function SectionFourForm({
 
     // Non-Central standard view
     return (
-        <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8">
+        <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8 relative z-10">
             <AlertModal
                 isOpen={isAlertOpen}
                 onClose={closeAlert}
@@ -251,15 +251,26 @@ export default function SectionFourForm({
                 onConfirm={handleConfirmSubmit}
             />
 
-            <div className="bg-white rounded-3xl shadow-xl shadow-sky-100/50 border border-slate-100 overflow-hidden">
-                <div className="py-10 px-8 text-center bg-white border-b border-slate-100">
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 mb-4 leading-tight">
-                        แบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2{" "}
-                        <br />
-                        <span className="text-sky-600 block mt-2">
-                            &ldquo;โดยผู้ป่วยเป้นคนรายงาน&rdquo;
-                        </span>
-                    </h1>
+            {/* Enhanced Header Card with Glassmorphism */}
+            <div className="relative group">
+                <div className="absolute inset-[-2px] bg-gradient-to-br from-sky-200/30 via-blue-200/20 to-cyan-200/30 rounded-[1.625rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl shadow-sky-100/50 border border-white/80 overflow-hidden">
+                    <div className="relative py-10 px-8 text-center bg-gradient-to-b from-white to-slate-50/50 border-b border-slate-100/80 overflow-hidden">
+                        {/* Decorative Background Elements */}
+                        <div className="absolute top-[-50%] left-[-20%] w-80 h-80 bg-sky-100/30 rounded-full blur-3xl" />
+                        <div className="absolute bottom-[-50%] right-[-20%] w-80 h-80 bg-blue-100/30 rounded-full blur-3xl" />
+
+                        <h1 className="relative text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-4">
+                            <span className="text-slate-800">
+                                แบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่
+                                2
+                            </span>
+                            <br />
+                            <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500">
+                                &ldquo;โดยผู้ป่วยเป้นคนรายงาน&rdquo;
+                            </span>
+                        </h1>
+                    </div>
                 </div>
             </div>
 

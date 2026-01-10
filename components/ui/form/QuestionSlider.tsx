@@ -18,7 +18,7 @@ export default function QuestionSlider({
 
     return (
         <div
-            className={`group p-4 sm:p-6 rounded-2xl transition-all duration-300 ${
+            className={`group p-4 sm:p-6 rounded-2xl transition-all duration-200 ${
                 hasUnanswered
                     ? "bg-rose-50 border border-rose-200"
                     : "bg-white border border-slate-100 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100/50"

@@ -42,8 +42,8 @@ export default function FormNavigation({
                 disabled={disabled || isLoading}
                 className={`px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-semibold shadow-lg hover:shadow-sky-200/50 transition-all flex items-center justify-center gap-2 ${
                     isSubmit
-                        ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                        : "bg-sky-600 hover:bg-sky-700 text-white"
+                        ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-cyan-500 hover:via-teal-500 hover:to-emerald-500 text-white"
+                        : "bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-cyan-500 hover:via-sky-500 hover:to-blue-500 text-white"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
                 type="button"
             >

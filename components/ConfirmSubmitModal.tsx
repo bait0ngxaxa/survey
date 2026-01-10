@@ -33,9 +33,9 @@ export default function ConfirmSubmitModal({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
                 <div className="text-center space-y-4">
-                    <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-4">
                         {isSubmitting ? (
-                            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                            <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin" />
                         ) : (
                             <Check size={32} />
                         )}
@@ -60,7 +60,7 @@ export default function ConfirmSubmitModal({
                             </button>
                             <button
                                 onClick={onConfirm}
-                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-blue-200 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                className="flex-1 px-4 py-2 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-xl hover:from-cyan-500 hover:via-sky-500 hover:to-blue-500 font-semibold shadow-lg hover:shadow-sky-200 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
                                 disabled={isSubmitting}
                             >
                                 {confirmLabel}

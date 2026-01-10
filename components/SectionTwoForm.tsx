@@ -51,7 +51,7 @@ export default function SectionTwoForm({
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500 relative z-10">
             <AlertModal
                 isOpen={isAlertOpen}
                 onClose={closeAlert}

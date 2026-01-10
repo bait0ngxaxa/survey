@@ -27,10 +27,10 @@ export default function AlertModal({
 
     const isSuccess = variant === "success";
     const Icon = isSuccess ? CheckCircle : AlertCircle;
-    const iconBgColor = isSuccess ? "bg-blue-100" : "bg-red-100";
-    const iconTextColor = isSuccess ? "text-blue-600" : "text-red-600";
+    const iconBgColor = isSuccess ? "bg-sky-100" : "bg-red-100";
+    const iconTextColor = isSuccess ? "text-sky-600" : "text-red-600";
     const buttonBgColor = isSuccess
-        ? "bg-blue-600 hover:bg-blue-700 shadow-blue-200"
+        ? "bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-cyan-500 hover:via-sky-500 hover:to-blue-500 shadow-sky-200"
         : "bg-red-600 hover:bg-red-700 shadow-red-200";
 
     return (
