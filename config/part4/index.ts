@@ -1,8 +1,3 @@
-/**
- * Part 4 Survey Data - Main Entry Point
- * Re-exports all types, region data, and configurations
- */
-
 // Types
 export type {
     Part4Section,
@@ -11,7 +6,7 @@ export type {
     RegionConfig,
 } from "./types";
 
-// Region Data
+// Central Region
 export {
     centralPart4Data,
     centralGroups,
@@ -20,13 +15,10 @@ export {
     centralRegionConfig,
 } from "./central";
 
-// Re-export original region data from main file for backward compatibility
-// TODO: These should be split into separate files in future refactoring
-export {
-    phetchabunPart4Data,
-    satunPart4Data,
-    lopburiPart4Data,
-} from "../part4Data";
+// Non-Central Regions
+export { phetchabunPart4Data } from "./phetchabun";
+export { satunPart4Data } from "./satun";
+export { lopburiPart4Data } from "./lopburi";
 
 // Region Configs Map
 import { centralRegionConfig } from "./central";
