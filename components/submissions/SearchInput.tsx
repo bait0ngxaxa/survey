@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 
-export default function SearchInput() {
+export function SearchInput() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentSearch = searchParams.get("search") || "";

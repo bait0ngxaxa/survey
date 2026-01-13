@@ -34,7 +34,7 @@ export default function Introduction({ onStart }: IntroductionProps) {
                             </span>
                             <br />
                             <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500">
-                                "การวิจัยและพัฒนาเครื่องมือรายงานโดยผู้ป่วย"
+                                &ldquo;การวิจัยและพัฒนาเครื่องมือรายงานโดยผู้ป่วย&rdquo;
                             </span>
                         </h1>
 

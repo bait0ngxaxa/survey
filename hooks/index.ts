@@ -5,3 +5,4 @@ export { useRecommendations } from "./useRecommendations";
 export { useAsyncSubmit } from "./useAsyncSubmit";
 export { useConfirmModal } from "./useConfirmModal";
 export { useFormField } from "./useFormField";
+export { useUsers } from "./useUsers";
