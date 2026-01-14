@@ -5,3 +5,6 @@ export { useRecommendations } from "./useRecommendations";
 export { useAsyncSubmit } from "./useAsyncSubmit";
 export { useConfirmModal } from "./useConfirmModal";
 export { useFormField } from "./useFormField";
+export { useUsers } from "./useUsers";
+export { useSurveyForm } from "./useSurveyForm";
+export { useSectionFourLogic } from "./useSectionFourLogic";

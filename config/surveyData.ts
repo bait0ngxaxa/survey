@@ -1,4 +1,4 @@
-import { centralPart4Data, Part4Section } from "./part4Data";
+import { centralPart4Data, Part4Section } from "./part4";
 
 export type SurveyConfig = {
     title: string;

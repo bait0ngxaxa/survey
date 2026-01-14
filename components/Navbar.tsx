@@ -6,14 +6,14 @@ export default function Navbar() {
     const { user } = useUser();
 
     return (
-        <nav className="relative sm:absolute top-0 right-0 w-full p-4 sm:p-6 z-50 flex justify-end bg-gradient-to-b from-blue-50 to-transparent sm:bg-none">
+        <nav className="relative sm:absolute top-0 right-0 w-full p-4 sm:p-6 z-50 flex justify-end bg-[linear-gradient(to_bottom,rgb(240,249,255),transparent)] sm:bg-none">
             <SignedIn>
                 <div className="pointer-events-auto flex items-center gap-4 bg-white/70 backdrop-blur-xl px-2 py-2 pr-5 rounded-full shadow-sm border border-white/50 transition-all hover:bg-white/90 hover:shadow-md hover:scale-[1.02]">
                     {/* Admin Link */}
                     {user?.publicMetadata?.role === "admin" && (
                         <a
                             href="/admin"
-                            className="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20"
+                            className="relative overflow-hidden bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:from-sky-400 hover:via-blue-500 hover:to-cyan-400 transition-all shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105"
                         >
                             Admin Board
                         </a>

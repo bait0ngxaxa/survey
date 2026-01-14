@@ -22,17 +22,27 @@ export interface UserSubmission {
 }
 
 // Get all users with submission counts
-export async function getStaffUsers(searchQuery?: string) {
+export async function getStaffUsers(
+    searchQuery?: string,
+    page: number = 1,
+    limit: number = 10
+) {
     try {
         const { userId } = await auth();
         if (!userId) {
-            return { success: false, error: "Unauthorized", data: [] };
+            return {
+                success: false,
+                error: "Unauthorized",
+                data: [],
+                metadata: { total: 0, page: 1, limit: 10, totalPages: 0 },
+            };
         }
 
-        // Get all users from Clerk
         const client = await clerkClient();
+
         const { data: users } = await client.users.getUserList({
             limit: 100,
+            query: searchQuery,
         });
 
         // Get submission counts grouped by userId
@@ -87,16 +97,34 @@ export async function getStaffUsers(searchQuery?: string) {
             );
         }
 
-        // Sort by submission count descending
+        // Sort by submission count descending - This is why we need to fetch all/many first
         staffUsers.sort((a, b) => b.submissionCount - a.submissionCount);
 
-        return { success: true, data: staffUsers };
+        const totalUsers = staffUsers.length;
+        const totalPages = Math.ceil(totalUsers / limit);
+
+        // Manual Pagination
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedUsers = staffUsers.slice(startIndex, endIndex);
+
+        return {
+            success: true,
+            data: paginatedUsers,
+            metadata: {
+                total: totalUsers,
+                page,
+                limit,
+                totalPages,
+            },
+        };
     } catch (error) {
         console.error("Error fetching staff users:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
             data: [],
+            metadata: { total: 0, page: 1, limit: 10, totalPages: 0 },
         };
     }
 }

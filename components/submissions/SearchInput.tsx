@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 
-export default function SearchInput() {
+export function SearchInput() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentSearch = searchParams.get("search") || "";
@@ -57,7 +57,7 @@ export default function SearchInput() {
             </div>
             <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-sky-500 to-blue-600 rounded-lg hover:from-sky-400 hover:to-blue-500 transition-all shadow-md shadow-sky-500/20"
             >
                 ค้นหา
             </button>

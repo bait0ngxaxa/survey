@@ -78,7 +78,7 @@ export default function Home() {
 
                     {/* Text Content with Enhanced Typography */}
                     <div className="space-y-6 max-w-3xl">
-                        <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1]">
+                        <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] thai-text">
                             <span className="relative inline-block text-slate-800">
                                 การวิจัยและพัฒนา
                                 {/* Subtle underline decoration */}
@@ -92,15 +92,14 @@ export default function Home() {
                         {/* Description Card with Depth */}
                         <div className="relative group">
                             <div className="absolute inset-0 bg-gradient-to-br from-sky-100/50 to-blue-50/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <p className="relative text-lg md:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto px-6 py-4 rounded-2xl bg-white/40 backdrop-blur-sm border border-white/60 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+                            <p className="relative text-lg md:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto px-6 py-4 rounded-2xl bg-white/40 backdrop-blur-sm border border-white/60 shadow-[0_4px_24px_rgba(0,0,0,0.03)] thai-text br-mobile-hide">
                                 ระบบรวบรวมข้อมูลผลลัพธ์ที่รายงานโดยผู้ป่วย{" "}
                                 <br />
                                 <span className="text-sky-600/80 font-medium">
                                     (Patient Reported Outcomes Measurement)
                                 </span>
                                 <br />
-                                เพื่อยกระดับการบริการ
-                                และคุณภาพชีวิตสำหรับผู้ป่วยเบาหวาน
+                                เพื่อยกระดับการบริการและคุณภาพชีวิตสำหรับผู้ป่วยเบาหวาน
                             </p>
                         </div>
                     </div>

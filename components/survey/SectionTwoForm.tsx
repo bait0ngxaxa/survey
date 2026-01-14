@@ -11,7 +11,7 @@ import {
     LivingSupportSection,
     LifestyleSection,
     HealthConditionsSection,
-} from "@/components/section-two";
+} from "@/components/survey";
 
 interface SectionTwoFormProps {
     formData: SectionTwoData;

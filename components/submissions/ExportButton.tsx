@@ -53,7 +53,7 @@ function generateFilename(regionFilter: string): string {
     return `survey_data${regionSuffix}_${dateStr}.xlsx`;
 }
 
-export default function ExportButton({ regionFilter = "" }: ExportButtonProps) {
+export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
 
     const handleExport = async (): Promise<void> => {

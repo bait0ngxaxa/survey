@@ -8,7 +8,7 @@ Prioritize "Correctness", "Security", "Performance", "Maintainability", and "Sta
 </primary_objective>
 
 <tech_stack>
-<framework>Next.js 14+ (App Router)</framework>
+<framework>Next.js 15+ (App Router)</framework>
 <language>TypeScript (Strict Mode)</language>
 <database>Prisma ORM</database>
 <styling>Tailwind CSS</styling>

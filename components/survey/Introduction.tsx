@@ -28,13 +28,12 @@ export default function Introduction({ onStart }: IntroductionProps) {
                         </div>
 
                         {/* Title with Gradient */}
-                        <h1 className="relative text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4">
+                        <h1 className="relative text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4 thai-text">
                             <span className="text-slate-800">
                                 การวิจัยเรื่อง
                             </span>
-                            <br />
                             <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500">
-                                "การวิจัยและพัฒนาเครื่องมือรายงานโดยผู้ป่วย"
+                                &ldquo;การวิจัยและพัฒนาเครื่องมือรายงานโดยผู้ป่วย&rdquo;
                             </span>
                         </h1>
 
@@ -59,9 +58,8 @@ export default function Introduction({ onStart }: IntroductionProps) {
                                         <Info className="relative w-6 h-6 text-sky-600 shrink-0 mt-1" />
                                     </div>
                                     <div className="space-y-2">
-                                        <p className="text-slate-700 leading-relaxed font-medium">
-                                            ข้อมูลที่ได้จากการศึกษาครั้งนี้จะเป็นประโยชน์ในการพัฒนาเครื่องมือสำหรับการ
-                                            รายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่
+                                        <p className="text-slate-700 leading-relaxed font-medium thai-text">
+                                            ข้อมูลที่ได้จากการศึกษาครั้งนี้จะเป็นประโยชน์ในการพัฒนาเครื่องมือสำหรับการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่
                                             2
                                         </p>
                                     </div>
@@ -78,7 +76,7 @@ export default function Introduction({ onStart }: IntroductionProps) {
                                             <Shield className="relative w-6 h-6 text-sky-600" />
                                         </div>
                                     </div>
-                                    <p className="text-sky-800 font-medium text-lg">
+                                    <p className="text-sky-800 font-medium text-lg thai-text br-mobile-hide">
                                         ข้อมูลทั้งหมดจะปิดเป็นความลับ
                                         <br />
                                         และใช้เฉพาะสำหรับการวิจัยครั้งนี้เท่านั้น

@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
-import SurveyForm from "@/components/SurveyForm";
+import SurveyForm from "@/components/survey/SurveyForm";
 
 import { surveyData } from "@/config/surveyData";
 
