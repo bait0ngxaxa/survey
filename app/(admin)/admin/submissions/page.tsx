@@ -8,6 +8,7 @@ import {
     SubmissionCardList,
     Pagination,
     ExportButton,
+    PrintAllButton,
     SearchInput,
 } from "@/components/submissions";
 
@@ -71,9 +72,12 @@ export default async function SubmissionsPage({
                 searchQuery={searchQuery}
             />
 
-            {/* Export Button - Fixed on mobile, Normal on desktop */}
-            <div className="fixed bottom-6 right-6 z-20 md:static md:flex md:justify-center md:pt-4">
-                <div className="shadow-lg md:shadow-none rounded-full md:rounded-lg overflow-hidden">
+            {/* Action Buttons - Stacked on mobile, Row on desktop */}
+            <div className="fixed bottom-6 right-6 z-20 flex flex-col gap-2 md:static md:flex-row md:justify-center md:gap-3 md:pt-4">
+                <div className="shadow-lg md:shadow-none rounded-xl overflow-hidden">
+                    <PrintAllButton />
+                </div>
+                <div className="shadow-lg md:shadow-none rounded-xl overflow-hidden">
                     <ExportButton regionFilter={regionFilter} />
                 </div>
             </div>

@@ -13,6 +13,8 @@ interface UseUsersReturn {
     users: StaffUser[];
     loading: boolean;
     searchQuery: string;
+    page: number;
+    totalPages: number;
     selectedUser: StaffUser | null;
     userSubmissions: UserSubmission[];
     loadingSubmissions: boolean;
@@ -22,6 +24,7 @@ interface UseUsersReturn {
     // Actions
     setSearchQuery: (query: string) => void;
     handleSearch: () => void;
+    handlePageChange: (page: number) => void;
     openUserDetail: (user: StaffUser) => Promise<void>;
     closeModal: () => void;
 }
@@ -33,20 +36,29 @@ export function useUsers(): UseUsersReturn {
     const [users, setUsers] = useState<StaffUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [selectedUser, setSelectedUser] = useState<StaffUser | null>(null);
     const [userSubmissions, setUserSubmissions] = useState<UserSubmission[]>(
         []
     );
     const [loadingSubmissions, setLoadingSubmissions] = useState(false);
 
-    const loadUsers = useCallback(async (query?: string) => {
-        setLoading(true);
-        const result = await getStaffUsers(query);
-        if (result.success) {
-            setUsers(result.data);
-        }
-        setLoading(false);
-    }, []);
+    const loadUsers = useCallback(
+        async (query?: string, pageNum: number = 1) => {
+            setLoading(true);
+            const result = await getStaffUsers(query, pageNum);
+            if (result.success) {
+                setUsers(result.data);
+                if (result.metadata) {
+                    setTotalPages(result.metadata.totalPages);
+                    setPage(result.metadata.page);
+                }
+            }
+            setLoading(false);
+        },
+        []
+    );
 
     // Initial data load on mount
     useEffect(() => {
@@ -54,9 +66,12 @@ export function useUsers(): UseUsersReturn {
 
         const fetchInitialUsers = async () => {
             setLoading(true);
-            const result = await getStaffUsers("");
+            const result = await getStaffUsers("", 1);
             if (!cancelled && result.success) {
                 setUsers(result.data);
+                if (result.metadata) {
+                    setTotalPages(result.metadata.totalPages);
+                }
             }
             if (!cancelled) {
                 setLoading(false);
@@ -71,8 +86,16 @@ export function useUsers(): UseUsersReturn {
     }, []);
 
     const handleSearch = useCallback(() => {
-        loadUsers(searchQuery);
+        setPage(1);
+        loadUsers(searchQuery, 1);
     }, [loadUsers, searchQuery]);
+
+    const handlePageChange = useCallback(
+        (newPage: number) => {
+            loadUsers(searchQuery, newPage);
+        },
+        [loadUsers, searchQuery]
+    );
 
     const openUserDetail = useCallback(async (user: StaffUser) => {
         setSelectedUser(user);
@@ -100,6 +123,8 @@ export function useUsers(): UseUsersReturn {
         users,
         loading,
         searchQuery,
+        page,
+        totalPages,
         selectedUser,
         userSubmissions,
         loadingSubmissions,
@@ -107,6 +132,7 @@ export function useUsers(): UseUsersReturn {
         activeUsers,
         setSearchQuery,
         handleSearch,
+        handlePageChange,
         openUserDetail,
         closeModal,
     };

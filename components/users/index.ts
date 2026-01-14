@@ -6,3 +6,4 @@ export { UsersTable } from "./UsersTable";
 export { UserTableRow } from "./UserTableRow";
 export { SubmissionsList } from "./SubmissionsList";
 export { UserDetailModal } from "./UserDetailModal";
+export { UserPagination } from "./UserPagination";

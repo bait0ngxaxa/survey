@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import LoginSuccessModal from "@/components/LoginSuccessModal";
-import SubmissionHistory from "@/components/SubmissionHistory";
-import { getUserSubmissions } from "@/lib/actions/survey";
+import SubmissionHistory from "@/components/user-dashboard/SubmissionHistory";
+import { getUserSubmissions } from "@/lib/actions/survey/queries";
 import {
     BackgroundEffects,
     UserDashboardHeader,

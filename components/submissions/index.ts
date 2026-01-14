@@ -8,4 +8,5 @@ export { SubmissionCard } from "./SubmissionCard";
 export { SubmissionCardList } from "./SubmissionCardList";
 export { Pagination } from "./Pagination";
 export { ExportButton } from "./ExportButton";
+export { PrintAllButton } from "./PrintAllButton";
 export { SearchInput } from "./SearchInput";

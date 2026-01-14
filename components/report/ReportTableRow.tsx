@@ -27,7 +27,7 @@ export function ReportTableRow({
                     <div className="whitespace-pre-line">{group.dimension}</div>
                 </td>
             )}
-            <td className="p-4 align-top text-center font-medium border-r border-gray-100 text-indigo-600 print:text-black print:border-black">
+            <td className="p-4 align-top text-center font-medium border-r border-gray-100 text-indigo-600 print:border-black">
                 {group.questionsLabel}
             </td>
             <td className="p-4 align-top border-r border-gray-100 print:border-black">
@@ -38,7 +38,7 @@ export function ReportTableRow({
                             : isWatch
                             ? "text-orange-600 font-semibold"
                             : "text-green-700 font-medium"
-                    } print:text-black`}
+                    } `}
                 >
                     {reportStepData.action}
                 </div>
@@ -49,7 +49,7 @@ export function ReportTableRow({
                     />
                 )}
             </td>
-            <td className="p-4 align-top text-gray-800 print:text-black">
+            <td className="p-4 align-top text-gray-800">
                 {reportStepData.relatedUnit}
             </td>
         </tr>
@@ -67,7 +67,7 @@ function AdditionalInfoDisplay({ additionalInfo }: AdditionalInfoDisplayProps) {
     if (!additionalInfo) return null;
 
     return (
-        <div className="text-xs text-gray-500 mt-1 print:text-black">
+        <div className="text-xs text-gray-500 mt-1">
             {additionalInfo.movementLimit && (
                 <div>• มีข้อจำกัดด้านการเคลื่อนไหว</div>
             )}

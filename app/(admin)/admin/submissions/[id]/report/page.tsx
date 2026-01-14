@@ -1,4 +1,4 @@
-import { getSurveySubmission } from "@/lib/actions/survey";
+import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { notFound } from "next/navigation";
 import { asRawAnswers, ReportData } from "@/lib/types";
 import {

@@ -47,3 +47,85 @@ body {
         opacity: 0.85;
     }
 }
+
+/* Thai Text Friendly Wrapping */
+.thai-text {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+}
+
+/* Hide br on mobile for responsive text */
+.br-mobile-hide br {
+    display: none;
+}
+@media (min-width: 640px) {
+    .br-mobile-hide br {
+        display: inline;
+    }
+}
+
+/* Responsive text that wraps naturally */
+.text-balance {
+    text-wrap: balance;
+}
+
+/* Print Styles - Only print report content */
+@media print {
+    /* Preserve colors when printing */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    /* Hide admin sidebar and navigation */
+    aside,
+    nav,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Hide background decorations */
+    .fixed {
+        display: none !important;
+    }
+
+    /* Make main content full width */
+    main {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Remove shadows and rounded corners for cleaner print */
+    .shadow-xl,
+    .shadow-lg,
+    .shadow-md,
+    .shadow-sm {
+        box-shadow: none !important;
+    }
+
+    /* Ensure white background */
+    body {
+        background: white !important;
+    }
+
+    /* Hide print button itself */
+    button:has(.lucide-printer) {
+        display: none !important;
+    }
+
+    /* Better page breaks */
+    .page-break-before {
+        page-break-before: always;
+    }
+
+    .page-break-after {
+        page-break-after: always;
+    }
+
+    .avoid-page-break {
+        page-break-inside: avoid;
+    }
+}

@@ -36,7 +36,7 @@ export function UserSearchInput({
                 </div>
                 <button
                     onClick={onSearch}
-                    className="px-6 py-2.5 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors font-medium shadow-lg shadow-sky-600/20"
+                    className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl hover:from-sky-400 hover:to-blue-500 transition-all font-medium shadow-lg shadow-sky-500/20"
                 >
                     ค้นหา
                 </button>

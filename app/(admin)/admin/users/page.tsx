@@ -7,6 +7,7 @@ import {
     UserSearchInput,
     UsersTable,
     UserDetailModal,
+    UserPagination,
 } from "@/components/users";
 
 export default function AdminUsersPage() {
@@ -19,8 +20,11 @@ export default function AdminUsersPage() {
         loadingSubmissions,
         totalSubmissions,
         activeUsers,
+        page,
+        totalPages,
         setSearchQuery,
         handleSearch,
+        handlePageChange,
         openUserDetail,
         closeModal,
     } = useUsers();
@@ -47,6 +51,14 @@ export default function AdminUsersPage() {
                     loading={loading}
                     onViewDetail={openUserDetail}
                 />
+
+                {!loading && (
+                    <UserPagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </div>
 
             {selectedUser && (

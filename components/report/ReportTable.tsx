@@ -25,7 +25,15 @@ export function ReportTable({ reportData }: ReportTableProps) {
 
             <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-xs print:border-black print:rounded-none">
                 <table className="w-full text-left text-sm text-gray-600 border-collapse min-w-[600px]">
-                    <thead className="bg-gray-50 text-gray-900 font-semibold text-center print:bg-gray-200">
+                    <thead
+                        className="bg-gray-50 text-gray-900 font-semibold text-center print:bg-sky-100"
+                        style={
+                            {
+                                WebkitPrintColorAdjust: "exact",
+                                printColorAdjust: "exact",
+                            } as React.CSSProperties
+                        }
+                    >
                         <tr>
                             <th className="p-4 border-b border-gray-200 border-r w-1/5 print:border-black">
                                 มิติ

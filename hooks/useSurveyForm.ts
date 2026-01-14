@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { submitSurvey } from "@/lib/actions/survey";
+import { submitSurvey } from "@/lib/actions/survey/submit";
 import {
     Part1Data,
     SectionTwoData,

@@ -13,7 +13,7 @@ export default function Navbar() {
                     {user?.publicMetadata?.role === "admin" && (
                         <a
                             href="/admin"
-                            className="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20"
+                            className="relative overflow-hidden bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:from-sky-400 hover:via-blue-500 hover:to-cyan-400 transition-all shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-105"
                         >
                             Admin Board
                         </a>
