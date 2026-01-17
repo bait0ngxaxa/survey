@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { centralGroups, centralNegativeQuestions } from "@/config/part4";
-import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
+import { type RecommendationsData, type AdditionalInfoData } from "@/lib/types";
 
 interface UseRecommendationsOptions {
     answers: Record<number, number>;

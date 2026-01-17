@@ -6,7 +6,7 @@ import {
     FormNavigation,
 } from "@/components/ui/form";
 import { BloodSugarQuestion, DoctorVisitQuestion } from "@/components/survey";
-import { Part1Data } from "@/lib/types";
+import { type Part1Data } from "@/lib/types";
 
 interface SectionOneFormProps {
     title: string;

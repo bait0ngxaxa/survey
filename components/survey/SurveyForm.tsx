@@ -5,7 +5,7 @@ import SubmitSuccessModal from "@/components/SubmitSuccessModal";
 import AlertModal from "@/components/AlertModal";
 import ConfirmExitModal from "@/components/ConfirmExitModal";
 import { useSurveyForm } from "@/hooks";
-import { SurveyConfig } from "@/config/surveyData";
+import { type SurveyConfig } from "@/config/surveyData";
 import {
     LoadingOverlay,
     SurveyBackground,

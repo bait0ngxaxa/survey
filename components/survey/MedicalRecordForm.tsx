@@ -1,6 +1,6 @@
 "use client";
 
-import { MedicalRecordData } from "@/lib/types";
+import { type MedicalRecordData } from "@/lib/types";
 import { FormSection, TextInput, FormNavigation } from "@/components/ui/form";
 import { useFormField } from "@/hooks";
 

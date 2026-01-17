@@ -6,8 +6,8 @@ import {
     useConfirmModal,
 } from "@/hooks";
 import { centralUISteps } from "@/config/part4";
-import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
-import { Part4Section } from "@/config/part4";
+import { type RecommendationsData, type AdditionalInfoData } from "@/lib/types";
+import { type Part4Section } from "@/config/part4";
 
 interface UseSectionFourLogicProps {
     data: Part4Section[];

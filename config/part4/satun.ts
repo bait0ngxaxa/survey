@@ -1,7 +1,7 @@
 /**
  * Satun Region Part 4 Survey Data
  */
-import { Part4Section } from "./types";
+import { type Part4Section } from "./types";
 
 export const satunPart4Data: Part4Section[] = [
     {

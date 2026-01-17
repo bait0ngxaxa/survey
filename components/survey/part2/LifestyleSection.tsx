@@ -1,6 +1,6 @@
 import { RadioGroup, TextInput } from "@/components/ui/form";
 import { ALCOHOL_OPTIONS, SMOKING_OPTIONS } from "@/config/sectionTwoData";
-import { SectionTwoData } from "@/lib/types";
+import { type SectionTwoData } from "@/lib/types";
 
 interface LifestyleSectionProps {
     formData: SectionTwoData;

@@ -22,7 +22,7 @@ export { lopburiPart4Data } from "./lopburi";
 
 // Region Configs Map
 import { centralRegionConfig } from "./central";
-import { RegionConfig } from "./types";
+import { type RegionConfig } from "./types";
 
 export const regionConfigs: Record<string, RegionConfig> = {
     central: centralRegionConfig,

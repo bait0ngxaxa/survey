@@ -1,5 +1,5 @@
-import { CentralGroup } from "@/lib/constants/reportConstants";
-import { ReportStepData } from "@/lib/types";
+import { type CentralGroup } from "@/lib/constants/reportConstants";
+import { type ReportStepData } from "@/lib/types";
 
 interface ReportTableRowProps {
     group: CentralGroup;

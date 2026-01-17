@@ -7,10 +7,10 @@ import * as XLSX from "xlsx";
 import {
     transformToGeneralData,
     transformToPromsData,
-    GeneralDataRow,
-    PromsDataRow,
-} from "@/lib/export-utils";
-import { PatientData } from "@/lib/types";
+    type GeneralDataRow,
+    type PromsDataRow,
+} from "@/lib/utils/export-utils";
+import { type PatientData } from "@/lib/types";
 
 interface ExportButtonProps {
     regionFilter?: string;

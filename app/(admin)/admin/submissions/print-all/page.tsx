@@ -1,12 +1,12 @@
 import { getSubmissions } from "@/lib/actions/admin";
 import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { redirect } from "next/navigation";
-import { asRawAnswers, ReportData } from "@/lib/types";
+import { asRawAnswers, type ReportData } from "@/lib/types";
 import { ReportPrintHeader, ReportTable } from "@/components/report";
 import { currentUser } from "@clerk/nextjs/server";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { FileText } from "lucide-react";
 import PrintButton from "@/components/PrintButton";
+import BackToSubmissionsButton from "@/components/BackToSubmissionsButton";
 
 export const metadata = {
     title: "Print All Reports - Admin",
@@ -47,7 +47,10 @@ export default async function PrintAllReportsPage() {
         })
     );
 
-    const validSubmissions = submissionsWithData.filter(Boolean);
+    // Filter out null submissions with proper typing
+    const validSubmissions = submissionsWithData.filter(
+        (s): s is NonNullable<typeof s> => s !== null
+    );
 
     return (
         <div className="min-h-screen bg-white pt-16">
@@ -55,16 +58,9 @@ export default async function PrintAllReportsPage() {
             <div className="no-print bg-gradient-to-r from-slate-50 to-sky-50/30 border-b border-slate-200 px-6 py-6">
                 <div className="max-w-5xl mx-auto">
                     {/* Back link */}
-                    <Link
-                        href="/admin/submissions"
-                        className="group inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200/80 text-slate-600 rounded-xl font-medium shadow-sm hover:shadow-md hover:border-slate-300 hover:text-slate-900 hover:-translate-y-0.5 transition-all mb-4"
-                    >
-                        <ArrowLeft
-                            size={18}
-                            className="group-hover:-translate-x-0.5 transition-transform"
-                        />
-                        <span className="text-sm">กลับไปหน้า Submissions</span>
-                    </Link>
+                    <div className="mb-4">
+                        <BackToSubmissionsButton />
+                    </div>
 
                     {/* Title and Print button */}
                     <div className="flex items-center justify-between">
@@ -84,24 +80,7 @@ export default async function PrintAllReportsPage() {
                 {validSubmissions.length > 0 ? (
                     <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
                         <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="32"
-                                height="32"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="text-sky-600"
-                            >
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="16" y1="13" x2="8" y2="13" />
-                                <line x1="16" y1="17" x2="8" y2="17" />
-                                <polyline points="10 9 9 9 8 9" />
-                            </svg>
+                            <FileText size={32} className="text-sky-600" />
                         </div>
                         <h2 className="text-2xl font-bold text-slate-900 mb-2">
                             พร้อม Print {validSubmissions.length} รายการ
@@ -129,7 +108,7 @@ export default async function PrintAllReportsPage() {
             <div className="hidden print:block">
                 {validSubmissions.map((submission, index) => (
                     <div
-                        key={submission!.id}
+                        key={submission.id}
                         className={`${
                             index < validSubmissions.length - 1
                                 ? "page-break-after"
@@ -137,12 +116,12 @@ export default async function PrintAllReportsPage() {
                         }`}
                     >
                         <ReportPrintHeader
-                            submissionDate={submission!.createdAt}
-                            patientFirstName={submission!.patient?.firstName}
-                            patientLastName={submission!.patient?.lastName}
-                            patientHN={submission!.patient?.nationalId}
+                            submissionDate={submission.createdAt}
+                            patientFirstName={submission.patient?.firstName}
+                            patientLastName={submission.patient?.lastName}
+                            patientHN={submission.patient?.nationalId}
                         />
-                        <ReportTable reportData={submission!.reportData} />
+                        <ReportTable reportData={submission.reportData} />
                     </div>
                 ))}
             </div>

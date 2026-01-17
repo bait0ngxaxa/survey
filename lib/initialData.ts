@@ -1,7 +1,7 @@
 // Initial data constants for survey forms
 // แยก initial state ออกมาเพื่อให้โค้ดสะอาดและ reusable
 
-import { Part1Data, SectionTwoData, MedicalRecordData } from "./types";
+import { type Part1Data, type SectionTwoData, type MedicalRecordData } from "./types";
 
 export const initialPart1Data: Part1Data = {
     bloodSugarKnown: "",

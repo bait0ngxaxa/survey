@@ -4,8 +4,8 @@ import AlertModal from "@/components/AlertModal";
 import ConfirmSubmitModal from "@/components/ConfirmSubmitModal";
 import { QuestionSlider, FormNavigation } from "@/components/ui/form";
 import { useSectionFourLogic } from "@/hooks";
-import { Part4Section } from "@/config/part4";
-import { RecommendationsData, AdditionalInfoData } from "@/lib/types";
+import { type Part4Section } from "@/config/part4";
+import { type RecommendationsData, type AdditionalInfoData } from "@/lib/types";
 import {
     AdditionalInfoGroup2,
     AdditionalInfoGroup9,

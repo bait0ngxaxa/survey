@@ -1,7 +1,7 @@
 /**
  * Lopburi Region Part 4 Survey Data
  */
-import { Part4Section } from "./types";
+import { type Part4Section } from "./types";
 
 export const lopburiPart4Data: Part4Section[] = [
     {

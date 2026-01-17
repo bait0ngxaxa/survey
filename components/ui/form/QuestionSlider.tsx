@@ -46,7 +46,7 @@ export default function QuestionSlider({
                 {/* Slider */}
                 <div className="px-2 sm:px-8 pb-4">
                     <div className="relative py-4">
-                        <div className="absolute top-1/2 left-0 right-0 h-3 bg-slate-100 rounded-full -translate-y-1/2 shadow-inner"></div>
+                        <div className="absolute top-1/2 left-0 right-0 h-3 bg-slate-100 rounded-full -translate-y-1/2 shadow-inner" />
 
                         <style jsx>{`
                             input[type="range"] {
@@ -136,7 +136,7 @@ export default function QuestionSlider({
                                             ? "bg-sky-300"
                                             : "bg-slate-200/50"
                                     } z-0`}
-                                ></div>
+                                 />
                             ))}
                         </div>
                     </div>

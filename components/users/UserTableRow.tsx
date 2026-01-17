@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Eye } from "lucide-react";
-import { StaffUser } from "@/lib/actions/users";
+import { type StaffUser } from "@/lib/actions/users";
 import {
     formatDate,
     getUserDisplayName,

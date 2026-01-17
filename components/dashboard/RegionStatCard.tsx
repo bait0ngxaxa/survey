@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { DashboardRegion } from "@/lib/constants/dashboardConstants";
+import { type DashboardRegion } from "@/lib/constants/dashboardConstants";
 
 interface RegionStatCardProps {
     region: DashboardRegion;

@@ -7,8 +7,8 @@ import {
     UserSearchInput,
     UsersTable,
     UserDetailModal,
-    UserPagination,
 } from "@/components/users";
+import { Pagination } from "@/components/Pagination";
 
 export default function AdminUsersPage() {
     const {
@@ -53,7 +53,7 @@ export default function AdminUsersPage() {
                 />
 
                 {!loading && (
-                    <UserPagination
+                    <Pagination
                         currentPage={page}
                         totalPages={totalPages}
                         onPageChange={handlePageChange}
