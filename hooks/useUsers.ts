@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import {
     getStaffUsers,
     getUserSubmissionsList,
-    StaffUser,
-    UserSubmission,
+    type StaffUser,
+    type UserSubmission,
 } from "@/lib/actions/users";
 
 interface UseUsersReturn {

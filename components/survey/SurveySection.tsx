@@ -1,5 +1,5 @@
 import { QuestionSlider } from "@/components/ui/form";
-import { Part4Section } from "@/config/part4";
+import { type Part4Section } from "@/config/part4";
 
 interface SurveySectionProps {
     section: Part4Section;

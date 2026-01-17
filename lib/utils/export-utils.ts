@@ -1,10 +1,10 @@
 import {
-    RawAnswers,
-    PatientData,
-    ReportData,
+    type RawAnswers,
+    type PatientData,
+    type ReportData,
     asRawAnswers,
-    Part1Data,
-    SectionTwoData,
+    type Part1Data,
+    type SectionTwoData,
 } from "@/lib/types";
 
 // ===== Type Definitions =====

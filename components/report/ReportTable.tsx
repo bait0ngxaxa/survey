@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { ReportData } from "@/lib/types";
+import { type ReportData } from "@/lib/types";
 import {
     CENTRAL_GROUPS,
     getDimensionCounts,

@@ -1,4 +1,4 @@
-import { Part1Data } from "../types";
+import { type Part1Data } from "../types";
 
 export interface SectionOneValidationResult {
     isValid: boolean;

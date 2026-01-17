@@ -8,7 +8,7 @@ import {
     SUPPORT_SOURCE_OPTIONS,
     FINANCIAL_STATUS_OPTIONS,
 } from "@/config/sectionTwoData";
-import { SectionTwoData } from "@/lib/types";
+import { type SectionTwoData } from "@/lib/types";
 
 interface DemographicsSectionProps {
     formData: SectionTwoData;

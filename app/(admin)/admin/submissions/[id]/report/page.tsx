@@ -1,6 +1,6 @@
 import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { notFound } from "next/navigation";
-import { asRawAnswers, ReportData } from "@/lib/types";
+import { asRawAnswers, type ReportData } from "@/lib/types";
 import {
     ReportNotFound,
     ReportPrintHeader,

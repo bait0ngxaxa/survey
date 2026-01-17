@@ -1,8 +1,8 @@
 import {
-    Part4Section,
-    RegionGroupConfig,
-    RegionUIStep,
-    RegionConfig,
+    type Part4Section,
+    type RegionGroupConfig,
+    type RegionUIStep,
+    type RegionConfig,
 } from "./types";
 
 export const centralPart4Data: Part4Section[] = [

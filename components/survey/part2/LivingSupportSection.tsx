@@ -4,7 +4,7 @@ import {
     FAMILY_SUPPORT_OPTIONS,
     WORK_SUPPORT_OPTIONS,
 } from "@/config/sectionTwoData";
-import { SectionTwoData } from "@/lib/types";
+import { type SectionTwoData } from "@/lib/types";
 
 interface LivingSupportSectionProps {
     formData: SectionTwoData;

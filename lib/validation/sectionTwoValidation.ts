@@ -1,4 +1,4 @@
-import { SectionTwoData } from "../types";
+import { type SectionTwoData } from "../types";
 import { REQUIRED_SCREENINGS, SCREENING_LABELS } from "@/config/sectionTwoData";
 
 export interface ValidationResult {

@@ -1,5 +1,5 @@
 import { MapPin, Calendar } from "lucide-react";
-import { UserSubmission } from "@/lib/actions/users";
+import { type UserSubmission } from "@/lib/actions/users";
 import { formatDate } from "@/lib/utils/usersUtils";
 import { getRegionLabel } from "@/lib/constants/submissionsConstants";
 

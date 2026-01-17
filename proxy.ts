@@ -7,10 +7,21 @@ const isProtectedRoute = createRouteMatcher([
     "/dashboard(.*)",
 ]);
 
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+
 export default clerkMiddleware(async (auth, req) => {
-    // Protect all routes that require login
     if (isProtectedRoute(req)) {
         await auth.protect();
+    }
+
+    // Admin routes require admin role
+    if (isAdminRoute(req)) {
+        const { sessionClaims } = await auth();
+        const role = (sessionClaims?.metadata as { role?: string })?.role;
+
+        if (role !== "admin") {
+            return Response.redirect(new URL("/", req.url));
+        }
     }
 });
 

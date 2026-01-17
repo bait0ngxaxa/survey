@@ -6,11 +6,11 @@ import {
     EmptyState,
     SubmissionsTable,
     SubmissionCardList,
-    Pagination,
     ExportButton,
     PrintAllButton,
     SearchInput,
 } from "@/components/submissions";
+import { Pagination } from "@/components/Pagination";
 
 export default async function SubmissionsPage({
     searchParams,
@@ -68,8 +68,11 @@ export default async function SubmissionsPage({
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                regionFilter={regionFilter}
-                searchQuery={searchQuery}
+                basePath="/admin/submissions"
+                searchParams={{
+                    region: regionFilter,
+                    search: searchQuery,
+                }}
             />
 
             {/* Action Buttons - Stacked on mobile, Row on desktop */}

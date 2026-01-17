@@ -1,5 +1,5 @@
 import { TextInput } from "@/components/ui/form";
-import { Part1Data } from "@/lib/types";
+import { type Part1Data } from "@/lib/types";
 
 interface DoctorVisitQuestionProps {
     part1Data: Part1Data;

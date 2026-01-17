@@ -1,4 +1,4 @@
-import { StaffUser } from "@/lib/actions/users";
+import { type StaffUser } from "@/lib/actions/users";
 import { UserTableRow } from "./UserTableRow";
 
 interface UsersTableProps {

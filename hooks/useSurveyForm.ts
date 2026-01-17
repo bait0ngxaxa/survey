@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { submitSurvey } from "@/lib/actions/survey/submit";
 import {
-    Part1Data,
-    SectionTwoData,
-    MedicalRecordData,
-    RecommendationsData,
-    AdditionalInfoData,
+    type Part1Data,
+    type SectionTwoData,
+    type MedicalRecordData,
+    type RecommendationsData,
+    type AdditionalInfoData,
 } from "@/lib/types";
 import {
     initialPart1Data,

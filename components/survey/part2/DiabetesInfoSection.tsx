@@ -4,7 +4,7 @@ import {
     MEDICATION_COUNT_OPTIONS,
     PAYMENT_METHOD_OPTIONS,
 } from "@/config/sectionTwoData";
-import { SectionTwoData } from "@/lib/types";
+import { type SectionTwoData } from "@/lib/types";
 
 interface DiabetesInfoSectionProps {
     formData: SectionTwoData;

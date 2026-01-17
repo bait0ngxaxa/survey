@@ -4,7 +4,7 @@ import {
     COMPLICATION_OPTIONS,
     SCREENING_FREQUENCY_OPTIONS,
 } from "@/config/sectionTwoData";
-import { SectionTwoData } from "@/lib/types";
+import { type SectionTwoData } from "@/lib/types";
 
 interface HealthConditionsSectionProps {
     formData: SectionTwoData;

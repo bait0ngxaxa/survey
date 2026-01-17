@@ -1,4 +1,4 @@
-import { AdditionalInfoData } from "@/lib/types";
+import { type AdditionalInfoData } from "@/lib/types";
 
 interface AdditionalInfoGroup2Props {
     additionalInfo: AdditionalInfoData;

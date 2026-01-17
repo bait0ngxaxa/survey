@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { X } from "lucide-react";
-import { StaffUser, UserSubmission } from "@/lib/actions/users";
+import { type StaffUser, type UserSubmission } from "@/lib/actions/users";
 import {
     formatDate,
     getUserDisplayName,

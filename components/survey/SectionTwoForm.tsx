@@ -4,7 +4,7 @@ import AlertModal from "@/components/AlertModal";
 import { useAlert, useFormField } from "@/hooks";
 import { FormSection, FormNavigation } from "@/components/ui/form";
 import { validateSectionTwo } from "@/lib/validation";
-import { SectionTwoData } from "@/lib/types";
+import { type SectionTwoData } from "@/lib/types";
 import {
     DemographicsSection,
     DiabetesInfoSection,
