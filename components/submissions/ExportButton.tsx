@@ -9,7 +9,7 @@ import {
     transformToPromsData,
     type GeneralDataRow,
     type PromsDataRow,
-} from "@/lib/utils/export-utils";
+} from "@/lib/utils/export";
 import { type PatientData } from "@/lib/types";
 
 interface ExportButtonProps {
@@ -21,7 +21,7 @@ interface ExportButtonProps {
  */
 function createWorkbook(
     generalData: GeneralDataRow[],
-    promsData: PromsDataRow[]
+    promsData: PromsDataRow[],
 ): XLSX.WorkBook {
     const wb = XLSX.utils.book_new();
 
@@ -80,7 +80,7 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     createdAt: s.createdAt,
                     rawAnswers: s.rawAnswers,
                     patient: s.patient as PatientData | null,
-                })
+                }),
             );
 
             const promsData = submissions.map((s) =>
@@ -90,7 +90,7 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     createdAt: s.createdAt,
                     rawAnswers: s.rawAnswers,
                     patient: s.patient as PatientData | null,
-                })
+                }),
             );
 
             // Create and export workbook

@@ -1,20 +1,6 @@
-"use client";
-
 import { useCallback } from "react";
-import { centralGroups, centralNegativeQuestions } from "@/config/part4";
+import { centralGroups } from "@/config/part4";
 import { type RecommendationsData, type AdditionalInfoData } from "@/lib/types";
-
-interface UseRecommendationsOptions {
-    answers: Record<number, number>;
-    additionalInfo: AdditionalInfoData;
-    recommendations: RecommendationsData;
-    onRecommendationsChange?: (recs: RecommendationsData) => void;
-}
-
-interface UseRecommendationsReturn {
-    getGroupAverage: (questionIds: number[]) => number;
-    processGroupRecommendations: (groupIds: number[]) => void;
-}
 
 const RELATED_UNITS: Record<number, string> = {
     1: "พยาบาล / LTC",
@@ -41,27 +27,19 @@ const CRITICAL_ACTIONS: Record<number, string> = {
     10: "ประเมินเพื่อส่งเข้า Health Literacy Program",
 };
 
-export function useRecommendations({
-    answers,
-    additionalInfo,
+interface UseActionPlanProps {
+    recommendations: RecommendationsData;
+    onRecommendationsChange?: (recs: RecommendationsData) => void;
+    additionalInfo: AdditionalInfoData;
+    getGroupAverage: (questionIds: number[]) => number;
+}
+
+export function useActionPlan({
     recommendations,
     onRecommendationsChange,
-}: UseRecommendationsOptions): UseRecommendationsReturn {
-    const getGroupAverage = useCallback(
-        (questionIds: number[]): number => {
-            if (questionIds.length === 0) return 0;
-            const sum = questionIds.reduce((acc, id) => {
-                let score = answers[id] || 0;
-                if (centralNegativeQuestions.includes(id) && score > 0) {
-                    score = 7 - score;
-                }
-                return acc + score;
-            }, 0);
-            return Math.round(sum / questionIds.length);
-        },
-        [answers]
-    );
-
+    additionalInfo,
+    getGroupAverage,
+}: UseActionPlanProps) {
     const getCriteria = (avgScore: number): string => {
         if (avgScore <= 2) return "1-2";
         if (avgScore === 3) return "3";
@@ -91,7 +69,7 @@ export function useRecommendations({
 
             const getAdditionalInfoForGroup = (
                 groupId: number,
-                avgScore: number
+                avgScore: number,
             ) => {
                 if (avgScore > 2) return undefined;
 
@@ -111,7 +89,7 @@ export function useRecommendations({
 
             groupIds.forEach((groupId) => {
                 const analyticGroup = centralGroups.find(
-                    (g) => g.id === groupId
+                    (g) => g.id === groupId,
                 );
                 if (!analyticGroup) return;
 
@@ -131,7 +109,7 @@ export function useRecommendations({
                     relatedUnit,
                     additionalInfo: getAdditionalInfoForGroup(
                         groupId,
-                        avgScore
+                        avgScore,
                     ),
                 };
             });
@@ -143,13 +121,8 @@ export function useRecommendations({
             onRecommendationsChange,
             getGroupAverage,
             additionalInfo,
-        ]
+        ],
     );
 
-    return {
-        getGroupAverage,
-        processGroupRecommendations,
-    };
+    return { processGroupRecommendations };
 }
-
-export default useRecommendations;

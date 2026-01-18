@@ -1,117 +1,25 @@
 import {
     type RawAnswers,
-    type PatientData,
-    type ReportData,
-    asRawAnswers,
     type Part1Data,
     type SectionTwoData,
+    type ReportData,
+    asRawAnswers,
 } from "@/lib/types";
+import {
+    type SubmissionData,
+    type GeneralDataRow,
+    type PromsDataRow,
+} from "./types";
+import {
+    translateRegion,
+    formatBirthDateThai,
+    formatWithOther,
+    formatScreening,
+    getActionText,
+} from "./helpers";
 
-// ===== Type Definitions =====
-
-interface SubmissionData {
-    id: string;
-    region: string;
-    createdAt: Date;
-    rawAnswers: unknown;
-    patient: PatientData | null;
-}
-
-export interface GeneralDataRow {
-    วันที่: string;
-    เวลา: string;
-    ID: string;
-    เขตสุขภาพ: string;
-    วิธีเก็บข้อมูล: string;
-    ผู้ให้ข้อมูล: string;
-    ผู้สัมภาษณ์: string;
-    ทราบระดับน้ำตาล: string;
-    "ระดับน้ำตาลในเลือด Fasting": string;
-    "ระดับน้ำตาลสะสม HbA1c": string;
-    พบแพทย์ตามนัด: string;
-    เหตุผลไม่พบแพทย์: string;
-    [key: string]: string;
-}
-
-export interface PromsDataRow {
-    วันที่: string;
-    เวลา: string;
-    ID: string;
-    ผู้ให้ข้อมูล: string;
-    เพศ: string;
-    เขตสุขภาพ: string;
-    [key: string]: string;
-}
-
-// ===== Helper Functions =====
-
-/**
- * Translates region code to Thai name
- */
-export function translateRegion(value: string): string {
-    const map: Record<string, string> = {
-        central: "ทีมกลาง",
-        phetchabun: "เพชรบูรณ์",
-        satun: "สตูล",
-        lopburi: "ลพบุรี",
-    };
-    return map[value] || value || "";
-}
-
-/**
- * Formats date string from YYYY-MM-DD to DD/MM/YYYY Buddhist Era
- */
-export function formatBirthDateThai(dateStr: string | undefined): string {
-    if (!dateStr) return "";
-    const [year, month, day] = dateStr.split("-");
-    if (!year || !month || !day) return dateStr;
-    const buddhistYear = parseInt(year) + 543;
-    return `${day}/${month}/${buddhistYear}`;
-}
-
-/**
- * Gets action text from report data for a specific step
- */
-export function getActionText(report: ReportData, stepId: number): string {
-    const step = report[`step_${stepId}`];
-    if (!step || !step.action) return "";
-    return `${step.label?.split("\n")[0] || `ข้อ ${stepId}`}: ${step.action}`;
-}
-
-/**
- * Formats field with "other" option
- */
-function formatWithOther(
-    value: string | undefined,
-    otherValue: string | undefined,
-    otherLabel: string = "อื่น ๆ"
-): string {
-    if (value === otherLabel && otherValue) {
-        return `${otherLabel}: ${otherValue}`;
-    }
-    return value || "";
-}
-
-/**
- * Formats screening field with "other" option
- */
-function formatScreening(
-    value: string | undefined,
-    otherValue: string | undefined
-): string {
-    if (value === "อื่น ๆ" && otherValue) {
-        return `อื่น ๆ: ${otherValue}`;
-    }
-    return value || "";
-}
-
-// ===== Data Transformation Functions =====
-
-/**
- * Transforms submission to general data row for Sheet 1
- */
 export function transformToGeneralData(
-    submission: SubmissionData
+    submission: SubmissionData,
 ): GeneralDataRow {
     const raw: RawAnswers = asRawAnswers(submission.rawAnswers);
     const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
@@ -149,14 +57,14 @@ export function transformToGeneralData(
             formatWithOther(
                 sec2.education,
                 sec2.educationOther,
-                "สูงกว่าปริญญาตรี"
+                "สูงกว่าปริญญาตรี",
             ),
         สถานภาพสมรส: sec2.maritalStatus || "",
         อาชีพ: formatWithOther(sec2.occupation, sec2.occupationOther),
         รายได้เฉลี่ยต่อเดือน: sec2.income || "",
         "การส่งเสียเลี้ยงดู(กรณีไม่ได้ทำงาน)": formatWithOther(
             sec2.supportSource,
-            sec2.supportSourceOther
+            sec2.supportSourceOther,
         ),
         เศรษฐกิจครอบครัว: sec2.financialStatus || "",
 
@@ -165,18 +73,18 @@ export function transformToGeneralData(
         อายุตอนเป็นเบาหวาน: sec2.diabetesAge || "",
         ประเภทการรักษา: formatWithOther(
             sec2.treatmentType,
-            sec2.treatmentOther
+            sec2.treatmentOther,
         ),
         จำนวนยา: sec2.medicationCount || "",
         สิทธิรักษาของผู้ป่วย: formatWithOther(
             sec2.paymentMethod,
-            sec2.paymentMethodOther
+            sec2.paymentMethodOther,
         ),
 
         // Living
         สถานะการอยู่อาศัย: formatWithOther(
             sec2.livingArrangement,
-            sec2.livingArrangementOther
+            sec2.livingArrangementOther,
         ),
         จำนวนสมาชิก: sec2.livingMembers || "",
         การสนับสนุนจากครอบครัว: sec2.familySupport || "",
@@ -224,7 +132,7 @@ export function transformToGeneralData(
         // Screenings
         ตรวจร่างกาย: formatScreening(
             screenings.physical,
-            screenings.physicalOther
+            screenings.physicalOther,
         ),
         ตรวจเท้า: formatScreening(screenings.foot, screenings.footOther),
         ตรวจตา: formatScreening(screenings.eye, screenings.eyeOther),
@@ -236,9 +144,6 @@ export function transformToGeneralData(
     };
 }
 
-/**
- * Transforms submission to PROMs data row for Sheet 2
- */
 export function transformToPromsData(submission: SubmissionData): PromsDataRow {
     const raw: RawAnswers = asRawAnswers(submission.rawAnswers);
     const report = (raw.reportData || {}) as ReportData;

@@ -17,6 +17,11 @@ function validateDemographics(formData: SectionTwoData): string[] {
     // 2. Age or Birth Date
     if (!formData.age && !formData.birthDate) {
         errors.push("กรุณากรอกอายุหรือวันเกิด (ข้อ 2)");
+    } else if (formData.age) {
+        const ageNum = parseInt(formData.age, 10);
+        if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+            errors.push("อายุต้องอยู่ระหว่าง 1-120 ปี (ข้อ 2)");
+        }
     }
 
     // 3. Education
@@ -76,6 +81,23 @@ function validateDiabetesInfo(formData: SectionTwoData): string[] {
     // 9. Diabetes Duration (at least one: duration or age of onset)
     if (!formData.diabetesDuration && !formData.diabetesAge) {
         errors.push("กรุณากรอกระยะเวลาเป็นเบาหวานหรืออายุที่เริ่มเป็น (ข้อ 9)");
+    } else {
+        if (formData.diabetesDuration) {
+            const duration = parseInt(formData.diabetesDuration, 10);
+            if (isNaN(duration) || duration < 1 || duration >= 100) {
+                errors.push(
+                    "กรุณาระบุตัวเลขระยะเวลาการเป็นเบาหวานให้ถูกต้อง (ข้อ 9)",
+                );
+            }
+        }
+        if (formData.diabetesAge) {
+            const age = parseInt(formData.diabetesAge, 10);
+            if (isNaN(age) || age < 1 || age >= 100) {
+                errors.push(
+                    "กรุณาระบุตัวเลขอายุที่เริ่มเป็นเบาหวานให้ถูกต้อง (ข้อ 9)",
+                );
+            }
+        }
     }
 
     // 10. Treatment Type
@@ -136,7 +158,7 @@ function validateLivingAndSupport(formData: SectionTwoData): string[] {
     // 16. Diet - at least one field filled
     if (!formData.dietFood && !formData.dietSnack && !formData.dietDrink) {
         errors.push(
-            "กรุณากรอกรายการอาหาร/เครื่องดื่มอย่างน้อย 1 รายการ (ข้อ 16)"
+            "กรุณากรอกรายการอาหาร/เครื่องดื่มอย่างน้อย 1 รายการ (ข้อ 16)",
         );
     }
 

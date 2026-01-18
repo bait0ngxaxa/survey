@@ -35,7 +35,14 @@ export const ScreeningsSchema = z.object({
 export const SectionTwoDataSchema = z.object({
     respondentName: z.string(),
     gender: z.string(),
-    age: z.string(),
+    age: z.string().refine(
+        (val) => {
+            if (!val) return true;
+            const num = parseInt(val, 10);
+            return !isNaN(num) && num >= 1 && num <= 120;
+        },
+        { message: "อายุต้องอยู่ระหว่าง 1-120 ปี" },
+    ),
     birthDate: z.string(),
     education: z.string(),
     educationOther: z.string(),
@@ -46,8 +53,22 @@ export const SectionTwoDataSchema = z.object({
     supportSource: z.string(),
     supportSourceOther: z.string(),
     financialStatus: z.string(),
-    diabetesDuration: z.string(),
-    diabetesAge: z.string(),
+    diabetesDuration: z.string().refine(
+        (val) => {
+            if (!val) return true;
+            const num = parseInt(val, 10);
+            return !isNaN(num) && num >= 1 && num <= 100;
+        },
+        { message: "ระยะเวลาต่องเป็นตัวเลขระหว่าง 1 ปีขึ้นไป" },
+    ),
+    diabetesAge: z.string().refine(
+        (val) => {
+            if (!val) return true;
+            const num = parseInt(val, 10);
+            return !isNaN(num) && num >= 1 && num <= 100;
+        },
+        { message: "อายุที่เริ่มเป็นต้องเป็นตัวเลขระหว่าง 1-120 ปี" },
+    ),
     treatmentType: z.string(),
     treatmentOther: z.string(),
     medicationCount: z.string(),
