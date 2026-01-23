@@ -112,6 +112,8 @@ export default function SectionFourForm({
                             text={q.text}
                             value={answers[q.id]}
                             onChange={(score) => onAnswer(q.id, score)}
+                            minLabel={currentUIStep.sliderLabels?.min}
+                            maxLabel={currentUIStep.sliderLabels?.max}
                         />
                     ))}
                 </div>

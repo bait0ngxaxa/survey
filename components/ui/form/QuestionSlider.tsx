@@ -5,6 +5,8 @@ interface QuestionSliderProps {
     text: string;
     value: number | undefined;
     onChange: (score: number) => void;
+    minLabel?: string;
+    maxLabel?: string;
 }
 
 export default function QuestionSlider({
@@ -12,6 +14,8 @@ export default function QuestionSlider({
     text,
     value,
     onChange,
+    minLabel = "1 (น้อยที่สุด)",
+    maxLabel = "6 (มากที่สุด)",
 }: QuestionSliderProps) {
     const isAnswered = value !== undefined;
     const hasUnanswered = !isAnswered;
@@ -63,14 +67,17 @@ export default function QuestionSlider({
                                 border: 4px solid #0284c7; /* sky-600 */
                                 cursor: pointer;
                                 margin-top: -12px;
-                                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                                box-shadow:
+                                    0 4px 6px -1px rgba(0, 0, 0, 0.1),
                                     0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                                transition: transform 0.15s ease,
+                                transition:
+                                    transform 0.15s ease,
                                     box-shadow 0.15s ease;
                             }
                             input[type="range"]::-webkit-slider-thumb:hover {
                                 transform: scale(1.1);
-                                box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.2),
+                                box-shadow:
+                                    0 10px 15px -3px rgba(14, 165, 233, 0.2),
                                     0 4px 6px -2px rgba(14, 165, 233, 0.1);
                             }
                             input[type="range"]::-webkit-slider-thumb:active {
@@ -118,8 +125,8 @@ export default function QuestionSlider({
                                         value === num
                                             ? "bg-sky-600 border-sky-600 scale-110 shadow-md ring-2 ring-white"
                                             : value && value > num
-                                            ? "bg-sky-300 border-sky-300"
-                                            : "bg-white border-slate-300 hover:border-sky-400 hover:bg-sky-50"
+                                              ? "bg-sky-300 border-sky-300"
+                                              : "bg-white border-slate-300 hover:border-sky-400 hover:bg-sky-50"
                                     }`}
                                     aria-label={`เลือกคะแนน ${num}`}
                                 />
@@ -136,14 +143,14 @@ export default function QuestionSlider({
                                             ? "bg-sky-300"
                                             : "bg-slate-200/50"
                                     } z-0`}
-                                 />
+                                />
                             ))}
                         </div>
                     </div>
 
                     {/* Score Display */}
                     <div className="flex justify-between mt-6 text-sm font-medium">
-                        <span className="text-slate-400">1 (น้อยที่สุด)</span>
+                        <span className="text-slate-400">{minLabel}</span>
                         <div
                             className={`flex flex-col items-center transition-all duration-300 ${
                                 isAnswered
@@ -158,7 +165,7 @@ export default function QuestionSlider({
                                 คะแนนที่เลือก
                             </span>
                         </div>
-                        <span className="text-slate-400">6 (มากที่สุด)</span>
+                        <span className="text-slate-400">{maxLabel}</span>
                     </div>
 
                     {/* Quick Select Buttons */}

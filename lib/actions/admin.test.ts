@@ -18,6 +18,10 @@ vi.mock("@clerk/nextjs/server", () => ({
     currentUser: vi.fn(),
 }));
 
+vi.mock("next/cache", () => ({
+    unstable_cache: (cb: any) => cb,
+}));
+
 describe("Admin Actions", () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -82,6 +86,10 @@ describe("Admin Actions", () => {
         it("should return paginated submissions with default params", async () => {
             mockAdminUser();
             const mockSubmissions = [{ id: "1" }, { id: "2" }];
+            const expectedSubmissions = [
+                { id: "1", interviewer: null, respondent: null },
+                { id: "2", interviewer: null, respondent: null },
+            ];
 
             // Mock findMany and count
             vi.mocked(prisma.surveySubmission.findMany).mockResolvedValue(
@@ -91,7 +99,7 @@ describe("Admin Actions", () => {
 
             const result = await getSubmissions();
 
-            expect(result.submissions).toEqual(mockSubmissions);
+            expect(result.submissions).toEqual(expectedSubmissions);
             expect(result.total).toBe(55);
             expect(result.currentPage).toBe(1);
             expect(result.totalPages).toBe(6); // Math.ceil(55/10)
@@ -115,6 +123,36 @@ describe("Admin Actions", () => {
             expect(prisma.surveySubmission.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
                     where: expect.objectContaining({ region: "Central" }),
+                }),
+            );
+        });
+
+        it("should search by interviewer or respondent name", async () => {
+            mockAdminUser();
+            vi.mocked(prisma.surveySubmission.findMany).mockResolvedValue([]);
+            vi.mocked(prisma.surveySubmission.count).mockResolvedValue(0);
+
+            const searchQuery = "John";
+            await getSubmissions({ searchQuery });
+
+            expect(prisma.surveySubmission.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: expect.objectContaining({
+                        OR: expect.arrayContaining([
+                            expect.objectContaining({
+                                rawAnswers: {
+                                    path: ["part1", "interviewerName"],
+                                    string_contains: searchQuery,
+                                },
+                            }),
+                            expect.objectContaining({
+                                rawAnswers: {
+                                    path: ["sectionTwo", "respondentName"],
+                                    string_contains: searchQuery,
+                                },
+                            }),
+                        ]),
+                    }),
                 }),
             );
         });

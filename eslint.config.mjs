@@ -16,6 +16,8 @@ export default defineConfig([
             "lib/generated/**",
             "*.config.js",
             "*.config.ts",
+            "**/*.test.ts",
+            "**/*.test.tsx",
         ],
     },
     {

@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { SurveySubmissionInputSchema } from "@/lib/schemas";
+import { revalidatePath } from "next/cache";
 
 // ============================================================
 // HELPER FUNCTIONS
@@ -50,7 +51,7 @@ export async function submitSurvey(input: unknown) {
         const { userId } = await auth();
         const totalScore = calculateTotalScore(data.sectionFour.answers);
         const { firstName, lastName } = splitFullName(
-            data.sectionTwo.respondentName
+            data.sectionTwo.respondentName,
         );
 
         // Patient data ที่ใช้ทั้ง create และ update
@@ -82,7 +83,7 @@ export async function submitSurvey(input: unknown) {
                 medicalRecord: data.medicalRecord,
                 sectionFour: data.sectionFour.answers,
                 reportData: data.sectionFour.reportData,
-            })
+            }),
         );
 
         // บันทึก Survey Submission
@@ -96,6 +97,8 @@ export async function submitSurvey(input: unknown) {
                 rawAnswers,
             },
         });
+
+        revalidatePath("/admin/submissions");
 
         return {
             success: true,

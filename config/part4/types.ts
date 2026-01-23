@@ -22,6 +22,10 @@ export interface RegionUIStep {
     containedGroups: number[];
     title: string;
     description: string;
+    sliderLabels?: {
+        min: string;
+        max: string;
+    };
 }
 
 export interface RegionConfig {

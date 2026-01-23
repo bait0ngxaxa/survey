@@ -12,6 +12,7 @@ interface SubmissionCardProps {
             lastName?: string | null;
             nationalId?: string | null;
         } | null;
+        interviewer?: string | null;
     };
 }
 

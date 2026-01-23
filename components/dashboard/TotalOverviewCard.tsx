@@ -1,4 +1,5 @@
 import { Users } from "lucide-react";
+import Link from "next/link";
 
 interface TotalOverviewCardProps {
     totalCount: number;
@@ -6,7 +7,10 @@ interface TotalOverviewCardProps {
 
 export function TotalOverviewCard({ totalCount }: TotalOverviewCardProps) {
     return (
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-sm border border-sky-100 flex items-center justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <Link
+            href="/admin/submissions"
+            className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-sm border border-sky-100 flex items-center justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300 cursor-pointer"
+        >
             <div className="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-110 transition-transform duration-700" />
 
             <div className="relative z-10">
@@ -23,6 +27,6 @@ export function TotalOverviewCard({ totalCount }: TotalOverviewCardProps) {
             <div className="relative z-10 p-4 bg-sky-100 text-sky-600 rounded-2xl group-hover:bg-sky-200 transition-colors duration-300">
                 <Users size={32} />
             </div>
-        </div>
+        </Link>
     );
 }

@@ -9,6 +9,7 @@ interface Submission {
         lastName?: string | null;
         nationalId?: string | null;
     } | null;
+    interviewer?: string | null;
 }
 
 interface SubmissionCardListProps {

@@ -24,6 +24,10 @@ vi.mock("@clerk/nextjs/server", () => ({
     auth: vi.fn().mockResolvedValue({ userId: "mock-user-id" }),
 }));
 
+vi.mock("next/cache", () => ({
+    revalidatePath: vi.fn(),
+}));
+
 describe("Server Action: submitSurvey", () => {
     beforeEach(() => {
         vi.clearAllMocks();

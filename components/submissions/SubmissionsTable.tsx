@@ -4,6 +4,11 @@ interface Submission {
     id: string;
     createdAt: Date;
     region: string;
+    patient: {
+        firstName: string | null;
+        lastName: string | null;
+    } | null;
+    interviewer?: string | null;
 }
 
 interface SubmissionsTableProps {
@@ -31,6 +36,12 @@ export function SubmissionsTable({
                             </th>
                             <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
                                 ID แบบสอบถาม
+                            </th>
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                ผู้ให้ข้อมูล
+                            </th>
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                ผู้สัมภาษณ์
                             </th>
                             <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
                                 วันที่บันทึก

@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { LayoutDashboard, FileSpreadsheet, Users } from "lucide-react";
 import { Suspense } from "react";
+import SidebarNav from "@/components/admin/SidebarNav";
 import Loading from "./admin/loading";
 import type { Metadata } from "next";
 
@@ -46,45 +45,7 @@ export default async function AdminLayout({
                     </div>
 
                     {/* Navigation with depth */}
-                    <nav className="p-4 space-y-1.5 grow bg-gradient-to-b from-transparent via-white/30 to-transparent">
-                        <Link
-                            href="/admin"
-                            className="group relative flex items-center gap-3 px-4 py-3 text-slate-600 rounded-xl font-medium overflow-hidden hover:text-sky-700 transition-colors duration-200"
-                        >
-                            {/* Hover background with depth */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-sky-100/80 via-sky-50/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl shadow-[inset_0_1px_2px_rgba(14,165,233,0.1)]" />
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0_2px_8px_rgba(14,165,233,0.12)] rounded-xl" />
-                            <LayoutDashboard
-                                size={20}
-                                className="relative z-10 group-hover:text-sky-600 transition-colors"
-                            />
-                            <span className="relative z-10">Dashboard</span>
-                        </Link>
-                        <Link
-                            href="/admin/submissions"
-                            className="group relative flex items-center gap-3 px-4 py-3 text-slate-600 rounded-xl font-medium overflow-hidden hover:text-sky-700 transition-colors duration-200"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-sky-100/80 via-sky-50/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl shadow-[inset_0_1px_2px_rgba(14,165,233,0.1)]" />
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0_2px_8px_rgba(14,165,233,0.12)] rounded-xl" />
-                            <FileSpreadsheet
-                                size={20}
-                                className="relative z-10 group-hover:text-sky-600 transition-colors"
-                            />
-                            <span className="relative z-10">Submissions</span>
-                        </Link>
-                        <Link
-                            href="/admin/users"
-                            className="group relative flex items-center gap-3 px-4 py-3 text-slate-600 rounded-xl font-medium overflow-hidden hover:text-sky-700 transition-colors duration-200"
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-r from-sky-100/80 via-sky-50/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl shadow-[inset_0_1px_2px_rgba(14,165,233,0.1)]" />
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0_2px_8px_rgba(14,165,233,0.12)] rounded-xl" />
-                            <Users
-                                size={20}
-                                className="relative z-10 group-hover:text-sky-600 transition-colors"
-                            />
-                            <span className="relative z-10">Users</span>
-                        </Link>
-                    </nav>
+                    <SidebarNav />
 
                     {/* User section with elevated card effect */}
                     <div className="p-4 border-t border-slate-200/60 bg-gradient-to-t from-slate-50/80 via-white/60 to-transparent">

@@ -7,6 +7,11 @@ interface SubmissionTableRowProps {
         id: string;
         createdAt: Date;
         region: string;
+        patient: {
+            firstName: string | null;
+            lastName: string | null;
+        } | null;
+        interviewer?: string | null;
     };
     index: number;
     currentPage: number;
@@ -41,6 +46,24 @@ export function SubmissionTableRow({
                 </code>
             </td>
 
+            {/* Patient Name */}
+            <td className="px-6 py-4">
+                <span className="text-slate-700 font-medium">
+                    {submission.patient
+                        ? `${submission.patient.firstName || ""} ${
+                              submission.patient.lastName || ""
+                          }`.trim() || "-"
+                        : "-"}
+                </span>
+            </td>
+
+            {/* Interviewer Name */}
+            <td className="px-6 py-4">
+                <span className="text-slate-500 font-medium">
+                    {submission.interviewer || "-"}
+                </span>
+            </td>
+
             {/* Date with icon */}
             <td className="px-6 py-4 whitespace-nowrap text-slate-600">
                 <div className="flex items-center gap-2.5">
@@ -54,7 +77,7 @@ export function SubmissionTableRow({
                                 day: "numeric",
                                 month: "short",
                                 year: "2-digit",
-                            }
+                            },
                         )}
                     </span>
                 </div>
