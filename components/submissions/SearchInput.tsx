@@ -42,7 +42,7 @@ export function SearchInput() {
                     type="text"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
-                    placeholder="ค้นหาด้วย ID แบบสอบถาม"
+                    placeholder="ค้นหาด้วย ชื่อ, ID แบบสอบถาม"
                     className="pl-10 pr-10 py-2.5 w-full text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all shadow-sm"
                 />
                 {searchValue && (
@@ -57,7 +57,7 @@ export function SearchInput() {
             </div>
             <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-sky-500 to-blue-600 rounded-lg hover:from-sky-400 hover:to-blue-500 transition-all shadow-md shadow-sky-500/20"
+                className="px-4 py-2 text-sm font-medium text-white bg-linear-to-r from-sky-500 to-blue-600 rounded-lg hover:from-sky-400 hover:to-blue-500 transition-all shadow-md shadow-sky-500/20"
             >
                 ค้นหา
             </button>
