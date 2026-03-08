@@ -152,6 +152,22 @@ export interface PatientData {
     gender?: string | null;
 }
 
+// ===== Admin Submission Types (SSOT for table/card/list views) =====
+
+export interface AdminSubmission {
+    id: string;
+    createdAt: Date;
+    region: string;
+    patient: {
+        id?: string;
+        firstName: string | null;
+        lastName: string | null;
+        nationalId?: string | null;
+    } | null;
+    interviewer?: string | null;
+    respondent?: string | null;
+}
+
 // ===== Type Guards =====
 
 export function isRawAnswers(data: unknown): data is RawAnswers {

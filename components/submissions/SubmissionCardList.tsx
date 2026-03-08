@@ -1,19 +1,8 @@
 import { SubmissionCard } from "./SubmissionCard";
-
-interface Submission {
-    id: string;
-    createdAt: Date;
-    region: string;
-    patient?: {
-        firstName?: string | null;
-        lastName?: string | null;
-        nationalId?: string | null;
-    } | null;
-    interviewer?: string | null;
-}
+import { type AdminSubmission } from "@/lib/types";
 
 interface SubmissionCardListProps {
-    submissions: Submission[];
+    submissions: AdminSubmission[];
 }
 
 export function SubmissionCardList({ submissions }: SubmissionCardListProps) {

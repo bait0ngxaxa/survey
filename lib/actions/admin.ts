@@ -2,18 +2,20 @@
 
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
+import { cache } from "react";
 import { GetSubmissionsParamsSchema } from "@/lib/schemas";
 import type { RawAnswers } from "@/lib/types";
+import { ERROR_UNAUTHORIZED } from "@/lib/constants/errors";
 
-// Check if user is admin
-async function checkAdmin(): Promise<void> {
+// Check if user is admin (deduplicated per request via React.cache)
+const checkAdmin = cache(async (): Promise<void> => {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
 
     if (role !== "admin") {
-        throw new Error("Unauthorized");
+        throw new Error(ERROR_UNAUTHORIZED);
     }
-}
+});
 
 export async function getAdminStats() {
     await checkAdmin();

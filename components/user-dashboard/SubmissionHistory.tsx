@@ -9,20 +9,11 @@ import {
     User,
 } from "lucide-react";
 import { regions } from "@/config/surveyData";
-
-interface Submission {
-    id: string;
-    region: string;
-    createdAt: Date;
-    patient: {
-        id: string;
-        firstName: string | null;
-        lastName: string | null;
-    };
-}
+import { type AdminSubmission } from "@/lib/types";
+import { formatDateMedium } from "@/lib/utils/formatDate";
 
 interface SubmissionHistoryProps {
-    submissions: Submission[];
+    submissions: AdminSubmission[];
 }
 
 function maskSubmissionId(id: string): string {
@@ -32,16 +23,6 @@ function maskSubmissionId(id: string): string {
 function getRegionInfo(regionId: string) {
     const region = regions.find((r) => r.id === regionId);
     return region || { name: regionId, color: "bg-slate-500" };
-}
-
-function formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    });
 }
 
 export default function SubmissionHistory({
@@ -118,12 +99,12 @@ export default function SubmissionHistory({
                             <tbody className="divide-y divide-slate-100">
                                 {submissions.map((submission) => {
                                     const regionInfo = getRegionInfo(
-                                        submission.region
+                                        submission.region,
                                     );
                                     const patientName =
                                         [
-                                            submission.patient.firstName,
-                                            submission.patient.lastName,
+                                            submission.patient?.firstName,
+                                            submission.patient?.lastName,
                                         ]
                                             .filter(Boolean)
                                             .join(" ") || "-";
@@ -136,7 +117,7 @@ export default function SubmissionHistory({
                                             <td className="px-6 py-4">
                                                 <code className="text-sm bg-slate-100 group-hover:bg-white border border-slate-200 group-hover:border-sky-200 px-2 py-1 rounded text-slate-600 font-mono transition-colors">
                                                     {maskSubmissionId(
-                                                        submission.id
+                                                        submission.id,
                                                     )}
                                                 </code>
                                             </td>
@@ -163,8 +144,8 @@ export default function SubmissionHistory({
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2 text-sm text-slate-500">
                                                     <Calendar className="w-4 h-4 text-slate-400" />
-                                                    {formatDate(
-                                                        submission.createdAt
+                                                    {formatDateMedium(
+                                                        submission.createdAt,
                                                     )}
                                                 </div>
                                             </td>

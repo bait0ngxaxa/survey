@@ -3,6 +3,14 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { GetSubmissionsOptionsSchema } from "@/lib/schemas";
+import {
+    ERROR_UNAUTHORIZED,
+    ERROR_NOT_FOUND,
+    ERROR_FETCH_FAILED,
+    ERROR_INVALID_SUBMISSION_ID,
+    ERROR_INVALID_OPTIONS,
+} from "@/lib/constants/errors";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants/submissionsConstants";
 
 // ============================================================
 // GET SINGLE SUBMISSION
@@ -10,23 +18,28 @@ import { GetSubmissionsOptionsSchema } from "@/lib/schemas";
 
 export async function getSurveySubmission(submissionId: string) {
     if (!submissionId || typeof submissionId !== "string") {
-        return { success: false, error: "Invalid submission ID" };
+        return { success: false, error: ERROR_INVALID_SUBMISSION_ID };
     }
 
     try {
+        const { userId } = await auth();
+        if (!userId) {
+            return { success: false, error: ERROR_UNAUTHORIZED };
+        }
+
         const submission = await prisma.surveySubmission.findUnique({
             where: { id: submissionId },
             include: { patient: true },
         });
 
         if (!submission) {
-            return { success: false, error: "ไม่พบข้อมูล" };
+            return { success: false, error: ERROR_NOT_FOUND };
         }
 
         return { success: true, data: submission };
     } catch (error) {
         console.error("Error fetching submission:", error);
-        return { success: false, error: "เกิดข้อผิดพลาดในการดึงข้อมูล" };
+        return { success: false, error: ERROR_FETCH_FAILED };
     }
 }
 
@@ -38,13 +51,13 @@ export async function getSurveySubmissions(options?: unknown) {
     try {
         const { userId } = await auth();
         if (!userId) {
-            return { success: false, error: "Unauthorized" };
+            return { success: false, error: ERROR_UNAUTHORIZED };
         }
 
         // Validate options
         const parsed = GetSubmissionsOptionsSchema.safeParse(options || {});
         if (!parsed.success) {
-            return { success: false, error: "Invalid options" };
+            return { success: false, error: ERROR_INVALID_OPTIONS };
         }
 
         const opts = parsed.data;
@@ -89,7 +102,7 @@ export async function getSurveySubmissions(options?: unknown) {
         };
     } catch (error) {
         console.error("Error fetching submissions:", error);
-        return { success: false, error: "เกิดข้อผิดพลาดในการดึงข้อมูล" };
+        return { success: false, error: ERROR_FETCH_FAILED };
     }
 }
 
@@ -97,13 +110,13 @@ export async function getSurveySubmissions(options?: unknown) {
 // GET USER'S OWN SUBMISSIONS
 // ============================================================
 
-export async function getUserSubmissions(limit: number = 10) {
+export async function getUserSubmissions(limit: number = DEFAULT_PAGE_SIZE) {
     const validLimit = Math.min(Math.max(1, limit), 100);
 
     try {
         const { userId } = await auth();
         if (!userId) {
-            return { success: false, error: "Unauthorized", data: [] };
+            return { success: false, error: ERROR_UNAUTHORIZED, data: [] };
         }
 
         const submissions = await prisma.surveySubmission.findMany({
@@ -122,7 +135,7 @@ export async function getUserSubmissions(limit: number = 10) {
         console.error("Error fetching user submissions:", error);
         return {
             success: false,
-            error: "เกิดข้อผิดพลาดในการดึงข้อมูล",
+            error: ERROR_FETCH_FAILED,
             data: [],
         };
     }

@@ -1,18 +1,11 @@
 import Link from "next/link";
 import { Calendar, ChevronRight } from "lucide-react";
 import { getRegionLabel } from "@/lib/constants/submissionsConstants";
+import { type AdminSubmission } from "@/lib/types";
+import { formatDateShort } from "@/lib/utils/formatDate";
 
 interface SubmissionTableRowProps {
-    submission: {
-        id: string;
-        createdAt: Date;
-        region: string;
-        patient: {
-            firstName: string | null;
-            lastName: string | null;
-        } | null;
-        interviewer?: string | null;
-    };
+    submission: AdminSubmission;
     index: number;
     currentPage: number;
 }
@@ -41,7 +34,7 @@ export function SubmissionTableRow({
 
             {/* ID with enhanced code styling */}
             <td className="px-6 py-4">
-                <code className="inline-flex items-center text-xs bg-gradient-to-r from-slate-100 to-slate-50 text-slate-700 px-3 py-1.5 rounded-lg font-mono border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] group-hover:border-sky-200 group-hover:from-sky-50 group-hover:to-white transition-all">
+                <code className="inline-flex items-center text-xs bg-linear-to-r from-slate-100 to-slate-50 text-slate-700 px-3 py-1.5 rounded-lg font-mono border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] group-hover:border-sky-200 group-hover:from-sky-50 group-hover:to-white transition-all">
                     {submission.id.slice(0, 8).toUpperCase()}
                 </code>
             </td>
@@ -71,21 +64,14 @@ export function SubmissionTableRow({
                         <Calendar className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-500 transition-colors" />
                     </div>
                     <span className="font-medium">
-                        {new Date(submission.createdAt).toLocaleDateString(
-                            "th-TH",
-                            {
-                                day: "numeric",
-                                month: "short",
-                                year: "2-digit",
-                            },
-                        )}
+                        {formatDateShort(submission.createdAt)}
                     </span>
                 </div>
             </td>
 
             {/* Region badge with depth */}
             <td className="px-6 py-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/80 shadow-[0_1px_2px_rgba(59,130,246,0.08)]">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-linear-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/80 shadow-[0_1px_2px_rgba(59,130,246,0.08)]">
                     {getRegionLabel(submission.region)}
                 </span>
             </td>

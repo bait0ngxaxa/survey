@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getAdminStats, getSubmissions } from "./admin";
+import { getAdminStats, getSubmissions } from "@/lib/actions/admin";
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 

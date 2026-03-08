@@ -1,9 +1,16 @@
 "use client";
 
-import AlertModal from "@/components/AlertModal";
-import ConfirmSubmitModal from "@/components/ConfirmSubmitModal";
+import dynamic from "next/dynamic";
+
+const AlertModal = dynamic(() => import("@/components/AlertModal"), {
+    ssr: false,
+});
+const ConfirmSubmitModal = dynamic(
+    () => import("@/components/ConfirmSubmitModal"),
+    { ssr: false },
+);
 import { QuestionSlider, FormNavigation } from "@/components/ui/form";
-import { useSectionFourLogic } from "@/hooks";
+import { useSectionFourLogic } from "@/hooks/useSectionFourLogic";
 import { type Part4Section } from "@/config/part4";
 import { type RecommendationsData, type AdditionalInfoData } from "@/lib/types";
 import {
@@ -187,9 +194,9 @@ export default function SectionFourForm({
 function NonCentralHeader() {
     return (
         <div className="relative group">
-            <div className="absolute inset-[-2px] bg-gradient-to-br from-sky-200/30 via-blue-200/20 to-cyan-200/30 rounded-[1.625rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="absolute inset-[-2px] bg-linear-to-br from-sky-200/30 via-blue-200/20 to-cyan-200/30 rounded-[1.625rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl shadow-sky-100/50 border border-white/80 overflow-hidden">
-                <div className="relative py-10 px-8 text-center bg-gradient-to-b from-white to-slate-50/50 border-b border-slate-100/80 overflow-hidden">
+                <div className="relative py-10 px-8 text-center bg-linear-to-b from-white to-slate-50/50 border-b border-slate-100/80 overflow-hidden">
                     {/* Decorative Background Elements */}
                     <div className="absolute top-[-50%] left-[-20%] w-80 h-80 bg-sky-100/30 rounded-full blur-3xl" />
                     <div className="absolute bottom-[-50%] right-[-20%] w-80 h-80 bg-blue-100/30 rounded-full blur-3xl" />
@@ -199,7 +206,7 @@ function NonCentralHeader() {
                             แบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่
                             2
                         </span>
-                        <span className="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500">
+                        <span className="block mt-3 text-transparent bg-clip-text bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500">
                             &ldquo;โดยผู้ป่วยเป็นคนรายงาน&rdquo;
                         </span>
                     </h1>

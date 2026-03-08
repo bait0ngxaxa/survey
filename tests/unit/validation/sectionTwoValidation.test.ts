@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validateSectionTwo } from "./sectionTwoValidation";
-import { type SectionTwoData } from "../types";
+import { validateSectionTwo } from "@/lib/validation/sectionTwoValidation";
+import { type SectionTwoData } from "@/lib/types";
 
 // Helper to create a valid base object
 const createValidData = (): SectionTwoData => ({

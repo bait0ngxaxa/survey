@@ -1,19 +1,11 @@
 import Link from "next/link";
 import { Calendar, ChevronRight, User } from "lucide-react";
 import { getRegionLabel } from "@/lib/constants/submissionsConstants";
+import { type AdminSubmission } from "@/lib/types";
+import { formatDate } from "@/lib/utils/formatDate";
 
 interface SubmissionCardProps {
-    submission: {
-        id: string;
-        createdAt: Date;
-        region: string;
-        patient?: {
-            firstName?: string | null;
-            lastName?: string | null;
-            nationalId?: string | null;
-        } | null;
-        interviewer?: string | null;
-    };
+    submission: AdminSubmission;
 }
 
 export function SubmissionCard({ submission }: SubmissionCardProps) {
@@ -41,7 +33,7 @@ export function SubmissionCard({ submission }: SubmissionCardProps) {
             <div className="flex items-center justify-between text-sm text-slate-500 pt-4 border-t border-slate-100">
                 <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    {new Date(submission.createdAt).toLocaleDateString("th-TH")}
+                    {formatDate(submission.createdAt)}
                 </div>
                 <div className="flex items-center text-indigo-600 font-medium">
                     ดูรายละเอียด <ChevronRight className="w-4 h-4" />

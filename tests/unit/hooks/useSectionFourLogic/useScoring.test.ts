@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useScoring } from "./useScoring";
+import { useScoring } from "@/hooks/useSectionFourLogic/useScoring";
 import { centralGroups, centralNegativeQuestions } from "@/config/part4";
 
 describe("useScoring Integration Tests (Real Config)", () => {

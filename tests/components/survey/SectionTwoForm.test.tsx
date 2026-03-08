@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import SectionTwoForm from "./SectionTwoForm";
+import SectionTwoForm from "@/components/survey/SectionTwoForm";
 import { type SectionTwoData } from "@/lib/types";
 
 // Mock Child Components to simplify rendering (Shallow Render approach)
@@ -27,13 +27,16 @@ vi.mock("@/components/ui/form", () => ({
 
 // Mock useAlert
 const mockShowAlert = vi.fn();
-vi.mock("@/hooks", () => ({
+vi.mock("@/hooks/useAlert", () => ({
     useAlert: () => ({
         isOpen: false,
         message: "",
         showAlert: mockShowAlert,
         closeAlert: vi.fn(),
     }),
+}));
+
+vi.mock("@/hooks/useFormField", () => ({
     useFormField: (data: any) => ({
         handleChange: vi.fn(),
     }),

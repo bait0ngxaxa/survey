@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useActionPlan } from "./useActionPlan";
+import { useActionPlan } from "@/hooks/useSectionFourLogic/useActionPlan";
 import { centralGroups } from "@/config/part4";
 import { type RecommendationsData } from "@/lib/types";
 

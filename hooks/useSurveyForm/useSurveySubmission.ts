@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useAlert, useAsyncSubmit } from "@/hooks";
+import { useAlert } from "@/hooks/useAlert";
+import { useAsyncSubmit } from "@/hooks/useAsyncSubmit";
 import { submitSurvey } from "@/lib/actions/survey/submit";
 import {
     type Part1Data,

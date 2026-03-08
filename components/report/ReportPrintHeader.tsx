@@ -1,3 +1,5 @@
+import { formatDate } from "@/lib/utils/formatDate";
+
 interface ReportPrintHeaderProps {
     submissionDate: Date;
     patientFirstName?: string | null;
@@ -17,9 +19,7 @@ export function ReportPrintHeader({
                 แบบรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่ 2
             </h1>
             <div className="mt-2 text-sm text-gray-600 flex justify-center gap-6">
-                <span>
-                    วันที่: {submissionDate.toLocaleDateString("th-TH")}
-                </span>
+                <span>วันที่: {formatDate(submissionDate)}</span>
                 <span>
                     ชื่อ-นามสกุล: {patientFirstName} {patientLastName}
                 </span>

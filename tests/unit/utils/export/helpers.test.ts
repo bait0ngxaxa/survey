@@ -3,7 +3,7 @@ import {
     translateRegion,
     formatBirthDateThai,
     formatWithOther,
-} from "./helpers";
+} from "@/lib/utils/export/helpers";
 
 describe("Export Helpers", () => {
     describe("translateRegion", () => {

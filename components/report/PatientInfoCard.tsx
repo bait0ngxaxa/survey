@@ -1,3 +1,5 @@
+import { formatDateFull } from "@/lib/utils/formatDate";
+
 interface PatientInfoCardProps {
     patientFirstName?: string | null;
     patientLastName?: string | null;
@@ -40,13 +42,7 @@ export function PatientInfoCard({
                         วันที่ทำแบบสอบถาม
                     </span>
                     <span className="font-semibold text-slate-900">
-                        {submissionDate.toLocaleDateString("th-TH", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        })}
+                        {formatDateFull(submissionDate)}
                     </span>
                 </div>
                 <div>

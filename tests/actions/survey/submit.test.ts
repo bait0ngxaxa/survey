@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { submitSurvey } from "./submit";
+import { submitSurvey } from "@/lib/actions/survey/submit";
 import prisma from "@/lib/prisma";
 import {
     initialPart1Data,

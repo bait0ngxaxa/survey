@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { useMultiStep, useExitConfirmation } from "@/hooks";
+import { useMultiStep } from "@/hooks/useMultiStep";
+import { useExitConfirmation } from "@/hooks/useExitConfirmation";
 import { validateSectionOne } from "@/lib/validation";
 import { type Part1Data } from "@/lib/types";
 

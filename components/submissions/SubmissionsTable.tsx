@@ -1,18 +1,8 @@
 import { SubmissionTableRow } from "./SubmissionTableRow";
-
-interface Submission {
-    id: string;
-    createdAt: Date;
-    region: string;
-    patient: {
-        firstName: string | null;
-        lastName: string | null;
-    } | null;
-    interviewer?: string | null;
-}
+import { type AdminSubmission } from "@/lib/types";
 
 interface SubmissionsTableProps {
-    submissions: Submission[];
+    submissions: AdminSubmission[];
     currentPage: number;
 }
 

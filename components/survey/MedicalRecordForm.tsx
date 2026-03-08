@@ -2,7 +2,7 @@
 
 import { type MedicalRecordData } from "@/lib/types";
 import { FormSection, TextInput, FormNavigation } from "@/components/ui/form";
-import { useFormField } from "@/hooks";
+import { useFormField } from "@/hooks/useFormField";
 
 interface MedicalRecordFormProps {
     formData: MedicalRecordData;

@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { transformToGeneralData, transformToPromsData } from "./transformers";
-import { type SubmissionData } from "./types";
+import {
+    transformToGeneralData,
+    transformToPromsData,
+} from "@/lib/utils/export/transformers";
+import { type SubmissionData } from "@/lib/utils/export/types";
 
 // Mock Data
 const mockDate = new Date("2024-01-01T10:00:00Z");
@@ -13,9 +16,6 @@ const mockSubmission: SubmissionData = {
         firstName: "Somchai",
         lastName: "Dee",
         gender: "Male",
-        region: "central",
-        createdAt: new Date(),
-        updatedAt: new Date(),
     },
     rawAnswers: {
         part1: {

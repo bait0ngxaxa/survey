@@ -1,16 +1,11 @@
-import { getSubmissions } from "@/lib/actions/admin";
 import { Suspense } from "react";
 import {
     SubmissionsHeader,
     RegionFilter,
-    EmptyState,
-    SubmissionsTable,
-    SubmissionCardList,
-    ExportButton,
-    PrintAllButton,
     SearchInput,
 } from "@/components/submissions";
-import { Pagination } from "@/components/Pagination";
+import { SubmissionsContent } from "@/components/submissions/SubmissionsContent";
+import { SubmissionsContentSkeleton } from "@/components/submissions/SubmissionsContentSkeleton";
 
 export default async function SubmissionsPage({
     searchParams,
@@ -22,19 +17,12 @@ export default async function SubmissionsPage({
     const regionFilter = params?.region || "";
     const searchQuery = params?.search || "";
 
-    const { submissions, totalPages } = await getSubmissions({
-        page: currentPage,
-        pageSize: 10,
-        regionFilter,
-        searchQuery,
-    });
-
     return (
         <div className="space-y-6 pb-20 sm:pb-8">
-            {/* Header Section */}
+            {/* Header Section — renders immediately */}
             <SubmissionsHeader />
 
-            {/* Filters Section */}
+            {/* Filters Section — renders immediately */}
             <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                 <div className="w-full md:w-auto md:min-w-[300px]">
                     <Suspense
@@ -51,39 +39,14 @@ export default async function SubmissionsPage({
                 />
             </div>
 
-            {/* Content Section */}
-            {submissions.length === 0 ? (
-                <EmptyState />
-            ) : (
-                <>
-                    <SubmissionsTable
-                        submissions={submissions}
-                        currentPage={currentPage}
-                    />
-                    <SubmissionCardList submissions={submissions} />
-                </>
-            )}
-
-            {/* Pagination */}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                basePath="/admin/submissions"
-                searchParams={{
-                    region: regionFilter,
-                    search: searchQuery,
-                }}
-            />
-
-            {/* Action Buttons - Stacked on mobile, Row on desktop */}
-            <div className="fixed bottom-6 right-6 z-20 flex flex-col gap-2 md:static md:flex-row md:justify-center md:gap-3 md:pt-4">
-                <div className="shadow-lg md:shadow-none rounded-xl overflow-hidden">
-                    <PrintAllButton />
-                </div>
-                <div className="shadow-lg md:shadow-none rounded-xl overflow-hidden">
-                    <ExportButton regionFilter={regionFilter} />
-                </div>
-            </div>
+            {/* Data Section — streams in via Suspense */}
+            <Suspense fallback={<SubmissionsContentSkeleton />}>
+                <SubmissionsContent
+                    currentPage={currentPage}
+                    regionFilter={regionFilter}
+                    searchQuery={searchQuery}
+                />
+            </Suspense>
         </div>
     );
 }

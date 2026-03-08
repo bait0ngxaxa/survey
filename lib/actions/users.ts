@@ -2,6 +2,8 @@
 
 import { clerkClient, auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
+import { ERROR_UNAUTHORIZED, ERROR_GENERIC } from "@/lib/constants/errors";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants/submissionsConstants";
 
 export interface StaffUser {
     id: string;
@@ -25,54 +27,59 @@ export interface UserSubmission {
 export async function getStaffUsers(
     searchQuery?: string,
     page: number = 1,
-    limit: number = 10
+    limit: number = DEFAULT_PAGE_SIZE,
 ) {
     try {
         const { userId } = await auth();
         if (!userId) {
             return {
                 success: false,
-                error: "Unauthorized",
+                error: ERROR_UNAUTHORIZED,
                 data: [],
-                metadata: { total: 0, page: 1, limit: 10, totalPages: 0 },
+                metadata: {
+                    total: 0,
+                    page: 1,
+                    limit: DEFAULT_PAGE_SIZE,
+                    totalPages: 0,
+                },
             };
         }
 
         const client = await clerkClient();
 
-        const { data: users } = await client.users.getUserList({
-            limit: 100,
-            query: searchQuery,
-        });
-
-        // Get submission counts grouped by userId
-        const submissionCounts = await prisma.surveySubmission.groupBy({
-            by: ["submittedByUserId"],
-            _count: { id: true },
-            where: {
-                submittedByUserId: { not: null },
-            },
-        });
-
-        // Get last submission dates
-        const lastSubmissions = await prisma.surveySubmission.findMany({
-            where: {
-                submittedByUserId: { not: null },
-            },
-            orderBy: { createdAt: "desc" },
-            distinct: ["submittedByUserId"],
-            select: {
-                submittedByUserId: true,
-                createdAt: true,
-            },
-        });
+        // Run all 3 independent queries in parallel
+        const [{ data: users }, submissionCounts, lastSubmissions] =
+            await Promise.all([
+                client.users.getUserList({
+                    limit: 100,
+                    query: searchQuery,
+                }),
+                prisma.surveySubmission.groupBy({
+                    by: ["submittedByUserId"],
+                    _count: { id: true },
+                    where: {
+                        submittedByUserId: { not: null },
+                    },
+                }),
+                prisma.surveySubmission.findMany({
+                    where: {
+                        submittedByUserId: { not: null },
+                    },
+                    orderBy: { createdAt: "desc" },
+                    distinct: ["submittedByUserId"],
+                    select: {
+                        submittedByUserId: true,
+                        createdAt: true,
+                    },
+                }),
+            ]);
 
         // Create lookup maps
         const countMap = new Map(
-            submissionCounts.map((s) => [s.submittedByUserId, s._count.id])
+            submissionCounts.map((s) => [s.submittedByUserId, s._count.id]),
         );
         const lastSubMap = new Map(
-            lastSubmissions.map((s) => [s.submittedByUserId, s.createdAt])
+            lastSubmissions.map((s) => [s.submittedByUserId, s.createdAt]),
         );
 
         // Map users with submission data
@@ -93,7 +100,7 @@ export async function getStaffUsers(
                 (user) =>
                     user.firstName?.toLowerCase().includes(query) ||
                     user.lastName?.toLowerCase().includes(query) ||
-                    user.email?.toLowerCase().includes(query)
+                    user.email?.toLowerCase().includes(query),
             );
         }
 
@@ -122,9 +129,14 @@ export async function getStaffUsers(
         console.error("Error fetching staff users:", error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
+            error: error instanceof Error ? error.message : ERROR_GENERIC,
             data: [],
-            metadata: { total: 0, page: 1, limit: 10, totalPages: 0 },
+            metadata: {
+                total: 0,
+                page: 1,
+                limit: DEFAULT_PAGE_SIZE,
+                totalPages: 0,
+            },
         };
     }
 }
@@ -132,12 +144,12 @@ export async function getStaffUsers(
 // Get submissions by a specific user
 export async function getUserSubmissionsList(
     staffUserId: string,
-    limit: number = 50
+    limit: number = 50,
 ) {
     try {
         const { userId } = await auth();
         if (!userId) {
-            return { success: false, error: "Unauthorized", data: [] };
+            return { success: false, error: ERROR_UNAUTHORIZED, data: [] };
         }
 
         const submissions = await prisma.surveySubmission.findMany({
@@ -170,7 +182,7 @@ export async function getUserSubmissionsList(
         console.error("Error fetching user submissions:", error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : "เกิดข้อผิดพลาด",
+            error: error instanceof Error ? error.message : ERROR_GENERIC,
             data: [],
         };
     }

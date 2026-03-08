@@ -1,6 +1,6 @@
 "use client";
 
-import { useUsers } from "@/hooks";
+import { useUsers } from "@/hooks/useUsers";
 import {
     UsersHeader,
     StatsCards,

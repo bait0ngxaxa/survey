@@ -1,10 +1,13 @@
-import { useAlert, useAsyncSubmit, useConfirmModal } from "@/hooks";
+import { useAlert } from "@/hooks/useAlert";
+import { useAsyncSubmit } from "@/hooks/useAsyncSubmit";
+import { useConfirmModal } from "@/hooks/useConfirmModal";
 import { centralUISteps } from "@/config/part4";
 import { type UseSectionFourLogicProps } from "./types";
 import { useSectionFourState } from "./useSectionFourState";
 import { useSectionFourValidation } from "./useSectionFourValidation";
 import { useSectionFourViewHelpers } from "./useSectionFourViewHelpers";
 import { useSectionFourHandlers } from "./useSectionFourHandlers";
+import { REGION_ID } from "@/lib/constants/submissionsConstants";
 import { useScoring } from "./useScoring";
 import { useActionPlan } from "./useActionPlan";
 
@@ -47,7 +50,7 @@ export function useSectionFourLogic({
         });
 
     const isSubmitting = isSubmittingProp || localIsSubmitting;
-    const isCentral = region === "central";
+    const isCentral = region === REGION_ID.CENTRAL;
 
     // --- 2. Logic Sub-Hooks ---
     const { currentStep, setCurrentStep } = useSectionFourState();

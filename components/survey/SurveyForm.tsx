@@ -1,11 +1,22 @@
 "use client";
 
 import { Suspense } from "react";
-import SubmitSuccessModal from "@/components/SubmitSuccessModal";
-import AlertModal from "@/components/AlertModal";
-import ConfirmExitModal from "@/components/ConfirmExitModal";
-import { useSurveyForm } from "@/hooks";
+import dynamic from "next/dynamic";
+
+const SubmitSuccessModal = dynamic(
+    () => import("@/components/SubmitSuccessModal"),
+    { ssr: false },
+);
+const AlertModal = dynamic(() => import("@/components/AlertModal"), {
+    ssr: false,
+});
+const ConfirmExitModal = dynamic(
+    () => import("@/components/ConfirmExitModal"),
+    { ssr: false },
+);
+import { useSurveyForm } from "@/hooks/useSurveyForm";
 import { type SurveyConfig } from "@/config/surveyData";
+import { REGION_ID } from "@/lib/constants/submissionsConstants";
 import {
     LoadingOverlay,
     SurveyBackground,
@@ -43,7 +54,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
             />
             {survey.isSubmitting && <LoadingOverlay />}
 
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-sky-50/30 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 font-sans">
                 <SurveyBackground />
 
                 <div className="relative z-10">
@@ -94,7 +105,9 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                             answers={survey.sectionFourAnswers}
                             onAnswer={survey.handleSectionFourAnswer}
                             onBack={() =>
-                                survey.goTo(region === "central" ? 2 : 3)
+                                survey.goTo(
+                                    region === REGION_ID.CENTRAL ? 2 : 3,
+                                )
                             }
                             onSubmit={survey.handleSubmitSurvey}
                             region={region}

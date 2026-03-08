@@ -1,7 +1,12 @@
 "use client";
 
-import AlertModal from "@/components/AlertModal";
-import { useAlert, useFormField } from "@/hooks";
+import dynamic from "next/dynamic";
+
+const AlertModal = dynamic(() => import("@/components/AlertModal"), {
+    ssr: false,
+});
+import { useAlert } from "@/hooks/useAlert";
+import { useFormField } from "@/hooks/useFormField";
 import { FormSection, FormNavigation } from "@/components/ui/form";
 import { validateSectionTwo } from "@/lib/validation";
 import { type SectionTwoData } from "@/lib/types";
