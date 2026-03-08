@@ -4,16 +4,17 @@ const isDev = process.env.NODE_ENV === "development";
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' ${isDev ? "'unsafe-eval'" : ""} 'unsafe-inline' https://clerk.com https://*.clerk.com https://challenges.cloudflare.com;
+    script-src 'self' ${isDev ? "'unsafe-eval'" : ""} 'unsafe-inline' https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://img.clerk.com;
-    font-src 'self';
+    font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    upgrade-insecure-requests;
-    connect-src 'self' https://*.clerk.com;
+    frame-src https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
+    worker-src 'self' blob:;
+    connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev;
 `;
 
 const securityHeaders = [
