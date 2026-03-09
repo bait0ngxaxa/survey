@@ -21,7 +21,7 @@ export default async function DashboardPage() {
     const submissions = submissionsResult.success ? submissionsResult.data : [];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30 relative overflow-hidden font-sans selection:bg-sky-100 selection:text-sky-900">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-sky-50/30 relative overflow-hidden font-sans selection:bg-sky-100 selection:text-sky-900">
             <BackgroundEffects />
 
             <div className="relative z-10 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

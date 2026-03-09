@@ -60,6 +60,7 @@ export default function Home() {
                                 src="/logo_h.png"
                                 alt="HHI Logo"
                                 fill
+                                sizes="(max-width: 768px) 14rem, 18rem"
                                 className="object-contain p-2 drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
                                 priority
                             />

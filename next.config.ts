@@ -4,7 +4,7 @@ const isDev = process.env.NODE_ENV === "development";
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' ${isDev ? "'unsafe-eval'" : ""} 'unsafe-inline' https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
+    script-src 'self' ${isDev ? "'unsafe-eval'" : ""} 'unsafe-inline' https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://vercel.live;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://img.clerk.com;
     font-src 'self' https://fonts.gstatic.com;
@@ -14,7 +14,7 @@ const cspHeader = `
     frame-ancestors 'none';
     frame-src https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
     worker-src 'self' blob:;
-    connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev;
+    connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev https://clerk-telemetry.com https://vercel.live;
 `;
 
 const securityHeaders = [
