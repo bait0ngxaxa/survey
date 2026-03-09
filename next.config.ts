@@ -6,7 +6,7 @@ const cspHeader = `
     default-src 'self';
     script-src 'self' ${isDev ? "'unsafe-eval'" : ""} 'unsafe-inline' https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://vercel.live;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https://img.clerk.com;
+    img-src 'self' blob: data: https://img.clerk.com https://vercel.com;
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
@@ -14,7 +14,7 @@ const cspHeader = `
     frame-ancestors 'none';
     frame-src https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://vercel.live;
     worker-src 'self' blob:;
-    connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev https://clerk-telemetry.com https://vercel.live;
+    connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev https://clerk-telemetry.com https://vercel.live wss://*.pusher.com https://*.pusher.com;
 `;
 
 const securityHeaders = [
