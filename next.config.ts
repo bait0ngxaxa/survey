@@ -12,7 +12,7 @@ const cspHeader = `
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    frame-src https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com;
+    frame-src https://clerk.com https://*.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://vercel.live;
     worker-src 'self' blob:;
     connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev https://clerk-telemetry.com https://vercel.live;
 `;
