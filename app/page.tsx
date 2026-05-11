@@ -1,177 +1,165 @@
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Award, Sparkles } from "lucide-react";
+import { ArrowRight, Microscope } from "lucide-react";
 
 export default function Home() {
     return (
-        <div className="flex flex-col min-h-screen bg-linear-to-br from-slate-50 via-white to-sky-50/30 selection:bg-sky-100 selection:text-sky-900 font-sans overflow-hidden">
-            {/* Multi-layered Abstract Background */}
+        <div className="flex flex-col min-h-screen bg-[#f8fafc] selection:bg-sky-100 selection:text-sky-900 font-sans overflow-hidden">
+            {/* --- Advanced Technical Background --- */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                {/* Subtle Grid Pattern */}
+                {/* Precision Grid Layer */}
                 <div
-                    className="absolute inset-0 opacity-[0.015]"
+                    className="absolute inset-0 opacity-[0.03]"
                     style={{
-                        backgroundImage: `linear-gradient(to right, #64748b 1px, transparent 1px), linear-gradient(to bottom, #64748b 1px, transparent 1px)`,
-                        backgroundSize: "60px 60px",
+                        backgroundImage: `radial-gradient(#0ea5e9 1px, transparent 1px), linear-gradient(to right, #0ea5e9 0.5px, transparent 0.5px), linear-gradient(to bottom, #0ea5e9 0.5px, transparent 0.5px)`,
+                        backgroundSize: "40px 40px, 200px 200px, 200px 200px",
                     }}
                 />
 
-                {/* Animated Floating Blobs */}
-                <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-linear-to-br from-sky-200/40 via-blue-100/30 to-transparent rounded-full blur-3xl animate-[float_20s_ease-in-out_infinite]" />
-                <div className="absolute top-[10%] right-[-15%] w-[500px] h-[500px] bg-linear-to-bl from-cyan-200/30 via-sky-100/20 to-transparent rounded-full blur-3xl animate-[float_25s_ease-in-out_infinite_reverse]" />
-                <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-linear-to-tr from-blue-100/30 via-indigo-50/20 to-transparent rounded-full blur-3xl animate-[float_30s_ease-in-out_infinite]" />
+                {/* Abstract Data Waveforms */}
+                <svg
+                    className="absolute top-0 right-0 w-1/2 h-full opacity-[0.02] text-sky-500"
+                    viewBox="0 0 400 800"
+                    fill="none"
+                >
+                    <path
+                        d="M400 0C350 100 450 200 400 300C350 400 450 500 400 600C350 700 450 800 400 900"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                    />
+                    <path
+                        d="M450 0C400 100 500 200 450 300C400 400 500 500 450 600C400 700 500 800 450 900"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                    />
+                    <circle
+                        cx="380"
+                        cy="150"
+                        r="40"
+                        stroke="currentColor"
+                        strokeWidth="0.5"
+                    />
+                    <circle
+                        cx="420"
+                        cy="450"
+                        r="60"
+                        stroke="currentColor"
+                        strokeWidth="0.5"
+                    />
+                </svg>
 
-                {/* Decorative Circles */}
-                <div className="absolute top-[15%] left-[10%] w-32 h-32 border border-sky-200/30 rounded-full animate-[spin_40s_linear_infinite]" />
-                <div className="absolute top-[15%] left-[10%] w-48 h-48 border border-sky-100/20 rounded-full animate-[spin_60s_linear_infinite_reverse]" />
-                <div className="absolute bottom-[20%] right-[10%] w-24 h-24 border border-blue-200/30 rounded-full animate-[spin_35s_linear_infinite_reverse]" />
-                <div className="absolute bottom-[20%] right-[10%] w-40 h-40 border border-blue-100/20 rounded-full animate-[spin_50s_linear_infinite]" />
-
-                {/* Floating Particles */}
-                <div className="absolute top-[30%] left-[25%] w-2 h-2 bg-sky-400/40 rounded-full animate-[pulse_3s_ease-in-out_infinite]" />
-                <div className="absolute top-[45%] right-[30%] w-1.5 h-1.5 bg-blue-400/30 rounded-full animate-[pulse_4s_ease-in-out_infinite_0.5s]" />
-                <div className="absolute bottom-[35%] left-[40%] w-2.5 h-2.5 bg-cyan-400/35 rounded-full animate-[pulse_3.5s_ease-in-out_infinite_1s]" />
-
-                {/* Gradient Overlay for Depth */}
-                <div className="absolute inset-0 bg-linear-to-t from-white/80 via-transparent to-white/40" />
+                {/* Light Diffusion Orbs (Subtle) */}
+                <div className="absolute top-[-10%] left-[-5%] w-[800px] h-[800px] bg-sky-100/30 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-50/40 rounded-full blur-[100px]" />
             </div>
 
-            {/* Header Spacer */}
-            <div className="h-2 md:h-4" />
+            {/* --- Main Interface --- */}
+            <main className="relative z-10 flex flex-col items-center justify-center grow px-6 pt-12 pb-20">
+                <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    {/* Left Column: Branding & Visuals */}
+                    <div className="lg:col-span-5 flex flex-col items-center lg:items-start space-y-8 animate-fade-in-left">
+                        {/* Enhanced Logo with Multiple Glow Layers */}
+                        <div className="relative w-64 h-64 md:w-80 md:h-80 group">
+                            {/* Outer glow ring */}
+                            <div className="absolute inset-[-20%] bg-linear-to-br from-sky-200/20 via-blue-100/10 to-cyan-200/20 rounded-full blur-3xl animate-[pulse_6s_ease-in-out_infinite]" />
 
-            <main className="relative z-10 flex flex-col items-center justify-start grow px-6 pb-10 pt-2 md:pt-4 text-center">
-                {/* Hero Section with Enhanced Depth */}
-                <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8">
-                    {/* Enhanced Logo with Multiple Glow Layers - Fade In Down */}
-                    <div className="relative w-56 h-56 md:w-72 md:h-72 mb-4 group animate-fade-in-down">
-                        {/* Outer glow ring */}
-                        <div className="absolute inset-[-20%] bg-linear-to-br from-sky-200/20 via-blue-100/10 to-cyan-200/20 rounded-full blur-3xl animate-[pulse_6s_ease-in-out_infinite]" />
+                            {/* Middle glow */}
+                            <div className="absolute inset-[-10%] bg-sky-100/40 blur-2xl rounded-full animate-[pulse_4s_ease-in-out_infinite_0.5s]" />
 
-                        {/* Middle glow */}
-                        <div className="absolute inset-[-10%] bg-sky-100/40 blur-2xl rounded-full animate-[pulse_4s_ease-in-out_infinite_0.5s]" />
+                            {/* Inner glow */}
+                            <div className="absolute inset-0 bg-linear-to-br from-white/80 to-sky-50/60 rounded-full blur-xl" />
 
-                        {/* Inner glow */}
-                        <div className="absolute inset-0 bg-linear-to-br from-white/80 to-sky-50/60 rounded-full blur-xl" />
-
-                        {/* Logo container with glassmorphism */}
-                        <div className="relative w-full h-full rounded-full bg-white/30 backdrop-blur-sm border border-white/50 shadow-[0_8px_32px_rgba(14,165,233,0.15),0_4px_16px_rgba(0,0,0,0.05)] animate-[float_6s_ease-in-out_infinite]">
-                            <Image
-                                src="/logo_h.png"
-                                alt="HHI Logo"
-                                fill
-                                sizes="(max-width: 768px) 14rem, 18rem"
-                                className="object-contain p-2 drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
-                                priority
-                            />
+                            {/* Logo container with glassmorphism */}
+                            <div className="relative w-full h-full rounded-full bg-white/30 backdrop-blur-sm border border-white/50 shadow-[0_8px_32px_rgba(14,165,233,0.15),0_4px_16px_rgba(0,0,0,0.05)] animate-[float_6s_ease-in-out_infinite]">
+                                <Image
+                                    src="/logo_h.png"
+                                    alt="RHHSDI Logo"
+                                    fill
+                                    className="object-contain p-6 drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
+                                    priority
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Enhanced Badge with Glassmorphism - Fade In Left */}
-                    <div className="relative group animate-fade-in-left">
-                        <div className="absolute inset-0 bg-linear-to-r from-sky-400/20 to-blue-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="relative inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/70 backdrop-blur-md border border-sky-100/80 shadow-[0_4px_20px_rgba(14,165,233,0.1),0_2px_8px_rgba(0,0,0,0.04)] text-sky-700 text-sm font-semibold tracking-wide uppercase transition-all duration-300 hover:shadow-[0_8px_30px_rgba(14,165,233,0.15),0_4px_12px_rgba(0,0,0,0.05)] hover:-translate-y-0.5">
-                            <Sparkles className="w-4 h-4 text-sky-500 animate-[pulse_2s_ease-in-out_infinite]" />
-                            <Award className="w-4 h-4 text-sky-500" />
-                            Patient Reported Outcomes Measurement
-                        </div>
-                    </div>
-
-                    {/* Text Content with Enhanced Typography - Title Fade In Right, Desc Fade In Up */}
-                    <div className="space-y-6 max-w-3xl">
-                        <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] thai-text animate-fade-in-right">
-                            <span className="relative inline-block text-slate-800">
-                                การวิจัยและพัฒนา
-                                {/* Subtle underline decoration */}
-                                <span className="absolute -bottom-1 left-0 right-0 h-3 bg-linear-to-r from-sky-200/50 via-blue-200/30 to-transparent rounded-full blur-sm" />
-                            </span>
-                            <span className="block mt-3 text-transparent bg-clip-text bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500 drop-shadow-sm animate-[shimmer_3s_ease-in-out_infinite]">
-                                เครื่องมือ PROMs
-                            </span>
-                        </h1>
-
-                        {/* Description Card with Depth - Fade In Up */}
-                        <div className="relative group animate-fade-in-up [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
-                            <div className="absolute inset-0 bg-linear-to-br from-sky-100/50 to-blue-50/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <p className="relative text-lg md:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto px-6 py-4 rounded-2xl bg-white/40 backdrop-blur-sm border border-white/60 shadow-[0_4px_24px_rgba(0,0,0,0.03)] thai-text br-mobile-hide">
-                                ระบบรวบรวมข้อมูลผลลัพธ์ที่รายงานโดยผู้ป่วย{" "}
-                                <br />
-                                <span className="text-sky-600/80 font-medium">
-                                    (Patient Reported Outcomes Measurement)
+                        {/* Research Focus Statement */}
+                        <div className="relative overflow-hidden group">
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-sky-500 rounded-full" />
+                            <div className="pl-5 py-1">
+                                <span className="block text-slate-400 text-[10px] uppercase tracking-[0.2em] font-bold mb-1">
+                                    Affiliated Research
                                 </span>
-                                <br />
+                                <p className="text-slate-600 text-sm font-medium leading-relaxed max-w-xs thai-text">
+                                    มุ่งเน้นการวิจัยเชิงลึกเพื่อพัฒนาระบบบริการสุขภาพ{" "}
+                                    <br />
+                                    สู่ความเป็นเลิศ
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Hero Content */}
+                    <div className="lg:col-span-7 flex flex-col space-y-10 text-center lg:text-left animate-fade-in-right">
+                        <div className="space-y-4">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-sky-600 text-sm font-bold tracking-tight uppercase">
+                                <Microscope className="w-4 h-4" />
+                                Patient Reported Outcomes
+                            </div>
+                            <h1 className="text-4xl md:text-6xl xl:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1] thai-text">
+                                <span className="block">การวิจัยและพัฒนา</span>
+                                <span className="text-transparent bg-clip-text bg-linear-to-r from-sky-600 to-blue-600">
+                                    เครื่องมือ PROMs
+                                </span>
+                            </h1>
+                        </div>
+
+                        <div className="relative pl-0 lg:pl-8">
+                            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-linear-to-b from-sky-500 to-transparent rounded-full hidden lg:block" />
+                            <p className="text-lg md:text-xl text-slate-500 leading-relaxed max-w-2xl thai-text">
+                                ระบบรวบรวมข้อมูลผลลัพธ์ที่รายงานโดยผู้ป่วย
                                 เพื่อยกระดับการบริการและคุณภาพชีวิตสำหรับผู้ป่วยเบาหวาน
+                                <span className="block mt-2 text-sky-600/80 font-semibold italic text-base">
+                                    (Integrated Health Care System Development)
+                                </span>
                             </p>
                         </div>
-                    </div>
 
-                    {/* Enhanced CTAs with Depth - Fade In Up with more delay */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full pt-4 animate-fade-in-up [animation-delay:400ms] opacity-0 [animation-fill-mode:forwards]">
-                        <SignedIn>
-                            <Link
-                                href="/dashboard"
-                                className="group relative inline-flex items-center justify-center min-w-[220px] px-8 py-4 text-lg font-bold text-white transition-all duration-300 overflow-hidden rounded-full focus:outline-none focus:ring-4 focus:ring-sky-200/50"
-                            >
-                                {/* Button Background Layers */}
-                                <div className="absolute inset-0 bg-linear-to-r from-sky-600 via-sky-500 to-blue-500" />
-                                <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent" />
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500 transition-opacity duration-300" />
-
-                                {/* Shine effect */}
-                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-700" />
-                                </div>
-
-                                {/* Button Shadow */}
-                                <div className="absolute inset-0 rounded-full shadow-[0_4px_20px_rgba(14,165,233,0.25),0_2px_8px_rgba(0,0,0,0.1)] group-hover:shadow-[0_8px_30px_rgba(14,165,233,0.4),0_4px_12px_rgba(0,0,0,0.15)] transition-shadow duration-300" />
-
-                                <span className="relative flex items-center group-hover:-translate-y-0.5 transition-transform duration-300">
-                                    เริ่มทำแบบสอบถาม
-                                    <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                                </span>
-                            </Link>
-                        </SignedIn>
-
-                        <SignedOut>
-                            <SignInButton forceRedirectUrl="/dashboard?loggedIn=true">
-                                <button className="group relative inline-flex items-center justify-center min-w-[220px] px-8 py-4 text-lg font-bold text-white transition-all duration-300 overflow-hidden rounded-full focus:outline-none focus:ring-4 focus:ring-sky-100/50">
-                                    {/* Button Background Layers */}
-                                    <div className="absolute inset-0 bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500" />
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent" />
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-cyan-500 via-sky-500 to-blue-500 transition-opacity duration-300" />
-
-                                    {/* Animated border glow */}
-                                    <div className="absolute inset-[-2px] bg-linear-to-r from-sky-400 via-blue-400 to-cyan-400 rounded-full opacity-0 group-hover:opacity-60 blur-sm transition-opacity duration-300" />
-                                    <div className="absolute inset-0 bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500 rounded-full" />
-
-                                    {/* Shine effect */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-full">
-                                        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-linear-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
-                                    </div>
-
-                                    {/* Button Shadow */}
-                                    <div className="absolute inset-0 rounded-full shadow-[0_4px_20px_rgba(59,130,246,0.3),0_2px_8px_rgba(0,0,0,0.1)] group-hover:shadow-[0_8px_30px_rgba(59,130,246,0.45),0_4px_12px_rgba(0,0,0,0.15)] transition-shadow duration-300" />
-
-                                    <span className="relative flex items-center group-hover:-translate-y-0.5 transition-transform duration-300">
-                                        เข้าสู่ระบบ
-                                        <ArrowRight className="ml-2 w-5 h-5 opacity-90 group-hover:translate-x-1 transition-transform" />
+                        <div className="flex flex-col sm:flex-row gap-5 items-center lg:items-start">
+                            <SignedIn>
+                                <Link
+                                    href="/dashboard"
+                                    className="group relative inline-flex items-center justify-center min-w-[240px] px-8 py-4.5 bg-sky-600 text-white text-lg font-bold rounded-2xl overflow-hidden transition-all duration-300 hover:bg-sky-700 hover:shadow-[0_20px_40px_rgba(14,165,233,0.3)] hover:-translate-y-1"
+                                >
+                                    <span className="relative z-10 flex items-center">
+                                        เริ่มทำแบบสอบถาม
+                                        <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
                                     </span>
-                                </button>
-                            </SignInButton>
-                        </SignedOut>
+                                    <div className="absolute inset-0 bg-linear-to-r from-sky-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                </Link>
+                            </SignedIn>
+
+                            <SignedOut>
+                                <SignInButton forceRedirectUrl="/dashboard?loggedIn=true">
+                                    <button className="group relative inline-flex items-center justify-center min-w-[240px] px-8 py-4.5 bg-white text-slate-900 text-lg font-bold rounded-2xl border-2 border-slate-200 overflow-hidden transition-all duration-300 hover:border-sky-500 hover:text-sky-600 hover:shadow-xl hover:-translate-y-1">
+                                        <span className="relative z-10 flex items-center">
+                                            เข้าสู่ระบบใช้งาน
+                                            <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
+                                        </span>
+                                        <div className="absolute inset-0 bg-sky-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    </button>
+                                </SignInButton>
+                            </SignedOut>
+                        </div>
                     </div>
                 </div>
             </main>
 
-            {/* Enhanced Footer */}
-            <footer className="relative z-10 py-8">
-                <div className="text-center">
-                    <p className="text-slate-400 text-sm">
-                        © {new Date().getFullYear()}{" "}
-                        <span className="text-slate-500">
-                            สถาบันพัฒนาระบบบริการสุขภาพองค์รวม
-                        </span>
-                    </p>
+            {/* --- Technical Footer --- */}
+            <footer className="relative z-10 border-t border-slate-200 bg-white/50 backdrop-blur-md py-8">
+                <div className="max-w-6xl mx-auto px-6 flex justify-center items-center">
+                    <span className="text-slate-500 text-sm font-semibold thai-text">
+                        สถาบันพัฒนาระบบบริการสุขภาพองค์รวม
+                    </span>
                 </div>
             </footer>
         </div>

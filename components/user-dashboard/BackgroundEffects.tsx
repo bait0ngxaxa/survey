@@ -1,33 +1,24 @@
 export function BackgroundEffects() {
     return (
-        <div className="fixed inset-0 z-0 pointer-events-none">
-            {/* Subtle Grid Pattern */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+            {/* Precision Grid Layer */}
             <div
-                className="absolute inset-0 opacity-[0.015]"
+                className="absolute inset-0 opacity-[0.03]"
                 style={{
-                    backgroundImage: `linear-gradient(to right, #64748b 1px, transparent 1px), linear-gradient(to bottom, #64748b 1px, transparent 1px)`,
-                    backgroundSize: "60px 60px",
+                    backgroundImage: `radial-gradient(#0ea5e9 1px, transparent 1px), linear-gradient(to right, #0ea5e9 0.5px, transparent 0.5px), linear-gradient(to bottom, #0ea5e9 0.5px, transparent 0.5px)`,
+                    backgroundSize: "40px 40px, 200px 200px, 200px 200px",
                 }}
             />
 
-            {/* Animated Floating Blobs */}
-            <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-sky-200/40 via-blue-100/30 to-transparent rounded-full blur-3xl animate-[float_20s_ease-in-out_infinite]" />
-            <div className="absolute top-[10%] right-[-15%] w-[500px] h-[500px] bg-gradient-to-bl from-cyan-200/30 via-sky-100/20 to-transparent rounded-full blur-3xl animate-[float_25s_ease-in-out_infinite_reverse]" />
-            <div className="absolute bottom-[-10%] left-[20%] w-[700px] h-[700px] bg-gradient-to-tr from-blue-100/30 via-indigo-50/20 to-transparent rounded-full blur-3xl animate-[float_30s_ease-in-out_infinite]" />
+            {/* Structured Lighting */}
+            <div className="absolute top-0 left-1/4 w-[1000px] h-[600px] bg-sky-100/20 rounded-full blur-[120px] -translate-y-1/2" />
+            <div className="absolute bottom-0 right-1/4 w-[800px] h-[500px] bg-blue-50/30 rounded-full blur-[100px] translate-y-1/2" />
 
-            {/* Decorative Circles */}
-            <div className="absolute top-[15%] left-[5%] w-32 h-32 border border-sky-200/30 rounded-full animate-[spin_40s_linear_infinite]" />
-            <div className="absolute top-[15%] left-[5%] w-48 h-48 border border-sky-100/20 rounded-full animate-[spin_60s_linear_infinite_reverse]" />
-            <div className="absolute bottom-[20%] right-[5%] w-24 h-24 border border-blue-200/30 rounded-full animate-[spin_35s_linear_infinite_reverse]" />
-            <div className="absolute bottom-[20%] right-[5%] w-40 h-40 border border-blue-100/20 rounded-full animate-[spin_50s_linear_infinite]" />
-
-            {/* Floating Particles */}
-            <div className="absolute top-[30%] left-[25%] w-2 h-2 bg-sky-400/40 rounded-full animate-pulse" />
-            <div className="absolute top-[45%] right-[30%] w-1.5 h-1.5 bg-blue-400/30 rounded-full animate-pulse" />
-            <div className="absolute bottom-[35%] left-[40%] w-2.5 h-2.5 bg-cyan-400/35 rounded-full animate-pulse" />
-
-            {/* Gradient Overlay for Depth */}
-            <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-white/40" />
+            {/* Technical Detail: Minimalist SVG Line */}
+            <svg className="absolute top-0 right-0 w-full h-full opacity-[0.015] text-sky-500" viewBox="0 0 1000 1000" fill="none">
+                <path d="M0 200L1000 200M0 500L1000 500M0 800L1000 800" stroke="currentColor" strokeWidth="0.5" />
+                <path d="M200 0L200 1000M500 0L500 1000M800 0L800 1000" stroke="currentColor" strokeWidth="0.5" />
+            </svg>
         </div>
     );
 }
