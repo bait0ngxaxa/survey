@@ -59,26 +59,23 @@ export default function Home() {
                 <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     {/* Left Column: Branding & Visuals */}
                     <div className="lg:col-span-5 flex flex-col items-center lg:items-start space-y-8 animate-fade-in-left">
-                        {/* Enhanced Logo with Multiple Glow Layers */}
-                        <div className="relative w-64 h-64 md:w-80 md:h-80 group">
-                            {/* Outer glow ring */}
-                            <div className="absolute inset-[-20%] bg-linear-to-br from-sky-200/20 via-blue-100/10 to-cyan-200/20 rounded-full blur-3xl animate-[pulse_6s_ease-in-out_infinite]" />
-
-                            {/* Middle glow */}
-                            <div className="absolute inset-[-10%] bg-sky-100/40 blur-2xl rounded-full animate-[pulse_4s_ease-in-out_infinite_0.5s]" />
-
-                            {/* Inner glow */}
-                            <div className="absolute inset-0 bg-linear-to-br from-white/80 to-sky-50/60 rounded-full blur-xl" />
-
-                            {/* Logo container with glassmorphism */}
-                            <div className="relative w-full h-full rounded-full bg-white/30 backdrop-blur-sm border border-white/50 shadow-[0_8px_32px_rgba(14,165,233,0.15),0_4px_16px_rgba(0,0,0,0.05)] animate-[float_6s_ease-in-out_infinite]">
-                                <Image
-                                    src="/logo_h.png"
-                                    alt="RHHSDI Logo"
-                                    fill
-                                    className="object-contain p-6 drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
-                                    priority
-                                />
+                        {/* The "Microscope" Logo Container */}
+                        <div className="relative group">
+                            <div className="absolute inset-0 bg-sky-400/10 rounded-3xl blur-2xl group-hover:bg-sky-400/20 transition-all duration-700" />
+                            <div className="relative w-64 h-64 md:w-80 md:h-80 bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-transform duration-500 hover:scale-[1.02]">
+                                <div className="absolute inset-4 border border-slate-100 rounded-[2rem] pointer-events-none" />
+                                <div className="relative w-full h-full flex items-center justify-center">
+                                    <Image
+                                        src="/logo_h.png"
+                                        alt="RHHSDI Logo"
+                                        fill
+                                        className="object-contain p-4 drop-shadow-md"
+                                        priority
+                                    />
+                                </div>
+                                {/* Corner Accents */}
+                                <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-sky-500/30 rounded-tl-lg" />
+                                <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-sky-500/30 rounded-br-lg" />
                             </div>
                         </div>
 
