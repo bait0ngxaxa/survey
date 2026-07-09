@@ -19,11 +19,9 @@ export default async function SubmissionsPage({
 
     return (
         <div className="space-y-6 pb-20 sm:pb-8">
-            {/* Header Section — renders immediately */}
             <SubmissionsHeader />
 
-            {/* Filters Section — renders immediately */}
-            <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div className="flex flex-col md:flex-row gap-4 proms-panel p-4 rounded-2xl">
                 <div className="w-full md:w-auto md:min-w-[300px]">
                     <Suspense
                         fallback={
@@ -39,7 +37,6 @@ export default async function SubmissionsPage({
                 />
             </div>
 
-            {/* Data Section — streams in via Suspense */}
             <Suspense fallback={<SubmissionsContentSkeleton />}>
                 <SubmissionsContent
                     currentPage={currentPage}

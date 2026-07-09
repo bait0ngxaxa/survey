@@ -24,14 +24,15 @@ export default function FormNavigation({
     disabled = false,
 }: FormNavigationProps) {
     return (
-        <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 pt-8 border-t border-slate-100 mt-8">
+        <div className="mt-8 flex flex-col justify-between gap-3 border-t border-slate-100 pt-8 sm:flex-row">
             {showBack && onBack ? (
                 <button
                     onClick={onBack}
-                    className="px-4 py-2.5 sm:px-6 sm:py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
+                    className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-sky-200 bg-white px-4 py-2.5 font-semibold text-sky-800 transition-colors hover:bg-sky-50 hover:text-sky-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-6 sm:py-3"
                     type="button"
+                    disabled={isLoading}
                 >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={20} aria-hidden="true" />
                     {backLabel}
                 </button>
             ) : (
@@ -40,27 +41,28 @@ export default function FormNavigation({
             <button
                 onClick={onNext}
                 disabled={disabled || isLoading}
-                className={`px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-semibold shadow-lg hover:shadow-sky-200/50 transition-all flex items-center justify-center gap-2 ${
+                className={`flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-6 py-2.5 font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 sm:w-auto sm:px-8 sm:py-3 ${
                     isSubmit
-                        ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-cyan-500 hover:via-teal-500 hover:to-emerald-500 text-white"
-                        : "bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 hover:from-cyan-500 hover:via-sky-500 hover:to-blue-500 text-white"
+                        ? "proms-success-gradient"
+                        : "proms-primary-gradient"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
                 type="button"
+                aria-busy={isLoading}
             >
                 {isLoading ? (
                     <>
-                        <Loader2 size={20} className="animate-spin" />
+                        <Loader2 size={20} className="animate-spin" aria-hidden="true" />
                         กำลังดำเนินการ...
                     </>
                 ) : isSubmit ? (
                     <>
-                        <Check size={20} />
+                        <Check size={20} aria-hidden="true" />
                         {nextLabel}
                     </>
                 ) : (
                     <>
                         {nextLabel}
-                        <ChevronRight size={20} />
+                        <ChevronRight size={20} aria-hidden="true" />
                     </>
                 )}
             </button>

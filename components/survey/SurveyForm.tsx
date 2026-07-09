@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const SubmitSuccessModal = dynamic(
@@ -41,7 +40,6 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
 
     return (
         <>
-            <Suspense fallback={null} />
             <AlertModal
                 isOpen={survey.isAlertOpen}
                 onClose={survey.closeAlert}
@@ -54,7 +52,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
             />
             {survey.isSubmitting && <LoadingOverlay />}
 
-            <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-sky-50/30 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="min-h-screen proms-page-bg relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 font-sans">
                 <SurveyBackground />
 
                 <div className="relative z-10">
@@ -77,7 +75,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                                 }))
                             }
                             onNext={survey.handleNext}
-                            onBack={() => (window.location.href = "/dashboard")}
+                            onBack={survey.requestExit}
                         />
                     )}
 

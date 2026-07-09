@@ -91,7 +91,7 @@ export default function SectionFourForm({
         if (!currentUIStep) return null;
 
         return (
-            <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8 relative z-10">
+        <div className="relative z-10 mx-auto max-w-4xl space-y-8 pb-12">
                 <AlertModal
                     isOpen={isAlertOpen}
                     onClose={closeAlert}
@@ -149,7 +149,7 @@ export default function SectionFourForm({
 
     // Non-Central standard view
     return (
-        <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12 space-y-8 relative z-10">
+        <div className="relative z-10 mx-auto max-w-6xl space-y-8 pb-12">
             <AlertModal
                 isOpen={isAlertOpen}
                 onClose={closeAlert}
@@ -175,7 +175,7 @@ export default function SectionFourForm({
                 ))}
             </div>
 
-            <div className="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+            <div className="proms-panel rounded-2xl p-6 sm:p-8">
                 <FormNavigation
                     onBack={handleBack}
                     onNext={handleNext}
@@ -193,20 +193,15 @@ export default function SectionFourForm({
  */
 function NonCentralHeader() {
     return (
-        <div className="relative group">
-            <div className="absolute inset-[-2px] bg-linear-to-br from-sky-200/30 via-blue-200/20 to-cyan-200/30 rounded-[1.625rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl shadow-sky-100/50 border border-white/80 overflow-hidden">
-                <div className="relative py-10 px-8 text-center bg-linear-to-b from-white to-slate-50/50 border-b border-slate-100/80 overflow-hidden">
-                    {/* Decorative Background Elements */}
-                    <div className="absolute top-[-50%] left-[-20%] w-80 h-80 bg-sky-100/30 rounded-full blur-3xl" />
-                    <div className="absolute bottom-[-50%] right-[-20%] w-80 h-80 bg-blue-100/30 rounded-full blur-3xl" />
-
-                    <h1 className="relative text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-4 thai-text">
+        <div className="relative">
+            <div className="relative proms-panel rounded-2xl overflow-hidden">
+                <div className="relative py-8 px-5 sm:px-8 text-center proms-header-gradient border-b border-sky-100 overflow-hidden">
+                    <h1 className="relative text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-4 thai-text break-words">
                         <span className="text-slate-800">
                             แบบสอบถามการรายงานผลลัพธ์ของผู้ป่วยโรคเบาหวานชนิดที่
                             2
                         </span>
-                        <span className="block mt-3 text-transparent bg-clip-text bg-linear-to-r from-sky-500 via-blue-500 to-cyan-500">
+                        <span className="mt-3 block text-sky-900">
                             &ldquo;โดยผู้ป่วยเป็นคนรายงาน&rdquo;
                         </span>
                     </h1>

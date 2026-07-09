@@ -5,31 +5,34 @@
 export function SubmissionsContentSkeleton() {
     return (
         <>
-            {/* Desktop Table Skeleton */}
             <div className="hidden md:block relative">
-                <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div
+                    className="relative proms-panel rounded-2xl overflow-hidden"
+                    role="status"
+                    aria-label="กำลังโหลดรายการแบบสอบถาม"
+                >
                     <table className="w-full text-left text-sm">
                         <thead>
-                            <tr className="bg-linear-to-r from-slate-50 via-sky-50/50 to-slate-50 border-b border-slate-200/80">
-                                <th className="px-6 py-4 w-20 text-center text-slate-500 font-semibold text-xs uppercase tracking-wider">
+                            <tr className="proms-header-gradient border-b border-sky-100">
+                                <th className="px-6 py-4 w-20 text-center text-slate-600 font-semibold text-xs">
                                     #
                                 </th>
-                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                     ID แบบสอบถาม
                                 </th>
-                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                     ผู้ให้ข้อมูล
                                 </th>
-                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                     ผู้สัมภาษณ์
                                 </th>
-                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                     วันที่บันทึก
                                 </th>
-                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                     ภูมิภาค
                                 </th>
-                                <th className="px-6 py-4 text-right text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                                <th className="px-6 py-4 text-right text-slate-700 font-semibold text-xs">
                                     จัดการ
                                 </th>
                             </tr>
@@ -65,12 +68,15 @@ export function SubmissionsContentSkeleton() {
                 </div>
             </div>
 
-            {/* Mobile Card Skeleton */}
-            <div className="md:hidden space-y-3">
+            <div
+                className="md:hidden space-y-3"
+                role="status"
+                aria-label="กำลังโหลดรายการแบบสอบถาม"
+            >
                 {Array.from({ length: 3 }).map((_, i) => (
                     <div
                         key={i}
-                        className="animate-pulse bg-white rounded-xl border border-slate-200 p-4 space-y-3"
+                        className="animate-pulse proms-panel rounded-xl p-4 space-y-3"
                     >
                         <div className="flex justify-between">
                             <div className="h-4 w-24 bg-slate-200 rounded" />

@@ -19,12 +19,15 @@ export default async function DashboardPage() {
 
     const submissionsResult = await getUserSubmissions(10);
     const submissions = submissionsResult.success ? submissionsResult.data : [];
+    const submissionsError = submissionsResult.success
+        ? undefined
+        : submissionsResult.error;
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-sky-50/30 relative overflow-hidden font-sans selection:bg-sky-100 selection:text-sky-900">
+        <div className="min-h-screen proms-page-bg relative overflow-hidden font-sans selection:bg-sky-100 selection:text-sky-900">
             <BackgroundEffects />
 
-            <div className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+            <div className="relative z-10 py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10 sm:space-y-12">
                 <Suspense fallback={null}>
                     <LoginSuccessModal />
                 </Suspense>
@@ -33,9 +36,11 @@ export default async function DashboardPage() {
 
                 <RegionCardsGrid />
 
-                {/* Submission History Section */}
-                <div className="animate-in slide-in-from-bottom-10 fade-in duration-700 delay-500">
-                    <SubmissionHistory submissions={submissions} />
+                <div>
+                    <SubmissionHistory
+                        submissions={submissions}
+                        loadError={submissionsError}
+                    />
                 </div>
             </div>
         </div>

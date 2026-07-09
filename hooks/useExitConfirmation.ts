@@ -11,6 +11,8 @@ interface UseExitConfirmationOptions {
 interface UseExitConfirmationReturn {
     isModalOpen: boolean;
 
+    requestExit: () => void;
+
     closeModal: () => void;
 
     confirmExit: (redirectUrl?: string) => void;
@@ -54,6 +56,14 @@ export function useExitConfirmation({
         setIsModalOpen(false);
     }, []);
 
+    const requestExit = useCallback(() => {
+        if (!enabled || skipConfirmation) {
+            window.location.href = "/dashboard";
+            return;
+        }
+        setIsModalOpen(true);
+    }, [enabled, skipConfirmation]);
+
     const confirmExit = useCallback((redirectUrl: string = "/dashboard") => {
         setIsModalOpen(false);
 
@@ -62,6 +72,7 @@ export function useExitConfirmation({
 
     return {
         isModalOpen,
+        requestExit,
         closeModal,
         confirmExit,
     };

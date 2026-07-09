@@ -11,35 +11,30 @@ export function SubmissionsTable({
     currentPage,
 }: SubmissionsTableProps) {
     return (
-        <div className="hidden md:block relative group">
-            {/* Outer glow effect */}
-            <div className="absolute -inset-px bg-linear-to-br from-sky-200/40 via-blue-100/20 to-slate-200/40 rounded-2xl blur-sm opacity-60" />
-
-            {/* Table container with depth */}
-            <div className="relative bg-white/95 backdrop-blur-sm rounded-xl shadow-[0_4px_24px_rgba(14,165,233,0.08),0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/80 overflow-hidden">
+        <div className="hidden md:block relative">
+            <div className="relative proms-panel rounded-2xl overflow-hidden">
                 <table className="w-full text-left text-sm">
-                    {/* Enhanced header with depth */}
                     <thead>
-                        <tr className="bg-linear-to-r from-slate-50 via-sky-50/50 to-slate-50 border-b border-slate-200/80">
-                            <th className="px-6 py-4 w-20 text-center text-slate-500 font-semibold text-xs uppercase tracking-wider">
+                        <tr className="proms-header-gradient border-b border-sky-100">
+                            <th className="px-6 py-4 w-20 text-center text-slate-600 font-semibold text-xs">
                                 #
                             </th>
-                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                 ID แบบสอบถาม
                             </th>
-                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                 ผู้ให้ข้อมูล
                             </th>
-                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                 ผู้สัมภาษณ์
                             </th>
-                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                 วันที่บันทึก
                             </th>
-                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 text-slate-700 font-semibold text-xs">
                                 ภูมิภาค
                             </th>
-                            <th className="px-6 py-4 text-right text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                            <th className="px-6 py-4 text-right text-slate-700 font-semibold text-xs">
                                 จัดการ
                             </th>
                         </tr>

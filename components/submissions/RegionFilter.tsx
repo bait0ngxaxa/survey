@@ -11,22 +11,23 @@ export function RegionFilter({
     searchQuery,
 }: RegionFilterProps) {
     return (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-            <span className="text-sm font-medium text-slate-500 whitespace-nowrap hidden md:inline">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+            <span className="text-sm font-medium text-slate-600 whitespace-nowrap hidden md:inline thai-text">
                 ภูมิภาค:
             </span>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="list" aria-label="กรองตามภูมิภาค">
                 {REGIONS.map((r) => (
                     <Link
                         key={r}
                         href={`/admin/submissions?page=1${
                             r ? `&region=${r}` : ""
                         }${searchQuery ? `&search=${searchQuery}` : ""}`}
-                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 ${
                             currentRegion === r
-                                ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/20"
-                                : "bg-slate-100 text-slate-600 hover:bg-sky-50 hover:text-sky-600"
+                                ? "proms-primary-gradient"
+                                : "bg-slate-100 text-slate-700 hover:bg-sky-50 hover:text-sky-800"
                         }`}
+                        aria-current={currentRegion === r ? "page" : undefined}
                     >
                         {REGION_LABELS[r] || r}
                     </Link>

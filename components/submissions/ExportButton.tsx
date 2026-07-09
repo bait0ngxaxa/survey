@@ -55,12 +55,13 @@ function generateFilename(regionFilter: string): string {
 
 export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
     const handleExport = async (): Promise<void> => {
         try {
             setLoading(true);
+            setStatusMessage(null);
 
-            // Fetch all submissions
             const { submissions } = await getSubmissions({
                 page: 1,
                 pageSize: 10000,
@@ -68,11 +69,10 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
             });
 
             if (!submissions || submissions.length === 0) {
-                alert("ไม่พบข้อมูลสำหรับ export");
+                setStatusMessage("ไม่พบข้อมูลสำหรับส่งออก");
                 return;
             }
 
-            // Transform data for both sheets
             const generalData = submissions.map((s) =>
                 transformToGeneralData({
                     id: s.id,
@@ -93,25 +93,41 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                 }),
             );
 
-            // Create and export workbook
             const workbook = createWorkbook(generalData, promsData);
             XLSX.writeFile(workbook, generateFilename(regionFilter));
+            setStatusMessage(`ส่งออกข้อมูลสำเร็จ ${submissions.length} รายการ`);
         } catch (error) {
             console.error("Export failed", error);
-            alert("Export failed: " + (error as Error).message);
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+            setStatusMessage(`ส่งออกข้อมูลไม่สำเร็จ: ${message}`);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <button
-            onClick={handleExport}
-            disabled={loading}
-            className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition-colors disabled:opacity-50 font-medium shadow-md hover:shadow-lg"
-        >
-            <FileSpreadsheet size={18} />
-            {loading ? "กำลัง Export..." : "Export Excel"}
-        </button>
+        <div className="flex flex-col items-end gap-2">
+            <button
+                onClick={handleExport}
+                disabled={loading}
+                className="flex items-center justify-center gap-2 proms-success-gradient px-5 py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
+                type="button"
+                aria-busy={loading}
+            >
+                <FileSpreadsheet size={18} aria-hidden="true" />
+                {loading ? "กำลังส่งออก..." : "ส่งออก Excel"}
+            </button>
+            {statusMessage && (
+                <p
+                    className="max-w-64 rounded-lg bg-white px-3 py-2 text-right text-xs font-medium text-slate-700 ring-1 ring-slate-200 thai-text"
+                    role="status"
+                >
+                    {statusMessage}
+                </p>
+            )}
+        </div>
     );
 }

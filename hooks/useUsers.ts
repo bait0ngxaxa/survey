@@ -12,12 +12,14 @@ interface UseUsersReturn {
     // State
     users: StaffUser[];
     loading: boolean;
+    errorMessage: string | null;
     searchQuery: string;
     page: number;
     totalPages: number;
     selectedUser: StaffUser | null;
     userSubmissions: UserSubmission[];
     loadingSubmissions: boolean;
+    submissionsErrorMessage: string | null;
     // Computed
     totalSubmissions: number;
     activeUsers: number;
@@ -35,6 +37,7 @@ interface UseUsersReturn {
 export function useUsers(): UseUsersReturn {
     const [users, setUsers] = useState<StaffUser[]>([]);
     const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -43,10 +46,14 @@ export function useUsers(): UseUsersReturn {
         []
     );
     const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+    const [submissionsErrorMessage, setSubmissionsErrorMessage] = useState<
+        string | null
+    >(null);
 
     const loadUsers = useCallback(
         async (query?: string, pageNum: number = 1) => {
             setLoading(true);
+            setErrorMessage(null);
             const result = await getStaffUsers(query, pageNum);
             if (result.success) {
                 setUsers(result.data);
@@ -54,6 +61,10 @@ export function useUsers(): UseUsersReturn {
                     setTotalPages(result.metadata.totalPages);
                     setPage(result.metadata.page);
                 }
+            } else {
+                setUsers([]);
+                setTotalPages(1);
+                setErrorMessage(result.error || "โหลดรายชื่อผู้ใช้งานไม่สำเร็จ");
             }
             setLoading(false);
         },
@@ -66,12 +77,17 @@ export function useUsers(): UseUsersReturn {
 
         const fetchInitialUsers = async () => {
             setLoading(true);
+            setErrorMessage(null);
             const result = await getStaffUsers("", 1);
             if (!cancelled && result.success) {
                 setUsers(result.data);
                 if (result.metadata) {
                     setTotalPages(result.metadata.totalPages);
                 }
+            } else if (!cancelled) {
+                setUsers([]);
+                setTotalPages(1);
+                setErrorMessage(result.error || "โหลดรายชื่อผู้ใช้งานไม่สำเร็จ");
             }
             if (!cancelled) {
                 setLoading(false);
@@ -100,9 +116,15 @@ export function useUsers(): UseUsersReturn {
     const openUserDetail = useCallback(async (user: StaffUser) => {
         setSelectedUser(user);
         setLoadingSubmissions(true);
+        setSubmissionsErrorMessage(null);
         const result = await getUserSubmissionsList(user.id);
         if (result.success) {
             setUserSubmissions(result.data);
+        } else {
+            setUserSubmissions([]);
+            setSubmissionsErrorMessage(
+                result.error || "โหลดรายการแบบสอบถามของผู้ใช้งานไม่สำเร็จ",
+            );
         }
         setLoadingSubmissions(false);
     }, []);
@@ -122,12 +144,14 @@ export function useUsers(): UseUsersReturn {
     return {
         users,
         loading,
+        errorMessage,
         searchQuery,
         page,
         totalPages,
         selectedUser,
         userSubmissions,
         loadingSubmissions,
+        submissionsErrorMessage,
         totalSubmissions,
         activeUsers,
         setSearchQuery,

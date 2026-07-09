@@ -36,37 +36,37 @@ export default function RadioGroup({
         layout === "horizontal"
             ? "flex flex-wrap gap-4"
             : layout === "grid"
-            ? `grid grid-cols-1 md:grid-cols-${gridCols} gap-2`
+            ? `grid grid-cols-1 md:grid-cols-${gridCols} gap-3`
             : "flex flex-col gap-2";
 
     return (
         <div className={`space-y-3 ${className}`}>
-            <label className="font-semibold block text-slate-800 text-lg">
+            <label className="font-semibold block text-slate-900 text-lg thai-text break-words">
                 {label}
             </label>
             <div className={containerClass}>
                 {options.map((opt) => (
                     <label
                         key={opt}
-                        className={`flex items-center gap-3 cursor-pointer p-3 rounded-xl border transition-all duration-200 ${
+                        className={`flex min-w-0 items-start gap-3 cursor-pointer p-3 rounded-xl border transition-colors duration-200 ${
                             value === opt
-                                ? "bg-sky-50 border-sky-200 shadow-sm"
+                                ? "bg-sky-50 border-sky-300"
                                 : "bg-white border-slate-200 hover:border-sky-200 hover:bg-slate-50"
                         }`}
                     >
-                        <div className="relative flex items-center justify-center">
+                        <div className="relative flex items-center justify-center pt-0.5">
                             <input
                                 type="radio"
                                 name={name}
                                 value={opt}
                                 checked={value === opt}
                                 onChange={(e) => onChange(e.target.value)}
-                                className="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-sky-500 checked:bg-sky-500 transition-all focus:ring-4 focus:ring-sky-100 outline-none"
+                                className="peer h-5 w-5 appearance-none rounded-full border-2 border-slate-400 transition-colors checked:border-sky-600 checked:bg-sky-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
                             />
                             <div className="absolute w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
                         </div>
                         <span
-                            className={`text-base ${
+                            className={`text-base thai-text break-words ${
                                 value === opt
                                     ? "text-sky-900 font-medium"
                                     : "text-slate-700"
@@ -84,7 +84,7 @@ export default function RadioGroup({
                                     onChange={(e) =>
                                         onOtherChange?.(e.target.value)
                                     }
-                                    className="border-b-2 border-sky-200 focus:border-sky-500 outline-none ml-2 flex-1 text-slate-900 placeholder-slate-400 bg-transparent py-1 transition-colors"
+                                    className="ml-0 min-w-0 flex-1 border-b-2 border-sky-200 bg-transparent py-1 text-slate-900 placeholder-slate-500 outline-none transition-colors focus:border-sky-600 focus-visible:ring-4 focus-visible:ring-sky-100 sm:ml-2 sm:min-w-40"
                                 />
                             )}
                     </label>

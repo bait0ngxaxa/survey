@@ -66,7 +66,7 @@ export default function MedicalRecordForm({
                     />
 
                     {/* 5. Micro albumin & Ratio */}
-                    <div className="col-span-1 md:col-span-2 space-y-4 p-6 bg-slate-50 rounded-xl border border-slate-200">
+                    <div className="col-span-1 md:col-span-2 space-y-4 p-6 proms-panel-muted rounded-xl">
                         <label className="font-semibold block text-slate-800 text-lg">
                             5. Micro albumin
                         </label>
@@ -119,7 +119,7 @@ export default function MedicalRecordForm({
                     />
 
                     {/* 7. Lipid Profile */}
-                    <div className="col-span-1 md:col-span-2 space-y-4 p-6 bg-slate-50 rounded-xl border border-slate-200">
+                    <div className="col-span-1 md:col-span-2 space-y-4 p-6 proms-panel-muted rounded-xl">
                         <label className="font-semibold block text-slate-800 text-lg">
                             7. Lipid Profile
                         </label>
@@ -172,7 +172,7 @@ export default function MedicalRecordForm({
                         <label className="font-semibold block text-slate-900">
                             9. ระยะเวลาที่ป่วยเป็นโรคเบาหวาน
                         </label>
-                        <div className="flex flex-wrap gap-4 items-center p-4 bg-white border border-slate-200 rounded-xl">
+                        <div className="flex flex-wrap gap-4 items-center p-4 proms-panel-muted rounded-xl">
                             <TextInput
                                 type="number"
                                 value={formData.diabetesDurationYears}

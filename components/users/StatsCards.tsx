@@ -31,7 +31,7 @@ export function StatsCards({
                 icon={<Calendar size={24} />}
                 iconBgColor="bg-indigo-100"
                 iconColor="text-indigo-600"
-                label="Submissions ทั้งหมด"
+                label="แบบสอบถามทั้งหมด"
                 value={totalSubmissions}
             />
         </div>
@@ -54,13 +54,13 @@ function StatCard({
     value,
 }: StatCardProps) {
     return (
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm p-6 border border-sky-100 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4">
+        <div className="proms-panel rounded-2xl p-6">
+            <div className="flex min-w-0 items-center gap-4">
                 <div className={`p-4 ${iconBgColor} rounded-2xl ${iconColor}`}>
                     {icon}
                 </div>
-                <div>
-                    <p className="text-sm text-slate-500 font-medium">
+                <div className="min-w-0">
+                    <p className="text-sm text-slate-600 font-medium thai-text break-words">
                         {label}
                     </p>
                     <p className="text-3xl font-bold text-slate-800">{value}</p>

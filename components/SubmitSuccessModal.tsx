@@ -48,18 +48,26 @@ export default function SubmitSuccessModal({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 transform transition-all animate-in zoom-in-95 duration-300 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="submit-success-title"
+                className="proms-panel rounded-2xl p-6 sm:p-8 max-w-sm w-full relative"
+            >
                 <div className="flex flex-col items-center text-center">
                     <div className="w-20 h-20 bg-sky-100 rounded-full flex items-center justify-center mb-6 text-sky-600">
                         <CheckCircle size={48} />
                     </div>
 
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h3
+                        id="submit-success-title"
+                        className="text-2xl font-bold text-gray-900 mb-2 thai-text"
+                    >
                         บันทึกข้อมูลสำเร็จ!
                     </h3>
 
-                    <p className="text-gray-500 mb-6">
+                    <p className="text-gray-700 mb-6 thai-text leading-relaxed">
                         ขอขอบพระคุณ ทุกท่านเป็นอย่างสูง
                         ที่ท่านกรุณาสละเวลาร่วมตอบแบบสอบถามในครั้งนี้
                     </p>
@@ -74,7 +82,8 @@ export default function SubmitSuccessModal({
 
                     <button
                         onClick={() => router.push(redirectTo)}
-                        className="mt-6 px-6 py-3 bg-gradient-to-r from-sky-500 via-blue-500 to-cyan-500 text-white rounded-xl hover:from-cyan-500 hover:via-sky-500 hover:to-blue-500 font-semibold transition-all shadow-lg shadow-sky-200"
+                        className="mt-6 px-6 py-3 proms-primary-gradient rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
+                        type="button"
                     >
                         ไปยังหน้าหลัก
                     </button>

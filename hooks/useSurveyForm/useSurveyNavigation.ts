@@ -24,6 +24,7 @@ export function useSurveyNavigation({
 
     const {
         isModalOpen: isExitModalOpen,
+        requestExit,
         closeModal: closeExitModal,
         confirmExit,
     } = useExitConfirmation({
@@ -52,6 +53,7 @@ export function useSurveyNavigation({
         goTo,
         handleNext,
         isExitModalOpen,
+        requestExit,
         closeExitModal,
         confirmExit,
     };

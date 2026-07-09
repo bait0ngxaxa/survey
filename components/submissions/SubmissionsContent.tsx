@@ -25,16 +25,30 @@ export async function SubmissionsContent({
     regionFilter,
     searchQuery,
 }: SubmissionsContentProps) {
-    const { submissions, totalPages } = await getSubmissions({
-        page: currentPage,
-        pageSize: DEFAULT_PAGE_SIZE,
+    const result = await getSubmissionResult({
+        currentPage,
         regionFilter,
         searchQuery,
     });
 
+    if (!result.success) {
+        return (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6">
+                <h2 className="text-lg font-bold text-amber-950 thai-text">
+                    ยังโหลดรายการแบบสอบถามไม่ได้
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-amber-800 thai-text">
+                    {result.error}
+                    กรุณารีเฟรชหน้าอีกครั้ง หากยังพบปัญหาให้ติดต่อผู้ดูแลระบบ
+                </p>
+            </div>
+        );
+    }
+
+    const { submissions, totalPages } = result.data;
+
     return (
         <>
-            {/* Content Section */}
             {submissions.length === 0 ? (
                 <EmptyState />
             ) : (
@@ -47,7 +61,6 @@ export async function SubmissionsContent({
                 </>
             )}
 
-            {/* Pagination */}
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -58,15 +71,43 @@ export async function SubmissionsContent({
                 }}
             />
 
-            {/* Action Buttons */}
             <div className="fixed bottom-6 right-6 z-20 flex flex-col gap-2 md:static md:flex-row md:justify-center md:gap-3 md:pt-4">
-                <div className="shadow-lg md:shadow-none rounded-xl overflow-hidden">
-                    <PrintAllButton />
-                </div>
-                <div className="shadow-lg md:shadow-none rounded-xl overflow-hidden">
-                    <ExportButton regionFilter={regionFilter} />
-                </div>
+                <PrintAllButton />
+                <ExportButton regionFilter={regionFilter} />
             </div>
         </>
     );
+}
+
+async function getSubmissionResult({
+    currentPage,
+    regionFilter,
+    searchQuery,
+}: SubmissionsContentProps): Promise<
+    | {
+          success: true;
+          data: Awaited<ReturnType<typeof getSubmissions>>;
+      }
+    | { success: false; error: string }
+> {
+    try {
+        const data = await getSubmissions({
+            page: currentPage,
+            pageSize: DEFAULT_PAGE_SIZE,
+            regionFilter,
+            searchQuery,
+        });
+
+        if (data.error) {
+            return { success: false, error: data.error };
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        const message =
+            error instanceof Error
+                ? error.message
+                : "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+        return { success: false, error: message };
+    }
 }

@@ -48,6 +48,7 @@ export function useSurveyForm({
         goTo,
         handleNext,
         isExitModalOpen,
+        requestExit,
         closeExitModal,
         confirmExit,
     } = useSurveyNavigation({
@@ -79,6 +80,7 @@ export function useSurveyForm({
         alertMessage,
         closeAlert,
         isExitModalOpen,
+        requestExit,
         closeExitModal,
         confirmExit,
         isSubmitting,

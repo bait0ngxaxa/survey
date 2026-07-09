@@ -9,7 +9,7 @@ import PrintButton from "@/components/PrintButton";
 import BackToSubmissionsButton from "@/components/BackToSubmissionsButton";
 
 export const metadata = {
-    title: "Print All Reports - Admin",
+    title: "พิมพ์รายงานทั้งหมด - ผู้ดูแลระบบ",
 };
 
 export default async function PrintAllReportsPage() {
@@ -53,58 +53,57 @@ export default async function PrintAllReportsPage() {
     );
 
     return (
-        <div className="min-h-screen bg-white pt-16">
-            {/* Screen-only header - with spacing for navbar */}
-            <div className="no-print bg-gradient-to-r from-slate-50 to-sky-50/30 border-b border-slate-200 px-6 py-6">
+        <div className="min-h-screen proms-page-bg pt-16">
+            <div className="no-print proms-header-gradient border-b border-sky-100 px-6 py-6">
                 <div className="max-w-5xl mx-auto">
-                    {/* Back link */}
                     <div className="mb-4">
                         <BackToSubmissionsButton />
                     </div>
 
-                    {/* Title and Print button */}
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold text-slate-900">
-                            Print All Reports
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <h1 className="text-2xl font-bold proms-gradient-text thai-text">
+                            พิมพ์รายงานทั้งหมด
                             <span className="ml-2 text-lg font-normal text-slate-500">
                                 ({validSubmissions.length} รายการ)
                             </span>
                         </h1>
-                        <PrintButton label="Print All" />
+                        <PrintButton label="พิมพ์ทั้งหมด" />
                     </div>
                 </div>
             </div>
 
-            {/* Screen-only summary (not shown when printing) */}
             <div className="no-print max-w-2xl mx-auto py-12 px-4 text-center">
                 {validSubmissions.length > 0 ? (
-                    <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-                        <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <FileText size={32} className="text-sky-600" />
+                    <div className="proms-panel rounded-2xl p-8">
+                        <div className="w-16 h-16 proms-primary-gradient rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-sky-200/70">
+                            <FileText
+                                size={32}
+                                className="text-white"
+                                aria-hidden="true"
+                            />
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                            พร้อม Print {validSubmissions.length} รายการ
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2 thai-text">
+                            พร้อมพิมพ์ {validSubmissions.length} รายการ
                         </h2>
-                        <p className="text-slate-500 mb-6">
-                            กดปุ่ม Print All ด้านบนเพื่อ print reports ทั้งหมด
+                        <p className="text-slate-600 mb-6 thai-text">
+                            กดปุ่มพิมพ์ทั้งหมดด้านบนเพื่อพิมพ์รายงานทั้งหมด
                         </p>
-                        <div className="text-sm text-slate-400">
-                            แต่ละ report จะแยกหน้าโดยอัตโนมัติ
+                        <div className="text-sm text-slate-500 thai-text">
+                            แต่ละรายงานจะแยกหน้าโดยอัตโนมัติ
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-                        <p className="text-slate-500">
-                            ไม่พบข้อมูล submissions ที่สามารถ print ได้
+                    <div className="proms-panel rounded-2xl p-8">
+                        <p className="font-bold text-amber-950 thai-text">
+                            ไม่พบข้อมูลแบบสอบถามที่สามารถพิมพ์ได้
                         </p>
-                        <p className="text-sm text-slate-400 mt-2">
-                            (ตรวจสอบให้แน่ใจว่ามี submissions ที่มี reportData)
+                        <p className="text-sm text-amber-800 mt-2 thai-text">
+                            กรุณาตรวจสอบว่ามีแบบสอบถามที่มีข้อมูลรายงานสรุปแล้ว
                         </p>
                     </div>
                 )}
             </div>
 
-            {/* Print-only reports (hidden on screen, shown when printing) */}
             <div className="hidden print:block">
                 {validSubmissions.map((submission, index) => (
                     <div

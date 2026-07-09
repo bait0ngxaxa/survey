@@ -24,7 +24,9 @@ export function ReportTableRow({
                     className="p-4 align-top font-bold text-gray-900 bg-gray-50/50 border-r border-b border-gray-100 print:border-black print:bg-transparent"
                     rowSpan={dimensionRowSpan}
                 >
-                    <div className="whitespace-pre-line">{group.dimension}</div>
+                    <div className="whitespace-pre-line thai-text break-words">
+                        {group.dimension}
+                    </div>
                 </td>
             )}
             <td className="p-4 align-top text-center font-medium border-r border-gray-100 text-indigo-600 print:border-black">
@@ -38,7 +40,7 @@ export function ReportTableRow({
                             : isWatch
                             ? "text-orange-600 font-semibold"
                             : "text-green-700 font-medium"
-                    } `}
+                    } thai-text break-words`}
                 >
                     {reportStepData.action}
                 </div>
@@ -49,7 +51,7 @@ export function ReportTableRow({
                     />
                 )}
             </td>
-            <td className="p-4 align-top text-gray-800">
+            <td className="p-4 align-top text-gray-800 thai-text break-words">
                 {reportStepData.relatedUnit}
             </td>
         </tr>
@@ -67,7 +69,7 @@ function AdditionalInfoDisplay({ additionalInfo }: AdditionalInfoDisplayProps) {
     if (!additionalInfo) return null;
 
     return (
-        <div className="text-xs text-gray-500 mt-1">
+        <div className="text-xs text-gray-600 mt-2 space-y-1 thai-text break-words">
             {additionalInfo.movementLimit && (
                 <div>• มีข้อจำกัดด้านการเคลื่อนไหว</div>
             )}

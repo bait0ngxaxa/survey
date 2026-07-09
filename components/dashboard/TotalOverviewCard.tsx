@@ -9,12 +9,10 @@ export function TotalOverviewCard({ totalCount }: TotalOverviewCardProps) {
     return (
         <Link
             href="/admin/submissions"
-            className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-sm border border-sky-100 flex items-center justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300 cursor-pointer"
+            className="proms-panel rounded-2xl p-6 sm:p-8 flex items-center justify-between gap-6 relative overflow-hidden group transition-colors duration-200 hover:border-sky-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
         >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-110 transition-transform duration-700" />
-
-            <div className="relative z-10">
-                <h2 className="text-lg font-semibold text-slate-600 uppercase tracking-wide">
+            <div className="relative z-10 min-w-0">
+                <h2 className="text-lg font-semibold text-slate-700 thai-text break-words">
                     ภาพรวมผู้ตอบแบบสอบถามทั้งหมด
                 </h2>
                 <div className="flex items-baseline gap-2 mt-2">
@@ -24,8 +22,8 @@ export function TotalOverviewCard({ totalCount }: TotalOverviewCardProps) {
                     <p className="text-slate-500 font-medium">คน</p>
                 </div>
             </div>
-            <div className="relative z-10 p-4 bg-sky-100 text-sky-600 rounded-2xl group-hover:bg-sky-200 transition-colors duration-300">
-                <Users size={32} />
+            <div className="relative z-10 shrink-0 p-4 proms-primary-gradient rounded-2xl transition-colors duration-200">
+                <Users size={32} aria-hidden="true" />
             </div>
         </Link>
     );

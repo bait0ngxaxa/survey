@@ -7,14 +7,15 @@ interface PrintButtonProps {
 }
 
 export default function PrintButton({
-    label = "Print Report",
+    label = "พิมพ์รายงาน",
 }: PrintButtonProps) {
     return (
         <button
             onClick={() => typeof window !== "undefined" && window.print()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl font-medium hover:from-sky-400 hover:to-blue-500 shadow-lg shadow-sky-500/25 hover:shadow-sky-500/35 transition-all active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 proms-primary-gradient rounded-xl font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200"
+            type="button"
         >
-            <Printer size={18} />
+            <Printer size={18} aria-hidden="true" />
             {label}
         </button>
     );

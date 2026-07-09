@@ -19,13 +19,14 @@ export default function QuestionSlider({
 }: QuestionSliderProps) {
     const isAnswered = value !== undefined;
     const hasUnanswered = !isAnswered;
+    const questionLabelId = `question-${id}-label`;
 
     return (
         <div
-            className={`group p-4 sm:p-6 rounded-2xl transition-all duration-200 ${
+            className={`group p-4 sm:p-6 rounded-2xl transition-colors duration-200 ${
                 hasUnanswered
                     ? "bg-rose-50 border border-rose-200"
-                    : "bg-white border border-slate-100 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100/50"
+                    : "proms-panel-muted hover:border-sky-200"
             }`}
         >
             <div className="flex flex-col gap-6 sm:gap-8">
@@ -36,18 +37,20 @@ export default function QuestionSlider({
                             className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-base sm:text-lg shadow-sm transition-all duration-300 ${
                                 hasUnanswered
                                     ? "bg-rose-100 text-rose-700"
-                                    : "bg-sky-50 text-sky-700 group-hover:bg-sky-600 group-hover:text-white"
+                                    : "bg-sky-50 text-sky-700 group-hover:bg-linear-to-r group-hover:from-sky-500 group-hover:to-blue-600 group-hover:text-white"
                             }`}
                         >
                             {id}
                         </span>
                     </div>
-                    <p className="text-slate-800 font-medium text-base sm:text-xl leading-relaxed">
+                    <p
+                        id={questionLabelId}
+                        className="min-w-0 text-slate-900 font-medium text-base sm:text-xl leading-relaxed thai-text break-words"
+                    >
                         {text}
                     </p>
                 </div>
 
-                {/* Slider */}
                 <div className="px-2 sm:px-8 pb-4">
                     <div className="relative py-4">
                         <div className="absolute top-1/2 left-0 right-0 h-3 bg-slate-100 rounded-full -translate-y-1/2 shadow-inner" />
@@ -96,6 +99,13 @@ export default function QuestionSlider({
                                 height: 8px;
                                 background: transparent;
                             }
+                            @media (prefers-reduced-motion: reduce) {
+                                input[type="range"]::-webkit-slider-thumb,
+                                input[type="range"]::-webkit-slider-thumb:hover,
+                                input[type="range"]::-webkit-slider-thumb:active {
+                                    transform: none;
+                                }
+                            }
                         `}</style>
 
                         <input
@@ -111,19 +121,28 @@ export default function QuestionSlider({
                             onTouchEnd={(e) =>
                                 onChange(parseInt(e.currentTarget.value))
                             }
-                            className="w-full relative z-20 cursor-pointer"
+                            className="w-full relative z-20 cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 rounded-full"
+                            aria-labelledby={questionLabelId}
+                            aria-valuemin={1}
+                            aria-valuemax={6}
+                            aria-valuenow={value ?? 1}
+                            aria-valuetext={
+                                isAnswered
+                                    ? `เลือกคะแนน ${value}`
+                                    : "ยังไม่ได้เลือกคะแนน"
+                            }
+                            aria-invalid={hasUnanswered}
                         />
 
-                        {/* Clickable Dots */}
                         <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 flex justify-between px-[2px] z-10">
                             {[1, 2, 3, 4, 5, 6].map((num) => (
                                 <button
                                     key={num}
                                     type="button"
                                     onClick={() => onChange(num)}
-                                    className={`w-5 h-5 rounded-full transition-all duration-200 border-2 hover:scale-125 hover:shadow-lg ${
+                                    className={`h-5 w-5 rounded-full border-2 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 ${
                                         value === num
-                                            ? "bg-sky-600 border-sky-600 scale-110 shadow-md ring-2 ring-white"
+                                            ? "bg-linear-to-r from-sky-500 to-blue-600 border-sky-600 ring-2 ring-white"
                                             : value && value > num
                                               ? "bg-sky-300 border-sky-300"
                                               : "bg-white border-slate-300 hover:border-sky-400 hover:bg-sky-50"
@@ -133,7 +152,6 @@ export default function QuestionSlider({
                             ))}
                         </div>
 
-                        {/* Progress indicator */}
                         <div className="absolute top-1/2 left-0 right-0 h-3 -translate-y-1/2 flex gap-1 pointer-events-none">
                             {[1, 2, 3, 4, 5].map((i) => (
                                 <div
@@ -148,39 +166,41 @@ export default function QuestionSlider({
                         </div>
                     </div>
 
-                    {/* Score Display */}
-                    <div className="flex justify-between mt-6 text-sm font-medium">
-                        <span className="text-slate-400">{minLabel}</span>
+                    <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-3 mt-6 text-sm font-medium">
+                        <span className="text-slate-600 thai-text break-words">
+                            {minLabel}
+                        </span>
                         <div
-                            className={`flex flex-col items-center transition-all duration-300 ${
+                            className={`flex flex-col items-center transition-opacity duration-200 ${
                                 isAnswered
-                                    ? "opacity-100 -translate-y-1"
+                                    ? "opacity-100"
                                     : "opacity-0"
                             }`}
                         >
                             <span className="text-3xl font-black text-sky-600">
                                 {value}
                             </span>
-                            <span className="text-xs text-sky-400 font-semibold uppercase tracking-wider">
+                            <span className="text-xs text-sky-700 font-semibold thai-text">
                                 คะแนนที่เลือก
                             </span>
                         </div>
-                        <span className="text-slate-400">{maxLabel}</span>
+                        <span className="text-right text-slate-600 thai-text break-words">
+                            {maxLabel}
+                        </span>
                     </div>
 
-                    {/* Quick Select Buttons */}
                     <div className="flex justify-between px-0.5 mt-2">
                         {[1, 2, 3, 4, 5, 6].map((num) => (
                             <button
                                 key={num}
                                 type="button"
                                 onClick={() => onChange(num)}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm transition-all duration-200 cursor-pointer ${
+                                className={`flex h-11 w-11 items-center justify-center rounded-full text-sm transition-colors duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 sm:h-10 sm:w-10 ${
                                     value === num
-                                        ? "bg-sky-100 text-sky-700 font-bold shadow-inner ring-2 ring-sky-500 ring-offset-2 scale-110"
-                                        : "text-slate-400 hover:text-slate-600 hover:bg-slate-50 hover:scale-110 hover:shadow-md border border-transparent hover:border-slate-200"
+                                        ? "bg-linear-to-r from-sky-100 to-blue-100 text-sky-800 font-bold ring-2 ring-sky-500 ring-offset-2"
+                                        : "text-slate-500 hover:text-slate-700 hover:bg-slate-50 border border-transparent hover:border-slate-200"
                                 }`}
-                                aria-label={`Select score ${num}`}
+                                aria-label={`เลือกคะแนน ${num}`}
                                 title={`เลือกคะแนน ${num}`}
                             >
                                 {num}

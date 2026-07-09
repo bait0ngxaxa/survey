@@ -5,7 +5,7 @@ import { ArrowRight, Microscope } from "lucide-react";
 
 export default function Home() {
     return (
-        <div className="flex flex-col min-h-screen bg-[#f8fafc] selection:bg-sky-100 selection:text-sky-900 font-sans overflow-hidden">
+        <div className="flex flex-col min-h-screen proms-page-bg selection:bg-sky-100 selection:text-sky-900 font-sans overflow-hidden">
             {/* --- Advanced Technical Background --- */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                 {/* Precision Grid Layer */}
@@ -125,7 +125,7 @@ export default function Home() {
                             <SignedIn>
                                 <Link
                                     href="/dashboard"
-                                    className="group relative inline-flex items-center justify-center min-w-[240px] px-8 py-4.5 bg-sky-600 text-white text-lg font-bold rounded-2xl overflow-hidden transition-all duration-300 hover:bg-sky-700 hover:shadow-[0_20px_40px_rgba(14,165,233,0.3)] hover:-translate-y-1"
+                                    className="group relative inline-flex items-center justify-center min-w-[240px] px-8 py-4.5 proms-primary-gradient text-lg font-bold rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_rgba(14,165,233,0.3)] hover:-translate-y-1"
                                 >
                                     <span className="relative z-10 flex items-center">
                                         เริ่มทำแบบสอบถาม
@@ -137,7 +137,7 @@ export default function Home() {
 
                             <SignedOut>
                                 <SignInButton forceRedirectUrl="/dashboard?loggedIn=true">
-                                    <button className="group relative inline-flex items-center justify-center min-w-[240px] px-8 py-4.5 bg-white text-slate-900 text-lg font-bold rounded-2xl border-2 border-slate-200 overflow-hidden transition-all duration-300 hover:border-sky-500 hover:text-sky-600 hover:shadow-xl hover:-translate-y-1">
+                                    <button className="group relative inline-flex items-center justify-center min-w-[240px] px-8 py-4.5 bg-white text-sky-800 text-lg font-bold rounded-2xl border-2 border-sky-200 overflow-hidden transition-all duration-300 hover:border-sky-500 hover:text-sky-700 hover:shadow-xl hover:-translate-y-1">
                                         <span className="relative z-10 flex items-center">
                                             เข้าสู่ระบบใช้งาน
                                             <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />

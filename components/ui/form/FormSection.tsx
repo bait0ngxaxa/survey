@@ -15,14 +15,13 @@ export default function FormSection({
 }: FormSectionProps) {
     return (
         <div className={`relative ${className}`}>
-            <div className="bg-white rounded-4xl shadow-xl shadow-sky-100/50 border border-slate-100/80 overflow-hidden transition-shadow duration-200 hover:shadow-2xl">
-                {/* Header */}
-                <div className="bg-gradient-to-b from-white to-slate-50/30 py-8 px-8 border-b border-slate-100/80">
-                    <h1 className="relative text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+            <div className="proms-panel rounded-2xl overflow-hidden">
+                <div className="proms-header-gradient border-b border-sky-100 px-5 py-6 sm:px-8">
+                    <h1 className="relative mb-3 text-2xl font-bold leading-snug text-sky-950 thai-text break-words sm:text-3xl">
                         {title}
                     </h1>
                     {description && (
-                        <p className="relative text-sky-600 text-lg font-medium bg-gradient-to-r from-sky-50 to-blue-50/50 inline-block px-5 py-2 rounded-full border border-sky-100/80 shadow-sm">
+                        <p className="relative text-sky-800 text-base sm:text-lg font-medium thai-text leading-relaxed break-words">
                             {description}
                         </p>
                     )}

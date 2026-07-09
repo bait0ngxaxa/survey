@@ -1,5 +1,7 @@
 "use client";
 
+import { useId } from "react";
+
 interface TextInputProps {
     type?: "text" | "number" | "date" | "textarea";
     label?: string;
@@ -12,6 +14,8 @@ interface TextInputProps {
     inline?: boolean; // for inline layout
     suffix?: string; // e.g., "ปี", "เดือน"
     prefix?: string;
+    maxLength?: number;
+    inputMode?: "text" | "numeric" | "decimal";
 }
 
 export default function TextInput({
@@ -26,12 +30,16 @@ export default function TextInput({
     inline = false,
     suffix,
     prefix,
+    maxLength,
+    inputMode,
 }: TextInputProps) {
+    const generatedId = useId();
+    const inputId = `text-input-${generatedId}`;
     const baseInputClass =
-        "border border-slate-200 rounded-xl p-3 focus:ring-4 focus:ring-sky-100 focus:border-sky-500 outline-none transition-all duration-300 text-slate-800 placeholder-slate-400 bg-white hover:border-sky-200";
+        "border border-slate-300 rounded-xl p-3 focus:ring-4 focus:ring-sky-100 focus:border-sky-600 outline-none transition-colors duration-200 text-slate-900 placeholder-slate-500 bg-white hover:border-sky-300 thai-text break-words";
 
     const inlineInputClass =
-        "border border-slate-200 rounded-lg p-2 text-center text-slate-800 focus:ring-4 focus:ring-sky-100 focus:border-sky-500 outline-none transition-all duration-300 bg-white hover:border-sky-200";
+        "border border-slate-300 rounded-lg p-2 text-center text-slate-900 focus:ring-4 focus:ring-sky-100 focus:border-sky-600 outline-none transition-colors duration-200 bg-white hover:border-sky-300";
 
     const inputClass = inline
         ? `${inlineInputClass} w-24 ${inputClassName}`
@@ -41,29 +49,34 @@ export default function TextInput({
         if (type === "textarea") {
             return (
                 <textarea
+                    id={label ? inputId : undefined}
                     className={`w-full ${baseInputClass} ${inputClassName}`}
                     rows={rows}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
+                    maxLength={maxLength}
                 />
             );
         }
 
         return (
             <input
+                id={label ? inputId : undefined}
                 type={type}
                 className={inputClass}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
+                maxLength={maxLength}
+                inputMode={inputMode}
             />
         );
     };
 
     if (inline) {
         return (
-            <div className={`flex items-center gap-2 ${className}`}>
+            <div className={`flex min-w-0 flex-wrap items-center gap-2 ${className}`}>
                 {prefix && <span className="text-slate-900">{prefix}</span>}
                 {renderInput()}
                 {suffix && <span className="text-slate-900">{suffix}</span>}
@@ -74,7 +87,10 @@ export default function TextInput({
     return (
         <div className={`space-y-2 ${className}`}>
             {label && (
-                <label className="font-semibold block text-slate-900">
+                <label
+                    htmlFor={inputId}
+                    className="font-semibold block text-slate-900 thai-text break-words"
+                >
                     {label}
                 </label>
             )}

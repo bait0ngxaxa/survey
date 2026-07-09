@@ -40,6 +40,7 @@ export interface UseSurveyFormReturn {
     alertMessage: string;
     closeAlert: () => void;
     isExitModalOpen: boolean;
+    requestExit: () => void;
     closeExitModal: () => void;
     confirmExit: (targetUrl: string) => void;
     // Submit state

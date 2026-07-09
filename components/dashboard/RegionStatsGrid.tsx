@@ -18,12 +18,15 @@ export function RegionStatsGrid({ byRegion }: RegionStatsGridProps) {
     };
 
     return (
-        <div>
-            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <Activity size={24} className="text-sky-500" />
+        <section aria-labelledby="region-stats-title">
+            <h2
+                id="region-stats-title"
+                className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 thai-text"
+            >
+                <Activity size={24} className="text-sky-700" aria-hidden="true" />
                 แยกรายเขตสุขภาพ
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {DASHBOARD_REGIONS.map((region) => (
                     <RegionStatCard
                         key={region.id}
@@ -32,6 +35,6 @@ export function RegionStatsGrid({ byRegion }: RegionStatsGridProps) {
                     />
                 ))}
             </div>
-        </div>
+        </section>
     );
 }
