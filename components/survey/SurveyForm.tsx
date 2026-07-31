@@ -19,7 +19,6 @@ import {
     type SurveyConfig,
 } from "@/config/surveyData";
 import {
-    LoadingOverlay,
     SurveyBackground,
     SectionOneForm,
     Introduction,
@@ -53,8 +52,6 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                 onClose={survey.closeExitModal}
                 onConfirm={() => survey.confirmExit("/dashboard")}
             />
-            {survey.isSubmitting && <LoadingOverlay />}
-
             <div className="min-h-screen proms-page-bg relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 font-sans">
                 <SurveyBackground />
 
