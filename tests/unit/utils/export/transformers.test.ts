@@ -97,6 +97,24 @@ describe("Export Transformers", () => {
             expect(result["เพศ"]).toBe("Snapshot Gender");
             expect(result["วันเกิด"]).toBe("01/01/2533");
         });
+
+        it("should include education details for postgraduate education", () => {
+            const postgraduateSubmission: SubmissionData = {
+                ...mockSubmission,
+                rawAnswers: {
+                    sectionTwo: {
+                        education: "สูงกว่าปริญญาตรี",
+                        educationOther: "หลักสูตรเฉพาะทาง",
+                    },
+                },
+            };
+
+            const result = transformToGeneralData(postgraduateSubmission);
+
+            expect(result["การศึกษา"]).toBe(
+                "สูงกว่าปริญญาตรี: หลักสูตรเฉพาะทาง",
+            );
+        });
     });
 
     describe("transformToPromsData", () => {

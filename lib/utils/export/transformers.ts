@@ -13,6 +13,7 @@ import {
 import {
     translateRegion,
     formatBirthDateThai,
+    formatEducation,
     formatWithOther,
     formatScreening,
     getActionText,
@@ -51,13 +52,7 @@ export function transformToGeneralData(
         เพศ: snapshot.gender || "",
         อายุ: sec2.age || "",
         วันเกิด: formatBirthDateThai(snapshot.birthDate),
-        การศึกษา:
-            formatWithOther(sec2.education, sec2.educationOther, "อื่น ๆ") ||
-            formatWithOther(
-                sec2.education,
-                sec2.educationOther,
-                "สูงกว่าปริญญาตรี",
-            ),
+        การศึกษา: formatEducation(sec2.education, sec2.educationOther),
         สถานภาพสมรส: sec2.maritalStatus || "",
         อาชีพ: formatWithOther(sec2.occupation, sec2.occupationOther),
         รายได้เฉลี่ยต่อเดือน: sec2.income || "",

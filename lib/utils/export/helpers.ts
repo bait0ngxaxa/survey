@@ -32,6 +32,20 @@ export function formatBirthDateThai(
     return `${day}/${month}/${buddhistYear}`;
 }
 
+export function formatEducation(
+    education?: string,
+    educationOther?: string,
+): string {
+    if (
+        (education === "อื่น ๆ" || education === "สูงกว่าปริญญาตรี") &&
+        educationOther?.trim()
+    ) {
+        return `${education}: ${educationOther.trim()}`;
+    }
+
+    return education || "";
+}
+
 /**
  * Gets action text from report data for a specific step
  */
