@@ -1,10 +1,12 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { GetSubmissionsOptionsSchema } from "@/lib/schemas";
 import {
-    ERROR_UNAUTHORIZED,
+    requireAdminUser,
+    requireAuthenticatedUser,
+} from "@/lib/auth/guards";
+import {
     ERROR_NOT_FOUND,
     ERROR_FETCH_FAILED,
     ERROR_INVALID_SUBMISSION_ID,
@@ -23,9 +25,9 @@ export async function getSurveySubmission(submissionId: string) {
     }
 
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            return { success: false, error: ERROR_UNAUTHORIZED };
+        const authorization = await requireAdminUser();
+        if (!authorization.authorized) {
+            return { success: false, error: authorization.error };
         }
 
         const submission = await prisma.surveySubmission.findUnique({
@@ -45,14 +47,14 @@ export async function getSurveySubmission(submissionId: string) {
 }
 
 // ============================================================
-// GET MULTIPLE SUBMISSIONS (Admin/Staff)
+// GET MULTIPLE SUBMISSIONS (Admin)
 // ============================================================
 
 export async function getSurveySubmissions(options?: unknown) {
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            return { success: false, error: ERROR_UNAUTHORIZED };
+        const authorization = await requireAdminUser();
+        if (!authorization.authorized) {
+            return { success: false, error: authorization.error };
         }
 
         // Validate options
@@ -115,10 +117,12 @@ export async function getUserSubmissions(limit: number = DEFAULT_PAGE_SIZE) {
     const validLimit = Math.min(Math.max(1, limit), 100);
 
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            return { success: false, error: ERROR_UNAUTHORIZED, data: [] };
+        const authorization = await requireAuthenticatedUser();
+        if (!authorization.authorized) {
+            return { success: false, error: authorization.error, data: [] };
         }
+
+        const { userId } = authorization;
 
         const submissions = await prisma.surveySubmission.findMany({
             where: { submittedByUserId: userId },

@@ -1,20 +1,18 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { currentUser } from "@clerk/nextjs/server";
+import { requireAdminUser } from "@/lib/auth/guards";
 import { cache } from "react";
 import { GetSubmissionsParamsSchema } from "@/lib/schemas";
 import type { RawAnswers } from "@/lib/types";
-import { ERROR_UNAUTHORIZED } from "@/lib/constants/errors";
 import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
 
 // Check if user is admin (deduplicated per request via React.cache)
 const checkAdmin = cache(async (): Promise<void> => {
-    const user = await currentUser();
-    const role = user?.publicMetadata?.role;
+    const authorization = await requireAdminUser();
 
-    if (role !== "admin") {
-        throw new Error(ERROR_UNAUTHORIZED);
+    if (!authorization.authorized) {
+        throw new Error(authorization.error);
     }
 });
 

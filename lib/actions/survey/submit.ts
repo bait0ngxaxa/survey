@@ -1,10 +1,10 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { SurveySubmissionInputSchema } from "@/lib/schemas";
 import { revalidatePath } from "next/cache";
 import { generateReportData } from "@/lib/utils/reportGenerator";
+import { requireAuthenticatedUser } from "@/lib/auth/guards";
 
 // ============================================================
 // HELPER FUNCTIONS
@@ -63,7 +63,12 @@ export async function submitSurvey(
     const data = parsed.data;
 
     try {
-        const { userId } = await auth();
+        const authorization = await requireAuthenticatedUser();
+        if (!authorization.authorized) {
+            return { success: false, error: authorization.error };
+        }
+
+        const { userId } = authorization;
         const totalScore = calculateTotalScore(data.sectionFour.answers);
         // reportData from the client is intentionally ignored.
         const reportData = generateReportData(data.sectionFour.answers, {
@@ -127,7 +132,7 @@ export async function submitSurvey(
                     birthDateSnapshot,
                     region: data.region,
                     hospital: data.hospital || null,
-                    submittedByUserId: userId || null,
+                    submittedByUserId: userId,
                     totalScorePart4: totalScore,
                     rawAnswers,
                 },

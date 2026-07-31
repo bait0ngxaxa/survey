@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { submitSurvey } from "@/lib/actions/survey/submit";
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import {
     createCompleteCentralAnswers,
     createValidSurveySubmission,
@@ -40,6 +41,9 @@ vi.mock("next/cache", () => ({
 describe("Server Action: submitSurvey", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(auth).mockResolvedValue({
+            userId: "mock-user-id",
+        } as unknown as Awaited<ReturnType<typeof auth>>);
     });
 
     const mockValidData = {
@@ -60,6 +64,19 @@ describe("Server Action: submitSurvey", () => {
         },
         nationalId: " 1234567890123 ",
     };
+
+    it("should reject unauthenticated submissions before opening a transaction", async () => {
+        vi.mocked(auth).mockResolvedValue({
+            userId: null,
+        } as unknown as Awaited<ReturnType<typeof auth>>);
+
+        const result = await submitSurvey(mockValidData);
+
+        expect(result).toEqual({ success: false, error: "Unauthorized" });
+        expect(prisma.$transaction).not.toHaveBeenCalled();
+        expect(prisma.patient.upsert).not.toHaveBeenCalled();
+        expect(prisma.surveySubmission.create).not.toHaveBeenCalled();
+    });
 
     it("should return error if input validation fails", async () => {
         // Mock console.error to suppress expected error logs

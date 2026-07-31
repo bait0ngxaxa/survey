@@ -1,10 +1,11 @@
 "use server";
 
-import { clerkClient, auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
-import { ERROR_UNAUTHORIZED, ERROR_GENERIC } from "@/lib/constants/errors";
+import { ERROR_GENERIC } from "@/lib/constants/errors";
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants/submissionsConstants";
 import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
+import { requireAdminUser } from "@/lib/auth/guards";
 
 export interface StaffUser {
     id: string;
@@ -31,11 +32,11 @@ export async function getStaffUsers(
     limit: number = DEFAULT_PAGE_SIZE,
 ) {
     try {
-        const { userId } = await auth();
-        if (!userId) {
+        const authorization = await requireAdminUser();
+        if (!authorization.authorized) {
             return {
                 success: false,
-                error: ERROR_UNAUTHORIZED,
+                error: authorization.error,
                 data: [],
                 metadata: {
                     total: 0,
@@ -148,9 +149,9 @@ export async function getUserSubmissionsList(
     limit: number = 50,
 ) {
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            return { success: false, error: ERROR_UNAUTHORIZED, data: [] };
+        const authorization = await requireAdminUser();
+        if (!authorization.authorized) {
+            return { success: false, error: authorization.error, data: [] };
         }
 
         const submissions = await prisma.surveySubmission.findMany({
