@@ -1,18 +1,16 @@
 import { useCallback } from "react";
-import { centralNegativeQuestions } from "@/config/part4";
+import { calculateGroupAverage } from "@/lib/utils/reportGenerator";
 
-export function useScoring(answers: Record<number, number>) {
+interface UseScoringReturn {
+    getGroupAverage: (questionIds: number[]) => number;
+}
+
+export function useScoring(
+    answers: Record<number, number>,
+): UseScoringReturn {
     const getGroupAverage = useCallback(
         (questionIds: number[]): number => {
-            if (questionIds.length === 0) return 0;
-            const sum = questionIds.reduce((acc, id) => {
-                let score = answers[id] || 0;
-                if (centralNegativeQuestions.includes(id) && score > 0) {
-                    score = 7 - score;
-                }
-                return acc + score;
-            }, 0);
-            return Math.round(sum / questionIds.length);
+            return calculateGroupAverage(answers, questionIds);
         },
         [answers],
     );

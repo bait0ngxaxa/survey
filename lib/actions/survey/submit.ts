@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { SurveySubmissionInputSchema } from "@/lib/schemas";
 import { revalidatePath } from "next/cache";
+import { generateReportData } from "@/lib/utils/reportGenerator";
 
 // ============================================================
 // HELPER FUNCTIONS
@@ -64,6 +65,10 @@ export async function submitSurvey(
     try {
         const { userId } = await auth();
         const totalScore = calculateTotalScore(data.sectionFour.answers);
+        // reportData from the client is intentionally ignored.
+        const reportData = generateReportData(data.sectionFour.answers, {
+            additionalInfo: data.sectionFour.additionalInfo,
+        });
         const { firstName, lastName } = splitFullName(
             data.sectionTwo.respondentName,
         );
@@ -91,7 +96,8 @@ export async function submitSurvey(
                 sectionTwo: data.sectionTwo,
                 medicalRecord: data.medicalRecord,
                 sectionFour: data.sectionFour.answers,
-                reportData: data.sectionFour.reportData,
+                additionalInfo: data.sectionFour.additionalInfo,
+                reportData,
             }),
         );
 

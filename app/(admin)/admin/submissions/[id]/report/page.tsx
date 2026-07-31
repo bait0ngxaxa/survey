@@ -1,6 +1,7 @@
 import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { notFound } from "next/navigation";
-import { asRawAnswers, type ReportData } from "@/lib/types";
+import { asRawAnswers } from "@/lib/types";
+import { hasCompleteReportData } from "@/lib/utils/reportGenerator";
 import {
     getSubmissionNationalId,
     getSubmissionSnapshot,
@@ -27,12 +28,12 @@ export default async function SubmissionReportPage({
 
     // Parse report data from rawAnswers
     const rawAnswers = asRawAnswers(submission.rawAnswers);
-    const reportData: ReportData | undefined = rawAnswers?.reportData;
+    const reportData = rawAnswers?.reportData;
     const snapshot = getSubmissionSnapshot(submission);
     const patientNationalId = getSubmissionNationalId(submission);
 
     // Fallback if no report data (e.g. old submissions)
-    if (!reportData) {
+    if (!hasCompleteReportData(reportData)) {
         return <ReportNotFound />;
     }
 

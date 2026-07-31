@@ -1,7 +1,8 @@
 import { getSubmissions } from "@/lib/actions/admin";
 import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { redirect } from "next/navigation";
-import { asRawAnswers, type ReportData } from "@/lib/types";
+import { asRawAnswers } from "@/lib/types";
+import { hasCompleteReportData } from "@/lib/utils/reportGenerator";
 import {
     getSubmissionNationalId,
     getSubmissionSnapshot,
@@ -37,9 +38,9 @@ export default async function PrintAllReportsPage() {
             if (!fullData.success || !fullData.data) return null;
 
             const rawAnswers = asRawAnswers(fullData.data.rawAnswers);
-            const reportData: ReportData | undefined = rawAnswers?.reportData;
+            const reportData = rawAnswers?.reportData;
 
-            if (!reportData) return null;
+            if (!hasCompleteReportData(reportData)) return null;
 
             const snapshot = getSubmissionSnapshot(fullData.data);
 

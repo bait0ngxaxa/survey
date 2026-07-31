@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useActionPlan } from "@/hooks/useSectionFourLogic/useActionPlan";
-import { centralGroups } from "@/config/part4";
-import { type RecommendationsData } from "@/lib/types";
+import { centralGroups, centralNegativeQuestions } from "@/config/part4";
+import { type AdditionalInfoData } from "@/lib/types";
 
 // Mock onRecommendationsChange
 const mockOnRecommendationsChange = vi.fn();
@@ -12,20 +12,31 @@ describe("useActionPlan Logic", () => {
     const runActionPlan = (
         averageScore: number,
         groupIds: number[],
-        additionalInfo: any = {},
+        additionalInfo: AdditionalInfoData = {},
     ) => {
         // Reset mock
         mockOnRecommendationsChange.mockReset();
 
-        // Mock getGroupAverage to always return the desired score
-        const mockGetGroupAverage = vi.fn().mockReturnValue(averageScore);
+        const answers: Record<number, number> = {};
+        for (const groupId of groupIds) {
+            const group = centralGroups.find(
+                (candidate) => candidate.id === groupId,
+            );
+            group?.questions.forEach((questionId) => {
+                answers[questionId] = centralNegativeQuestions.includes(
+                    questionId,
+                )
+                    ? 7 - averageScore
+                    : averageScore;
+            });
+        }
 
         const { result } = renderHook(() =>
             useActionPlan({
+                answers,
                 recommendations: {},
                 onRecommendationsChange: mockOnRecommendationsChange,
                 additionalInfo,
-                getGroupAverage: mockGetGroupAverage,
             }),
         );
 

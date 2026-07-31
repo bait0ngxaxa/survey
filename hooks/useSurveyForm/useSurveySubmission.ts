@@ -7,7 +7,7 @@ import {
     type Part1Data,
     type SectionTwoData,
     type MedicalRecordData,
-    type RecommendationsData,
+    type AdditionalInfoData,
 } from "@/lib/types";
 
 interface UseSurveySubmissionProps {
@@ -16,7 +16,7 @@ interface UseSurveySubmissionProps {
     sectionTwoData: SectionTwoData;
     medicalRecordData: MedicalRecordData;
     sectionFourAnswers: Record<number, number>;
-    recommendations: RecommendationsData;
+    additionalInfo: AdditionalInfoData;
 }
 
 export function useSurveySubmission({
@@ -25,7 +25,7 @@ export function useSurveySubmission({
     sectionTwoData,
     medicalRecordData,
     sectionFourAnswers,
-    recommendations,
+    additionalInfo,
 }: UseSurveySubmissionProps) {
     const [submitSuccess, setSubmitSuccess] = useState(false);
 
@@ -52,7 +52,7 @@ export function useSurveySubmission({
             medicalRecord: medicalRecordData,
             sectionFour: {
                 answers: sectionFourAnswers,
-                reportData: recommendations,
+                additionalInfo,
             },
         };
         const parsed = SurveySubmissionInputSchema.safeParse(input);

@@ -206,6 +206,12 @@ export const ReportStepDataSchema = z.object({
         .optional(),
 });
 
+const AdditionalInfoSchema = z.object({
+    movementLimit: z.boolean().optional(),
+    tired: z.boolean().optional(),
+    q9Topic: z.string().max(1000).optional(),
+});
+
 // Section Four Schema - JSON keys are always strings, so we validate string keys and transform
 const ScoreSchema = z.number().int().min(1).max(6);
 
@@ -236,7 +242,9 @@ export const SectionFourDataSchema = z.object({
         }
         return result;
     }),
-    reportData: z.record(z.string(), ReportStepDataSchema).optional(),
+    additionalInfo: AdditionalInfoSchema.optional(),
+    // Kept for backward-compatible callers; submitSurvey never trusts or persists it.
+    reportData: z.unknown().optional(),
 });
 
 // Main Survey Submission Schema

@@ -152,6 +152,65 @@ describe("Server Action: submitSurvey", () => {
         );
     });
 
+    it("should regenerate report data from answers instead of trusting the client", async () => {
+        vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
+            id: "submission-id",
+        } as unknown as Awaited<
+            ReturnType<typeof prisma.surveySubmission.create>
+        >);
+
+        const forgedReportData: Record<
+            string,
+            {
+                label: string;
+                action: string;
+                criteria: string;
+                relatedUnit: string;
+                averageScore: number;
+            }
+        > = {};
+        for (let step = 1; step <= 10; step += 1) {
+            forgedReportData[`step_${step}`] = {
+                label: "Forged label",
+                action: "Forged action",
+                criteria: "1-2",
+                relatedUnit: "Forged unit",
+                averageScore: 1,
+            };
+        }
+
+        const result = await submitSurvey({
+            ...mockValidData,
+            nationalId: undefined,
+            sectionFour: {
+                answers: createCompleteCentralAnswers(5),
+                reportData: forgedReportData,
+            },
+        });
+
+        expect(result.success).toBe(true);
+
+        const createCall = vi.mocked(prisma.surveySubmission.create).mock
+            .calls[0]?.[0];
+        const rawAnswers = createCall?.data.rawAnswers as {
+            reportData?: Record<
+                string,
+                { action?: string; averageScore?: number }
+            >;
+        };
+
+        expect(Object.keys(rawAnswers.reportData ?? {})).toHaveLength(10);
+        expect(rawAnswers.reportData?.step_1).toMatchObject({
+            action: "ติดตามตามรอบ",
+            averageScore: 5,
+        });
+        expect(rawAnswers.reportData?.step_3).toMatchObject({
+            action: "ส่ง Manager",
+            averageScore: 2,
+        });
+        expect(rawAnswers.reportData?.step_1.action).not.toBe("Forged action");
+    });
+
     it("should create a submission without creating a patient when national ID is absent", async () => {
         vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
             id: "submission-id",

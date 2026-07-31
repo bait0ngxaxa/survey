@@ -39,7 +39,7 @@ export function useSurveyForm({
         sectionTwoData,
         medicalRecordData,
         sectionFourAnswers,
-        recommendations,
+        additionalInfo,
     });
 
     // 3. Navigation Logic

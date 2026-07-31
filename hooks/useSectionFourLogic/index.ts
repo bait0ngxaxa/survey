@@ -58,10 +58,10 @@ export function useSectionFourLogic({
     const { getGroupAverage } = useScoring(answers);
 
     const { processGroupRecommendations } = useActionPlan({
+        answers,
         recommendations,
         onRecommendationsChange,
         additionalInfo,
-        getGroupAverage,
     });
 
     const { validateCurrentStep, validateNonCentral } =

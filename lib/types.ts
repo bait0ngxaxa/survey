@@ -134,11 +134,13 @@ export interface RawAnswers {
     sectionTwo?: SectionTwoData;
     medicalRecord?: MedicalRecordData;
     sectionFour?: Record<number, number>;
+    additionalInfo?: AdditionalInfoData;
     reportData?: ReportData;
 }
 
 export interface SectionFourData {
     answers: Record<number, number>;
+    additionalInfo?: AdditionalInfoData;
     reportData?: ReportData;
 }
 
