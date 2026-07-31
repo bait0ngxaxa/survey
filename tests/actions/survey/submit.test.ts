@@ -17,6 +17,7 @@ vi.mock("@/lib/prisma", () => ({
             },
             surveySubmission: {
                 create: vi.fn(),
+                findUnique: vi.fn(),
             },
             $transaction: vi.fn(),
         };
@@ -38,9 +39,16 @@ vi.mock("next/cache", () => ({
     revalidatePath: vi.fn(),
 }));
 
+function createUniqueConstraintError(): Error & { code: string } {
+    return Object.assign(new Error("unique constraint violation"), {
+        code: "P2002",
+    });
+}
+
 describe("Server Action: submitSurvey", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(prisma.surveySubmission.findUnique).mockReset();
         vi.mocked(auth).mockResolvedValue({
             userId: "mock-user-id",
         } as unknown as Awaited<ReturnType<typeof auth>>);
@@ -158,6 +166,7 @@ describe("Server Action: submitSurvey", () => {
         expect(prisma.surveySubmission.create).toHaveBeenCalledWith(
             expect.objectContaining({
                 data: expect.objectContaining({
+                    submissionToken: mockValidData.submissionToken,
                     patientId: "patient-id",
                     respondentNameSnapshot: "John Doe",
                     genderSnapshot: "ชาย",
@@ -167,6 +176,53 @@ describe("Server Action: submitSurvey", () => {
                 }),
             }),
         );
+    });
+
+    it("should resolve the existing submission for a repeated token", async () => {
+        vi.mocked(prisma.surveySubmission.findUnique).mockResolvedValue({
+            id: "existing-submission-id",
+            totalScorePart4: 145,
+            submittedByUserId: "mock-user-id",
+        } as unknown as Awaited<
+            ReturnType<typeof prisma.surveySubmission.findUnique>
+        >);
+
+        const result = await submitSurvey(mockValidData);
+
+        expect(result).toEqual({
+            success: true,
+            submissionId: "existing-submission-id",
+            totalScore: 145,
+        });
+        expect(prisma.$transaction).not.toHaveBeenCalled();
+        expect(prisma.surveySubmission.create).not.toHaveBeenCalled();
+        expect(prisma.patient.upsert).not.toHaveBeenCalled();
+    });
+
+    it("should resolve the existing submission after a submission token conflict", async () => {
+        vi.mocked(prisma.surveySubmission.findUnique)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce({
+                id: "existing-submission-id",
+                totalScorePart4: 145,
+                submittedByUserId: "mock-user-id",
+            } as unknown as Awaited<
+                ReturnType<typeof prisma.surveySubmission.findUnique>
+            >);
+        vi.mocked(prisma.surveySubmission.create).mockRejectedValueOnce(
+            createUniqueConstraintError(),
+        );
+
+        const result = await submitSurvey(mockValidData);
+
+        expect(result).toEqual({
+            success: true,
+            submissionId: "existing-submission-id",
+            totalScore: 145,
+        });
+        expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+        expect(prisma.surveySubmission.create).toHaveBeenCalledTimes(1);
+        expect(prisma.surveySubmission.findUnique).toHaveBeenCalledTimes(2);
     });
 
     it("should regenerate report data from answers instead of trusting the client", async () => {

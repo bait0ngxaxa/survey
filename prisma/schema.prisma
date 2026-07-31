@@ -27,6 +27,7 @@ model Patient {
 
 model SurveySubmission {
   id                   String   @id @default(uuid())
+  submissionToken      String   @unique
   patientId            String?
   patient              Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
 

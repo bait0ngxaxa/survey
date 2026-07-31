@@ -215,6 +215,8 @@ const AdditionalInfoSchema = z.object({
 // Section Four Schema - JSON keys are always strings, so we validate string keys and transform
 const ScoreSchema = z.number().int().min(1).max(6);
 
+export const SubmissionTokenSchema = z.string().uuid("Invalid submission token");
+
 const CentralAnswersSchema = z
     .record(z.string(), ScoreSchema)
     .superRefine((answers, context) => {
@@ -249,6 +251,7 @@ export const SectionFourDataSchema = z.object({
 
 // Main Survey Submission Schema
 export const SurveySubmissionInputSchema = z.object({
+    submissionToken: SubmissionTokenSchema,
     region: z.enum(["central"]),
     hospital: z.string().max(200).optional(),
     nationalId: z.string().max(20).optional(),

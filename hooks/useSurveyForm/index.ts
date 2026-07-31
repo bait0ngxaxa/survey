@@ -29,6 +29,7 @@ export function useSurveyForm({
         isSubmitting,
         submitSuccess,
         handleSubmitSurvey,
+        clearSubmissionToken,
         isAlertOpen,
         alertMessage,
         showAlert,
@@ -50,13 +51,18 @@ export function useSurveyForm({
         isExitModalOpen,
         requestExit,
         closeExitModal,
-        confirmExit,
+        confirmExit: confirmNavigationExit,
     } = useSurveyNavigation({
         part1Data,
         respondentName: sectionTwoData.respondentName,
         submitSuccess,
         showAlert,
     });
+
+    const confirmExit = (targetUrl: string): void => {
+        clearSubmissionToken();
+        confirmNavigationExit(targetUrl);
+    };
 
     // 4. Return Combined Interface
     return {

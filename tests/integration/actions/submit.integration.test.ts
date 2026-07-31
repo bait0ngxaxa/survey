@@ -151,6 +151,26 @@ describe("Survey Submission Integration", () => {
         expect(rawAnswers.sectionTwo.gender).toBe("ชาย");
     });
 
+    it("should return the same submission when a retry reuses its token", async () => {
+        const result1 = await submitSurvey(mockValidData);
+        expect(result1.success).toBe(true);
+
+        const result2 = await submitSurvey({
+            ...mockValidData,
+            sectionFour: {
+                answers: createCompleteCentralAnswers(3),
+                reportData: {},
+            },
+        });
+
+        expect(result2).toEqual(result1);
+
+        const submissionCount = await prisma.surveySubmission.count({
+            where: { submissionToken: mockValidData.submissionToken },
+        });
+        expect(submissionCount).toBe(1);
+    });
+
     it("should link a new submission to an existing patient on subsequent submissions", async () => {
         // First submission creates the patient
         const result1 = await submitSurvey(mockValidData);
@@ -159,6 +179,7 @@ describe("Survey Submission Integration", () => {
         // Change some data for second submission
         const secondSubmissionData = {
             ...mockValidData,
+            submissionToken: crypto.randomUUID(),
             sectionTwo: {
                 ...mockValidData.sectionTwo,
                 age: "46", // Updated age

@@ -169,6 +169,15 @@ const crossFieldCases: Array<[string, InvalidInputFactory]> = [
 ];
 
 describe("SurveySubmissionInputSchema cross-field validation", () => {
+    it("requires a UUID submission token", () => {
+        const result = SurveySubmissionInputSchema.safeParse({
+            ...createValidSurveySubmission(),
+            submissionToken: "not-a-uuid",
+        });
+
+        expect(result.success).toBe(false);
+    });
+
     it.each(crossFieldCases)("rejects when %s", (_name, createInvalidInput) => {
         const result = SurveySubmissionInputSchema.safeParse(
             createInvalidInput(),

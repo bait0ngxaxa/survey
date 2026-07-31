@@ -15,6 +15,7 @@ export function createCompleteCentralAnswers(
 
 export function createValidSurveySubmission(): SurveySubmissionInputValidated {
     return {
+        submissionToken: crypto.randomUUID(),
         region: "central" as const,
         part1: {
             ...initialPart1Data,

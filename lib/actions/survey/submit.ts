@@ -36,6 +36,61 @@ function splitFullName(fullName: string): {
     };
 }
 
+type SubmissionReference = {
+    id: string;
+    totalScorePart4: number | null;
+    submittedByUserId: string | null;
+};
+
+const submissionReferenceSelect = {
+    id: true,
+    totalScorePart4: true,
+    submittedByUserId: true,
+} as const;
+
+class SubmissionTokenConflictError extends Error {
+    constructor() {
+        super("Submission token already exists");
+        this.name = "SubmissionTokenConflictError";
+    }
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+    return (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (error as { code?: unknown }).code === "P2002"
+    );
+}
+
+async function findSubmissionByToken(
+    submissionToken: string,
+    userId: string,
+): Promise<SubmissionReference | null> {
+    const submission = await prisma.surveySubmission.findUnique({
+        where: { submissionToken },
+        select: submissionReferenceSelect,
+    });
+
+    if (!submission || submission.submittedByUserId !== userId) {
+        return null;
+    }
+
+    return submission;
+}
+
+function toSubmitSurveyResult(
+    submission: SubmissionReference,
+    fallbackTotalScore?: number,
+): SubmitSurveyResult {
+    return {
+        success: true,
+        submissionId: submission.id,
+        totalScore: submission.totalScorePart4 ?? fallbackTotalScore,
+    };
+}
+
 // ============================================================
 // SUBMIT SURVEY
 // ============================================================
@@ -61,6 +116,7 @@ export async function submitSurvey(
     }
 
     const data = parsed.data;
+    let authenticatedUserId: string | null = null;
 
     try {
         const authorization = await requireAuthenticatedUser();
@@ -69,6 +125,16 @@ export async function submitSurvey(
         }
 
         const { userId } = authorization;
+        authenticatedUserId = userId;
+        const existingSubmission = await findSubmissionByToken(
+            data.submissionToken,
+            userId,
+        );
+        if (existingSubmission) {
+            revalidatePath("/admin/submissions");
+            return toSubmitSurveyResult(existingSubmission);
+        }
+
         const totalScore = calculateTotalScore(data.sectionFour.answers);
         // reportData from the client is intentionally ignored.
         const reportData = generateReportData(data.sectionFour.answers, {
@@ -124,29 +190,54 @@ export async function submitSurvey(
             }
 
             // บันทึก Survey Submission
-            return tx.surveySubmission.create({
-                data: {
-                    patientId,
-                    respondentNameSnapshot,
-                    genderSnapshot,
-                    birthDateSnapshot,
-                    region: data.region,
-                    hospital: data.hospital || null,
-                    submittedByUserId: userId,
-                    totalScorePart4: totalScore,
-                    rawAnswers,
-                },
-            });
+            try {
+                return await tx.surveySubmission.create({
+                    data: {
+                        submissionToken: data.submissionToken,
+                        patientId,
+                        respondentNameSnapshot,
+                        genderSnapshot,
+                        birthDateSnapshot,
+                        region: data.region,
+                        hospital: data.hospital || null,
+                        submittedByUserId: userId,
+                        totalScorePart4: totalScore,
+                        rawAnswers,
+                    },
+                });
+            } catch (error) {
+                if (!isUniqueConstraintError(error)) {
+                    throw error;
+                }
+
+                throw new SubmissionTokenConflictError();
+            }
         });
 
         revalidatePath("/admin/submissions");
 
-        return {
-            success: true,
-            submissionId: submission.id,
-            totalScore,
-        };
+        return toSubmitSurveyResult(submission, totalScore);
     } catch (error) {
+        if (error instanceof SubmissionTokenConflictError) {
+            try {
+                if (authenticatedUserId) {
+                    const existingSubmission = await findSubmissionByToken(
+                        data.submissionToken,
+                        authenticatedUserId,
+                    );
+                    if (existingSubmission) {
+                        revalidatePath("/admin/submissions");
+                        return toSubmitSurveyResult(existingSubmission);
+                    }
+                }
+            } catch (resolveError) {
+                console.error(
+                    "Error resolving existing survey submission:",
+                    resolveError,
+                );
+            }
+        }
+
         console.error("Error submitting survey:", error);
         return {
             success: false,
