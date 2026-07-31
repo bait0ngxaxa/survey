@@ -8,6 +8,7 @@ interface CheckboxGroupProps {
     values: string[];
     options: readonly string[];
     onChange: (values: string[]) => void;
+    exclusiveOption?: string;
     // For "other" option with text input
     hasOther?: boolean;
     otherValue?: string;
@@ -24,6 +25,7 @@ export default function CheckboxGroup({
     values,
     options,
     onChange,
+    exclusiveOption,
     hasOther = false,
     otherValue = "",
     onOtherChange,
@@ -32,12 +34,22 @@ export default function CheckboxGroup({
     gridCols = 2,
     className = "",
 }: CheckboxGroupProps) {
-    const handleChange = (opt: string) => {
+    const handleChange = (opt: string): void => {
         if (values.includes(opt)) {
             onChange(values.filter((v) => v !== opt));
-        } else {
-            onChange([...values, opt]);
+            return;
         }
+
+        if (exclusiveOption === opt) {
+            onChange([opt]);
+            return;
+        }
+
+        onChange(
+            exclusiveOption
+                ? [...values.filter((v) => v !== exclusiveOption), opt]
+                : [...values, opt],
+        );
     };
 
     const containerClass =

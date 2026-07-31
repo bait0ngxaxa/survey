@@ -2,6 +2,7 @@ import { RadioGroup, TextInput, CheckboxGroup } from "@/components/ui/form";
 import {
     OTHER_DISEASES_OPTIONS,
     COMPLICATION_OPTIONS,
+    NO_COMPLICATIONS_OPTION,
     SCREENING_FREQUENCY_OPTIONS,
 } from "@/config/sectionTwoData";
 import { type SectionTwoData } from "@/lib/types";
@@ -56,6 +57,7 @@ export default function HealthConditionsSection({
                 values={formData.complications}
                 options={COMPLICATION_OPTIONS}
                 onChange={(v) => handleChange("complications", v)}
+                exclusiveOption={NO_COMPLICATIONS_OPTION}
                 layout="grid"
                 gridCols={2}
                 hasOther

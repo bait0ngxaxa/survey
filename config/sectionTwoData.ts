@@ -109,8 +109,10 @@ export const SMOKING_OPTIONS = [
 
 export const OTHER_DISEASES_OPTIONS = ["ไม่มี", "มี"] as const;
 
+export const NO_COMPLICATIONS_OPTION = "ไม่มีภาวะแทรกซ้อน" as const;
+
 export const COMPLICATION_OPTIONS = [
-    "ไม่มีภาวะแทรกซ้อน",
+    NO_COMPLICATIONS_OPTION,
     "มีอาการตามัวมองไม่ชัด ต้อกระจก",
     "มีอาการผิดปกติของไต/โรคไต",
     "มีอาการชาตามปลายมือปลายเท้า",

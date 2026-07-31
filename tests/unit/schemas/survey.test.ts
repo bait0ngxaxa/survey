@@ -145,6 +145,17 @@ const crossFieldCases: Array<[string, InvalidInputFactory]> = [
         };
         return data;
     }],
+    ["complications include no complication with another option", () => {
+        const data = createValidSurveySubmission();
+        data.sectionTwo = {
+            ...data.sectionTwo,
+            complications: [
+                "ไม่มีภาวะแทรกซ้อน",
+                "มีอาการผิดปกติของไต/โรคไต",
+            ],
+        };
+        return data;
+    }],
     ["other screening frequency has no detail", () => {
         const data = createValidSurveySubmission();
         data.sectionTwo = {

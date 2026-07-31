@@ -1,4 +1,8 @@
-import { REQUIRED_SCREENINGS, SCREENING_LABELS } from "@/config/sectionTwoData";
+import {
+    NO_COMPLICATIONS_OPTION,
+    REQUIRED_SCREENINGS,
+    SCREENING_LABELS,
+} from "@/config/sectionTwoData";
 import { type Part1Data, type SectionTwoData } from "@/lib/types";
 
 export interface ValidationIssue {
@@ -201,6 +205,18 @@ export function getSectionTwoValidationIssues(
         issues.push({
             path: ["otherDiseasesList"],
             message: "กรุณาระบุรายชื่อโรค (ข้อ 19)",
+        });
+    }
+
+    if (
+        Array.isArray(formData.complications) &&
+        formData.complications.includes(NO_COMPLICATIONS_OPTION) &&
+        formData.complications.length > 1
+    ) {
+        issues.push({
+            path: ["complications"],
+            message:
+                "กรุณาเลือกไม่มีภาวะแทรกซ้อนเพียงอย่างเดียว หรือเลือกภาวะแทรกซ้อนอื่น (ข้อ 20)",
         });
     }
 
