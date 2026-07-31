@@ -6,7 +6,7 @@ interface CheckboxGroupProps {
     name: string;
     label: string;
     values: string[];
-    options: string[];
+    options: readonly string[];
     onChange: (values: string[]) => void;
     // For "other" option with text input
     hasOther?: boolean;

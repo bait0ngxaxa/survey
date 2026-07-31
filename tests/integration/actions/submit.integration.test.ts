@@ -2,10 +2,9 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { submitSurvey } from "@/lib/actions/survey/submit";
 import prisma from "@/lib/prisma";
 import {
-    initialPart1Data,
-    initialSectionTwoData,
-    initialMedicalRecordData,
-} from "@/lib/initialData";
+    createCompleteCentralAnswers,
+    createValidSurveySubmission,
+} from "@/tests/fixtures/surveySubmission";
 
 // Note: This is an integration test. It uses the real `prisma` client.
 // It requires a running database to pass. Next.js creates its own environment
@@ -61,22 +60,18 @@ describe("Survey Submission Integration", () => {
     });
 
     const mockValidData = {
-        region: "central",
+        ...createValidSurveySubmission(),
         part1: {
-            ...initialPart1Data,
-            bloodSugarKnown: "Yes",
-            visitDoctor: "Yes",
+            ...createValidSurveySubmission().part1,
         },
         sectionTwo: {
-            ...initialSectionTwoData,
+            ...createValidSurveySubmission().sectionTwo,
             respondentName: "Integration Test User",
             birthDate: "1980-05-15",
-            gender: "Male",
             age: "45",
         },
-        medicalRecord: { ...initialMedicalRecordData },
         sectionFour: {
-            answers: { 1: 5, 2: 4 },
+            answers: createCompleteCentralAnswers(5),
             reportData: {},
         },
         nationalId: testNationalId,
@@ -112,12 +107,12 @@ describe("Survey Submission Integration", () => {
         expect(createdSubmission?.submittedByUserId).toBe(
             "integration-test-user-id",
         );
-        expect(createdSubmission?.totalScorePart4).toBe(9); // 5 + 4
+        expect(createdSubmission?.totalScorePart4).toBe(145);
 
         // Check JSON payload was stored
         const rawAnswers = createdSubmission?.rawAnswers as any;
-        expect(rawAnswers.part1.bloodSugarKnown).toBe("Yes");
-        expect(rawAnswers.sectionTwo.gender).toBe("Male");
+        expect(rawAnswers.part1.bloodSugarKnown).toBe("ไม่ทราบ");
+        expect(rawAnswers.sectionTwo.gender).toBe("ชาย");
     });
 
     it("should link a new submission to an existing patient on subsequent submissions", async () => {
@@ -133,7 +128,7 @@ describe("Survey Submission Integration", () => {
                 age: "46", // Updated age
             },
             sectionFour: {
-                answers: { 1: 3, 2: 3 },
+                answers: createCompleteCentralAnswers(3),
                 reportData: {},
             },
         };
@@ -157,7 +152,7 @@ describe("Survey Submission Integration", () => {
         expect(submissions.length).toBe(2);
         expect(submissions[0].id).toBe(result1.submissionId);
         expect(submissions[1].id).toBe(result2.submissionId);
-        expect(submissions[0].totalScorePart4).toBe(9);
-        expect(submissions[1].totalScorePart4).toBe(6);
+        expect(submissions[0].totalScorePart4).toBe(145);
+        expect(submissions[1].totalScorePart4).toBe(87);
     });
 });

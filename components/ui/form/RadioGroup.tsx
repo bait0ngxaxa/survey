@@ -4,7 +4,7 @@ interface RadioGroupProps {
     name: string;
     label: string;
     value: string;
-    options: string[];
+    options: readonly string[];
     onChange: (value: string) => void;
 
     hasOther?: boolean;

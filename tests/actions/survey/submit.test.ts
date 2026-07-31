@@ -2,10 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { submitSurvey } from "@/lib/actions/survey/submit";
 import prisma from "@/lib/prisma";
 import {
-    initialPart1Data,
-    initialSectionTwoData,
-    initialMedicalRecordData,
-} from "@/lib/initialData";
+    createCompleteCentralAnswers,
+    createValidSurveySubmission,
+} from "@/tests/fixtures/surveySubmission";
 
 // Mock dependencies
 vi.mock("@/lib/prisma", () => ({
@@ -34,19 +33,19 @@ describe("Server Action: submitSurvey", () => {
     });
 
     const mockValidData = {
-        region: "central",
-        // Spread initial data to ensure all fields are present
-        part1: { ...initialPart1Data, bloodSugarKnown: "Yes" },
+        ...createValidSurveySubmission(),
+        part1: {
+            ...createValidSurveySubmission().part1,
+            bloodSugarKnown: "ไม่ทราบ" as const,
+        },
         sectionTwo: {
-            ...initialSectionTwoData,
+            ...createValidSurveySubmission().sectionTwo,
             respondentName: "John Doe",
             birthDate: "1990-01-01",
-            gender: "Male",
             age: "34",
         },
-        medicalRecord: { ...initialMedicalRecordData },
         sectionFour: {
-            answers: { 1: 5, 2: 4 },
+            answers: createCompleteCentralAnswers(5),
             reportData: {},
         },
         nationalId: "1234567890123",
@@ -91,7 +90,7 @@ describe("Server Action: submitSurvey", () => {
 
         expect(result.success).toBe(true);
         expect(result.submissionId).toBe("submission-id");
-        expect(result.totalScore).toBe(9); // 5 + 4
+        expect(result.totalScore).toBe(145);
 
         // Check if DB was called
         expect(prisma.patient.upsert).toHaveBeenCalledWith(
@@ -106,9 +105,50 @@ describe("Server Action: submitSurvey", () => {
                 data: expect.objectContaining({
                     patientId: "patient-id",
                     submittedByUserId: "mock-user-id",
-                    totalScorePart4: 9,
+                    totalScorePart4: 145,
                 }),
             }),
         );
+    });
+
+    it.each([
+        ["คำตอบไม่ครบ", { 1: 5, 2: 4 }],
+        [
+            "มี question ID ที่ไม่มีอยู่จริง",
+            {
+                ...Object.fromEntries(
+                    Object.entries(createCompleteCentralAnswers()).filter(
+                        ([id]) => id !== "29",
+                    ),
+                ),
+                99: 4,
+            },
+        ],
+        [
+            "มี question ID เกินมา",
+            { ...createCompleteCentralAnswers(), 30: 4 },
+        ],
+        [
+            "คะแนนอยู่นอกช่วง 1-6",
+            { ...createCompleteCentralAnswers(), 1: 7 },
+        ],
+        [
+            "คะแนนไม่ใช่จำนวนเต็ม",
+            { ...createCompleteCentralAnswers(), 1: 1.5 },
+        ],
+    ])("should reject submission when %s", async (_caseName, answers) => {
+        const consoleSpy = vi
+            .spyOn(console, "error")
+            .mockImplementation(() => {});
+
+        const result = await submitSurvey({
+            ...mockValidData,
+            sectionFour: { answers, reportData: {} },
+        });
+
+        expect(result.success).toBe(false);
+        expect(prisma.patient.upsert).not.toHaveBeenCalled();
+        expect(prisma.surveySubmission.create).not.toHaveBeenCalled();
+        consoleSpy.mockRestore();
     });
 });

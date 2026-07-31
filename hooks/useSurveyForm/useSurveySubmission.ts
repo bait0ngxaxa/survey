@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAlert } from "@/hooks/useAlert";
 import { useAsyncSubmit } from "@/hooks/useAsyncSubmit";
 import { submitSurvey } from "@/lib/actions/survey/submit";
+import { SurveySubmissionInputSchema } from "@/lib/schemas";
 import {
     type Part1Data,
     type SectionTwoData,
@@ -43,18 +44,26 @@ export function useSurveySubmission({
     });
 
     const handleSubmitSurvey = async (): Promise<void> => {
+        const input = {
+            region,
+            hospital: "",
+            part1: part1Data,
+            sectionTwo: sectionTwoData,
+            medicalRecord: medicalRecordData,
+            sectionFour: {
+                answers: sectionFourAnswers,
+                reportData: recommendations,
+            },
+        };
+        const parsed = SurveySubmissionInputSchema.safeParse(input);
+
+        if (!parsed.success) {
+            showAlert("ข้อมูลไม่ครบถ้วน กรุณาตรวจสอบคำตอบทุกข้อ");
+            return;
+        }
+
         const result = await executeSubmit(() =>
-            submitSurvey({
-                region: region,
-                hospital: "",
-                part1: part1Data,
-                sectionTwo: sectionTwoData,
-                medicalRecord: medicalRecordData,
-                sectionFour: {
-                    answers: sectionFourAnswers,
-                    reportData: recommendations,
-                },
-            }),
+            submitSurvey(parsed.data),
         );
 
         if (result?.success) {

@@ -1,31 +1,62 @@
 import { z } from "zod";
+import {
+    ALCOHOL_OPTIONS,
+    COMPLICATION_OPTIONS,
+    EDUCATION_OPTIONS,
+    FAMILY_SUPPORT_OPTIONS,
+    FINANCIAL_STATUS_OPTIONS,
+    GENDER_OPTIONS,
+    INCOME_OPTIONS,
+    LIVING_ARRANGEMENT_OPTIONS,
+    MARITAL_STATUS_OPTIONS,
+    MEDICATION_COUNT_OPTIONS,
+    OCCUPATION_OPTIONS,
+    OTHER_DISEASES_OPTIONS,
+    PAYMENT_METHOD_OPTIONS,
+    SCREENING_FREQUENCY_OPTIONS,
+    SMOKING_OPTIONS,
+    TREATMENT_TYPE_OPTIONS,
+    WORK_SUPPORT_OPTIONS,
+} from "@/config/sectionTwoData";
+import { centralPart4Data } from "@/config/part4";
+
+const requiredText = z.string().trim().min(1, "จำเป็นต้องระบุข้อมูล");
+const optionalText = z.string();
+const surveyMethodSchema = z.enum(["ตอบด้วยตนเอง", "สัมภาษณ์"]);
+const bloodSugarKnownSchema = z.enum(["ทราบ", "ไม่ทราบ"]);
+const visitDoctorSchema = z.enum(["ทุกครั้ง", "ไม่ทุกครั้ง"]);
+
+const centralQuestionIds = centralPart4Data.flatMap((section) =>
+    section.questions.map((question) => String(question.id)),
+);
+const centralQuestionIdSet = new Set(centralQuestionIds);
 
 // Part 1 Schema
 export const Part1DataSchema = z.object({
-    bloodSugarKnown: z.string(),
-    fastingLevel: z.string(),
-    hba1cLevel: z.string(),
-    visitDoctor: z.string(),
-    notVisitReason: z.string(),
-    surveyMethod: z.string().optional(),
-    interviewerName: z.string().optional(),
+    bloodSugarKnown: bloodSugarKnownSchema,
+    fastingLevel: optionalText,
+    hba1cLevel: optionalText,
+    visitDoctor: visitDoctorSchema,
+    notVisitReason: optionalText,
+    surveyMethod: surveyMethodSchema.optional(),
+    interviewerName: optionalText.optional(),
 });
 
 // Screenings Schema
 export const ScreeningsSchema = z.object({
-    physical: z.string(),
+    physical: z.enum(SCREENING_FREQUENCY_OPTIONS),
     physicalOther: z.string(),
-    foot: z.string(),
+    foot: z.enum(SCREENING_FREQUENCY_OPTIONS),
     footOther: z.string(),
-    eye: z.string(),
+    eye: z.enum(SCREENING_FREQUENCY_OPTIONS),
     eyeOther: z.string(),
-    urine: z.string(),
+    urine: z.enum(SCREENING_FREQUENCY_OPTIONS),
     urineOther: z.string(),
-    lipid: z.string(),
+    lipid: z.enum(SCREENING_FREQUENCY_OPTIONS),
     lipidOther: z.string(),
-    dental: z.string(),
+    dental: z.enum(SCREENING_FREQUENCY_OPTIONS),
     dentalOther: z.string(),
-    hba1c: z.string(),
+    hba1c: z.enum(SCREENING_FREQUENCY_OPTIONS),
     hba1cOther: z.string(),
     other: z.string(),
     otherText: z.string(),
@@ -33,8 +64,8 @@ export const ScreeningsSchema = z.object({
 
 // Section Two Schema
 export const SectionTwoDataSchema = z.object({
-    respondentName: z.string(),
-    gender: z.string(),
+    respondentName: requiredText,
+    gender: z.enum(GENDER_OPTIONS),
     age: z.string().refine(
         (val) => {
             if (!val) return true;
@@ -44,15 +75,15 @@ export const SectionTwoDataSchema = z.object({
         { message: "อายุต้องอยู่ระหว่าง 1-120 ปี" },
     ),
     birthDate: z.string(),
-    education: z.string(),
+    education: z.enum(EDUCATION_OPTIONS),
     educationOther: z.string(),
-    maritalStatus: z.string(),
-    occupation: z.string(),
+    maritalStatus: z.enum(MARITAL_STATUS_OPTIONS),
+    occupation: z.enum(OCCUPATION_OPTIONS),
     occupationOther: z.string(),
-    income: z.string(),
+    income: z.enum(INCOME_OPTIONS),
     supportSource: z.string(),
     supportSourceOther: z.string(),
-    financialStatus: z.string(),
+    financialStatus: z.enum(FINANCIAL_STATUS_OPTIONS),
     diabetesDuration: z.string().refine(
         (val) => {
             if (!val) return true;
@@ -69,28 +100,28 @@ export const SectionTwoDataSchema = z.object({
         },
         { message: "อายุที่เริ่มเป็นต้องเป็นตัวเลขระหว่าง 1-120 ปี" },
     ),
-    treatmentType: z.string(),
+    treatmentType: z.enum(TREATMENT_TYPE_OPTIONS),
     treatmentOther: z.string(),
-    medicationCount: z.string(),
-    paymentMethod: z.string(),
+    medicationCount: z.enum(MEDICATION_COUNT_OPTIONS),
+    paymentMethod: z.enum(PAYMENT_METHOD_OPTIONS),
     paymentMethodOther: z.string(),
-    livingArrangement: z.string(),
+    livingArrangement: z.enum(LIVING_ARRANGEMENT_OPTIONS),
     livingMembers: z.string(),
     livingArrangementOther: z.string(),
-    familySupport: z.string(),
-    workSupport: z.string(),
+    familySupport: z.enum(FAMILY_SUPPORT_OPTIONS),
+    workSupport: z.enum(WORK_SUPPORT_OPTIONS),
     dietFood: z.string(),
     dietSnack: z.string(),
     dietDrink: z.string(),
-    alcohol: z.string(),
+    alcohol: z.enum(ALCOHOL_OPTIONS),
     alcoholYears: z.string(),
     alcoholDays: z.string(),
-    smoking: z.string(),
+    smoking: z.enum(SMOKING_OPTIONS),
     smokingYears: z.string(),
     smokingAmount: z.string(),
-    otherDiseases: z.string(),
+    otherDiseases: z.enum(OTHER_DISEASES_OPTIONS),
     otherDiseasesList: z.string(),
-    complications: z.array(z.string()),
+    complications: z.array(z.enum(COMPLICATION_OPTIONS)).min(1),
     complicationsOther: z.string(),
     screenings: ScreeningsSchema,
     adviceReceived: z.string(),
@@ -143,8 +174,26 @@ export const ReportStepDataSchema = z.object({
 });
 
 // Section Four Schema - JSON keys are always strings, so we validate string keys and transform
+const ScoreSchema = z.number().int().min(1).max(6);
+
+const CentralAnswersSchema = z
+    .record(z.string(), ScoreSchema)
+    .superRefine((answers, context) => {
+        const answerIds = Object.keys(answers);
+        const hasExactIds =
+            answerIds.length === centralQuestionIds.length &&
+            answerIds.every((id) => centralQuestionIdSet.has(id));
+
+        if (!hasExactIds) {
+            context.addIssue({
+                code: "custom",
+                message: "ต้องตอบคำถามของภูมิภาคให้ครบทุกข้อและไม่มีข้อเกิน",
+            });
+        }
+    });
+
 export const SectionFourDataSchema = z.object({
-    answers: z.record(z.string(), z.number()).transform((obj) => {
+    answers: CentralAnswersSchema.transform((obj) => {
         const result: Record<number, number> = {};
         for (const [key, value] of Object.entries(obj)) {
             const numKey = parseInt(key, 10);
@@ -159,7 +208,7 @@ export const SectionFourDataSchema = z.object({
 
 // Main Survey Submission Schema
 export const SurveySubmissionInputSchema = z.object({
-    region: z.string().min(1, "Region is required").max(100),
+    region: z.enum(["central"]),
     hospital: z.string().max(200).optional(),
     nationalId: z.string().max(20).optional(),
     part1: Part1DataSchema,
