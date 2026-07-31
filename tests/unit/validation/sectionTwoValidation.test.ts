@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { validateSectionTwo } from "@/lib/validation/sectionTwoValidation";
 import { type SectionTwoData } from "@/lib/types";
+import { initialSectionTwoData } from "@/lib/initialData";
 
 // Helper to create a valid base object
 const createValidData = (): SectionTwoData => ({
@@ -108,6 +109,15 @@ describe("Section Two Validation", () => {
     });
 
     describe("Conditional Fields", () => {
+        it("should leave other diseases unanswered initially", () => {
+            expect(initialSectionTwoData.otherDiseases).toBe("");
+
+            const result = validateSectionTwo(initialSectionTwoData);
+            expect(result.errors).toContain(
+                "กรุณาเลือกว่ามีโรคอื่นร่วมด้วยหรือไม่ (ข้อ 19)",
+            );
+        });
+
         it("should error if Occupation is 'Other' but detail is missing", () => {
             const data = createValidData();
             data.occupation = "อื่น ๆ";

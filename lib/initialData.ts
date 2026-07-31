@@ -48,7 +48,7 @@ export const initialSectionTwoData: SectionTwoData = {
     smoking: "",
     smokingYears: "",
     smokingAmount: "",
-    otherDiseases: "no",
+    otherDiseases: "",
     otherDiseasesList: "",
     complications: [],
     complicationsOther: "",
