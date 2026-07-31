@@ -9,3 +9,12 @@ export const GetSubmissionsParamsSchema = z.object({
 });
 
 export type GetSubmissionsParams = z.infer<typeof GetSubmissionsParamsSchema>;
+
+export const GetAllSubmissionsParamsSchema = GetSubmissionsParamsSchema.pick({
+    regionFilter: true,
+    searchQuery: true,
+});
+
+export type GetAllSubmissionsParams = z.infer<
+    typeof GetAllSubmissionsParamsSchema
+>;

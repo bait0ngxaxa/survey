@@ -1,6 +1,9 @@
 /** Default page size for paginated queries */
 export const DEFAULT_PAGE_SIZE = 10;
 
+/** Number of submissions fetched per cursor batch for bulk operations. */
+export const SUBMISSIONS_BULK_BATCH_SIZE = 500;
+
 /** Region ID constants — use instead of magic strings */
 export const REGION_ID = {
     CENTRAL: "central",

@@ -1,11 +1,91 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { type Prisma } from "@prisma/client";
 import { requireAdminUser } from "@/lib/auth/guards";
 import { cache } from "react";
-import { GetSubmissionsParamsSchema } from "@/lib/schemas";
+import prisma from "@/lib/prisma";
+import {
+    GetAllSubmissionsParamsSchema,
+    GetSubmissionsParamsSchema,
+} from "@/lib/schemas";
 import type { RawAnswers } from "@/lib/types";
+import {
+    ERROR_FETCH_FAILED,
+    ERROR_INVALID_PARAMS,
+} from "@/lib/constants/errors";
+import { SUBMISSIONS_BULK_BATCH_SIZE } from "@/lib/constants/submissionsConstants";
 import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
+
+const submissionWhere = (
+    regionFilter: string,
+    searchQuery: string,
+): Prisma.SurveySubmissionWhereInput => ({
+    ...(regionFilter && { region: regionFilter }),
+    ...(searchQuery && {
+        OR: [
+            {
+                id: {
+                    contains: searchQuery,
+                    mode: "insensitive",
+                },
+            },
+            {
+                rawAnswers: {
+                    path: ["part1", "interviewerName"],
+                    string_contains: searchQuery,
+                },
+            },
+            {
+                rawAnswers: {
+                    path: ["sectionTwo", "respondentName"],
+                    string_contains: searchQuery,
+                },
+            },
+            {
+                respondentNameSnapshot: {
+                    contains: searchQuery,
+                    mode: "insensitive",
+                },
+            },
+        ],
+    }),
+});
+
+const BULK_SUBMISSION_SELECT = {
+    id: true,
+    createdAt: true,
+    region: true,
+    rawAnswers: true,
+    respondentNameSnapshot: true,
+    genderSnapshot: true,
+    birthDateSnapshot: true,
+    patient: {
+        select: {
+            id: true,
+            nationalId: true,
+            firstName: true,
+            lastName: true,
+            gender: true,
+            birthDate: true,
+        },
+    },
+} as const;
+
+type BulkSubmission = Prisma.SurveySubmissionGetPayload<{
+    select: typeof BULK_SUBMISSION_SELECT;
+}>;
+
+type GetAllSubmissionsResult =
+    | {
+          success: true;
+          data: BulkSubmission[];
+          total: number;
+      }
+    | {
+          success: false;
+          error: string;
+          data: [];
+      };
 
 // Check if user is admin (deduplicated per request via React.cache)
 const checkAdmin = cache(async (): Promise<void> => {
@@ -59,79 +139,19 @@ const getCachedSubmissionsData = unstable_cache(
     ) => {
         const skip = (page - 1) * pageSize;
 
+        const where = submissionWhere(regionFilter, searchQuery);
+
         const [submissions, total] = await Promise.all([
             prisma.surveySubmission.findMany({
                 skip,
                 take: pageSize,
-                where: {
-                    ...(regionFilter && { region: regionFilter }),
-                    ...(searchQuery && {
-                        OR: [
-                            {
-                                id: {
-                                    contains: searchQuery,
-                                    mode: "insensitive",
-                                },
-                            },
-                            {
-                                rawAnswers: {
-                                    path: ["part1", "interviewerName"],
-                                    string_contains: searchQuery,
-                                },
-                            },
-                            {
-                                rawAnswers: {
-                                    path: ["sectionTwo", "respondentName"],
-                                    string_contains: searchQuery,
-                                },
-                            },
-                            {
-                                respondentNameSnapshot: {
-                                    contains: searchQuery,
-                                    mode: "insensitive",
-                                },
-                            },
-                        ],
-                    }),
-                },
+                where,
                 orderBy: { createdAt: "desc" },
                 include: {
                     patient: true,
                 },
             }),
-            prisma.surveySubmission.count({
-                where: {
-                    ...(regionFilter && { region: regionFilter }),
-                    ...(searchQuery && {
-                        OR: [
-                            {
-                                id: {
-                                    contains: searchQuery,
-                                    mode: "insensitive",
-                                },
-                            },
-                            {
-                                rawAnswers: {
-                                    path: ["part1", "interviewerName"],
-                                    string_contains: searchQuery,
-                                },
-                            },
-                            {
-                                rawAnswers: {
-                                    path: ["sectionTwo", "respondentName"],
-                                    string_contains: searchQuery,
-                                },
-                            },
-                            {
-                                respondentNameSnapshot: {
-                                    contains: searchQuery,
-                                    mode: "insensitive",
-                                },
-                            },
-                        ],
-                    }),
-                },
-            }),
+            prisma.surveySubmission.count({ where }),
         ]);
 
         return { submissions, total };
@@ -187,4 +207,61 @@ export async function getSubmissions(params?: unknown) {
         totalPages: Math.ceil(total / pageSize),
         currentPage: page,
     };
+}
+
+/**
+ * Fetches every submission matching the supplied filters in cursor batches.
+ * The batch size limits each database response, not the total result set.
+ */
+export async function getAllSubmissionsForAdmin(
+    params?: unknown,
+): Promise<GetAllSubmissionsResult> {
+    const authorization = await requireAdminUser();
+    if (!authorization.authorized) {
+        return { success: false, error: authorization.error, data: [] };
+    }
+
+    const parsed = GetAllSubmissionsParamsSchema.safeParse(params || {});
+    if (!parsed.success) {
+        return { success: false, error: ERROR_INVALID_PARAMS, data: [] };
+    }
+
+    const { regionFilter, searchQuery } = parsed.data;
+    const where = submissionWhere(regionFilter, searchQuery);
+
+    try {
+        const total = await prisma.surveySubmission.count({ where });
+        const submissions: BulkSubmission[] = [];
+        let cursor: { id: string } | undefined;
+
+        if (total === 0) {
+            return { success: true, data: submissions, total };
+        }
+
+        while (true) {
+            const batch = await prisma.surveySubmission.findMany({
+                where,
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                take: SUBMISSIONS_BULK_BATCH_SIZE,
+                ...(cursor ? { cursor, skip: 1 } : {}),
+                select: BULK_SUBMISSION_SELECT,
+            });
+
+            if (batch.length === 0) break;
+
+            submissions.push(...batch);
+
+            if (batch.length < SUBMISSIONS_BULK_BATCH_SIZE) break;
+
+            const lastSubmission = batch[batch.length - 1];
+            if (!lastSubmission) break;
+
+            cursor = { id: lastSubmission.id };
+        }
+
+        return { success: true, data: submissions, total };
+    } catch (error) {
+        console.error("Error fetching all admin submissions:", error);
+        return { success: false, error: ERROR_FETCH_FAILED, data: [] };
+    }
 }

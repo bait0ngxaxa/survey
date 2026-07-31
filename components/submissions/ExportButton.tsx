@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FileSpreadsheet } from "lucide-react";
-import { getSubmissions } from "@/lib/actions/admin";
+import { getAllSubmissionsForAdmin } from "@/lib/actions/admin";
 import * as XLSX from "xlsx";
 import {
     transformToGeneralData,
@@ -14,6 +14,21 @@ import { type PatientData } from "@/lib/types";
 
 interface ExportButtonProps {
     regionFilter?: string;
+}
+
+type ExportStatus = {
+    tone: "success" | "warning" | "error";
+    text: string;
+};
+
+const statusStyles: Record<ExportStatus["tone"], string> = {
+    success: "bg-emerald-50 text-emerald-900 ring-emerald-200",
+    warning: "bg-amber-50 text-amber-950 ring-amber-200",
+    error: "bg-rose-50 text-rose-950 ring-rose-200",
+};
+
+function formatCount(count: number): string {
+    return count.toLocaleString("th-TH");
 }
 
 /**
@@ -55,21 +70,35 @@ function generateFilename(regionFilter: string): string {
 
 export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
     const [loading, setLoading] = useState(false);
-    const [statusMessage, setStatusMessage] = useState<string | null>(null);
+    const [statusMessage, setStatusMessage] =
+        useState<ExportStatus | null>(null);
 
     const handleExport = async (): Promise<void> => {
         try {
             setLoading(true);
             setStatusMessage(null);
 
-            const { submissions } = await getSubmissions({
-                page: 1,
-                pageSize: 10000,
+            const result = await getAllSubmissionsForAdmin({
                 regionFilter,
             });
 
-            if (!submissions || submissions.length === 0) {
-                setStatusMessage("ไม่พบข้อมูลสำหรับส่งออก");
+            if (!result.success) {
+                setStatusMessage({ tone: "error", text: result.error });
+                return;
+            }
+
+            const { data: submissions, total } = result;
+
+            if (submissions.length === 0) {
+                setStatusMessage({
+                    tone: "warning",
+                    text:
+                        total > 0
+                            ? "ยังไม่ได้ส่งออก " +
+                              formatCount(total) +
+                              " รายการ กรุณาลองใหม่อีกครั้ง"
+                            : "ไม่พบข้อมูลสำหรับส่งออก",
+                });
                 return;
             }
 
@@ -101,14 +130,33 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
 
             const workbook = createWorkbook(generalData, promsData);
             XLSX.writeFile(workbook, generateFilename(regionFilter));
-            setStatusMessage(`ส่งออกข้อมูลสำเร็จ ${submissions.length} รายการ`);
+
+            const missingCount = Math.max(total - submissions.length, 0);
+            if (missingCount > 0) {
+                setStatusMessage({
+                    tone: "warning",
+                    text: `ส่งออกแล้ว ${formatCount(
+                        submissions.length,
+                    )} จากทั้งหมด ${formatCount(
+                        total,
+                    )} รายการ ยังไม่ได้ส่งออก ${formatCount(
+                        missingCount,
+                    )} รายการ`,
+                });
+            } else {
+                setStatusMessage({
+                    tone: "success",
+                    text: `ส่งออกข้อมูลสำเร็จ ${formatCount(
+                        submissions.length,
+                    )} รายการ`,
+                });
+            }
         } catch (error) {
             console.error("Export failed", error);
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
-            setStatusMessage(`ส่งออกข้อมูลไม่สำเร็จ: ${message}`);
+            setStatusMessage({
+                tone: "error",
+                text: "ส่งออกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+            });
         } finally {
             setLoading(false);
         }
@@ -128,10 +176,12 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
             </button>
             {statusMessage && (
                 <p
-                    className="max-w-64 rounded-lg bg-white px-3 py-2 text-right text-xs font-medium text-slate-700 ring-1 ring-slate-200 thai-text"
-                    role="status"
+                    className={`max-w-72 rounded-lg px-3 py-2 text-right text-xs font-medium ring-1 thai-text ${statusStyles[statusMessage.tone]}`}
+                    role={
+                        statusMessage.tone === "error" ? "alert" : "status"
+                    }
                 >
-                    {statusMessage}
+                    {statusMessage.text}
                 </p>
             )}
         </div>

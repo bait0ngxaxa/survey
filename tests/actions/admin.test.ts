@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getAdminStats, getSubmissions } from "@/lib/actions/admin";
+import {
+    getAdminStats,
+    getAllSubmissionsForAdmin,
+    getSubmissions,
+} from "@/lib/actions/admin";
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -153,6 +157,67 @@ describe("Admin Actions", () => {
                             }),
                         ]),
                     }),
+                }),
+            );
+        });
+    });
+
+    describe("getAllSubmissionsForAdmin", () => {
+        it("fetches every submission in cursor batches", async () => {
+            mockAdminUser();
+
+            const firstBatch = Array.from({ length: 500 }, (_, index) => ({
+                id: "submission-" + index,
+                createdAt: new Date("2026-01-01T00:00:00.000Z"),
+            }));
+            const secondBatch = [
+                {
+                    id: "submission-500",
+                    createdAt: new Date("2025-12-31T00:00:00.000Z"),
+                },
+            ];
+
+            vi.mocked(prisma.surveySubmission.count).mockResolvedValue(501);
+            vi.mocked(prisma.surveySubmission.findMany)
+                .mockResolvedValueOnce(
+                    firstBatch as unknown as Awaited<
+                        ReturnType<typeof prisma.surveySubmission.findMany>
+                    >,
+                )
+                .mockResolvedValueOnce(
+                    secondBatch as unknown as Awaited<
+                        ReturnType<typeof prisma.surveySubmission.findMany>
+                    >,
+                );
+
+            const result = await getAllSubmissionsForAdmin();
+
+            expect(result).toMatchObject({
+                success: true,
+                total: 501,
+            });
+            if (result.success) {
+                expect(result.data).toHaveLength(501);
+            }
+
+            expect(prisma.surveySubmission.findMany).toHaveBeenCalledTimes(2);
+            expect(prisma.surveySubmission.findMany).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({
+                    take: 500,
+                    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                    select: expect.objectContaining({
+                        rawAnswers: true,
+                        patient: expect.any(Object),
+                    }),
+                }),
+            );
+            expect(prisma.surveySubmission.findMany).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({
+                    cursor: { id: "submission-499" },
+                    skip: 1,
+                    take: 500,
                 }),
             );
         });
