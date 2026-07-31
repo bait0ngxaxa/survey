@@ -16,11 +16,7 @@ export function SubmissionTableRow({
     currentPage,
 }: SubmissionTableRowProps) {
     const isEven = index % 2 === 0;
-    const patientName = submission.patient
-        ? `${submission.patient.firstName || ""} ${
-              submission.patient.lastName || ""
-          }`.trim() || "-"
-        : "-";
+    const patientName = submission.respondent || "-";
 
     return (
         <tr

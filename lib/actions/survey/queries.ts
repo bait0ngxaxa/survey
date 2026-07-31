@@ -11,6 +11,7 @@ import {
     ERROR_INVALID_OPTIONS,
 } from "@/lib/constants/errors";
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants/submissionsConstants";
+import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
 
 // ============================================================
 // GET SINGLE SUBMISSION
@@ -130,7 +131,12 @@ export async function getUserSubmissions(limit: number = DEFAULT_PAGE_SIZE) {
             take: validLimit,
         });
 
-        return { success: true, data: submissions };
+        const submissionsWithRespondent = submissions.map((submission) => ({
+            ...submission,
+            respondent: getSubmissionSnapshot(submission).respondentName,
+        }));
+
+        return { success: true, data: submissionsWithRespondent };
     } catch (error) {
         console.error("Error fetching user submissions:", error);
         return {

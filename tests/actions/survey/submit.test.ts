@@ -58,7 +58,7 @@ describe("Server Action: submitSurvey", () => {
             answers: createCompleteCentralAnswers(5),
             reportData: {},
         },
-        nationalId: "1234567890123",
+        nationalId: " 1234567890123 ",
     };
 
     it("should return error if input validation fails", async () => {
@@ -117,6 +117,9 @@ describe("Server Action: submitSurvey", () => {
             expect.objectContaining({
                 data: expect.objectContaining({
                     patientId: "patient-id",
+                    respondentNameSnapshot: "John Doe",
+                    genderSnapshot: "ชาย",
+                    birthDateSnapshot: new Date("1990-01-01"),
                     submittedByUserId: "mock-user-id",
                     totalScorePart4: 145,
                 }),
@@ -124,11 +127,7 @@ describe("Server Action: submitSurvey", () => {
         );
     });
 
-    it("should create patient and submission in one transaction without national ID", async () => {
-        vi.mocked(prisma.patient.create).mockResolvedValue({
-            id: "patient-id",
-        } as unknown as Awaited<ReturnType<typeof prisma.patient.create>>);
-
+    it("should create a submission without creating a patient when national ID is absent", async () => {
         vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
             id: "submission-id",
         } as unknown as Awaited<
@@ -142,15 +141,64 @@ describe("Server Action: submitSurvey", () => {
 
         expect(result.success).toBe(true);
         expect(prisma.$transaction).toHaveBeenCalledTimes(1);
-        expect(prisma.patient.create).toHaveBeenCalledWith(
-            expect.objectContaining({ data: expect.any(Object) }),
-        );
+        expect(prisma.patient.create).not.toHaveBeenCalled();
         expect(prisma.patient.upsert).not.toHaveBeenCalled();
         expect(prisma.surveySubmission.create).toHaveBeenCalledWith(
             expect.objectContaining({
-                data: expect.objectContaining({ patientId: "patient-id" }),
+                data: expect.objectContaining({
+                    patientId: null,
+                    respondentNameSnapshot: "John Doe",
+                    genderSnapshot: "ชาย",
+                    birthDateSnapshot: new Date("1990-01-01"),
+                }),
             }),
         );
+    });
+
+    it("should store null for an invalid birth date snapshot", async () => {
+        vi.mocked(prisma.patient.upsert).mockResolvedValue({
+            id: "patient-id",
+        } as unknown as Awaited<ReturnType<typeof prisma.patient.upsert>>);
+        vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
+            id: "submission-id",
+        } as unknown as Awaited<
+            ReturnType<typeof prisma.surveySubmission.create>
+        >);
+
+        const result = await submitSurvey({
+            ...mockValidData,
+            sectionTwo: {
+                ...mockValidData.sectionTwo,
+                birthDate: "not-a-date",
+            },
+        });
+
+        expect(result.success).toBe(true);
+        expect(prisma.surveySubmission.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({ birthDateSnapshot: null }),
+            }),
+        );
+    });
+
+    it("should return a sanitized error when the transaction fails", async () => {
+        const consoleSpy = vi
+            .spyOn(console, "error")
+            .mockImplementation(() => {});
+        vi.mocked(prisma.surveySubmission.create).mockRejectedValueOnce(
+            new Error("database failure"),
+        );
+
+        const result = await submitSurvey({
+            ...mockValidData,
+            nationalId: undefined,
+        });
+
+        expect(result).toEqual({
+            success: false,
+            error: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        });
+        consoleSpy.mockRestore();
     });
 
     it.each([

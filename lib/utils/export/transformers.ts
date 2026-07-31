@@ -17,6 +17,7 @@ import {
     formatScreening,
     getActionText,
 } from "./helpers";
+import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
 
 export function transformToGeneralData(
     submission: SubmissionData,
@@ -24,7 +25,7 @@ export function transformToGeneralData(
     const raw: RawAnswers = asRawAnswers(submission.rawAnswers);
     const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
     const part1: Partial<Part1Data> = raw.part1 || {};
-    const patient = submission.patient;
+    const snapshot = getSubmissionSnapshot(submission);
     const dateObj = new Date(submission.createdAt);
     const screenings: Partial<SectionTwoData["screenings"]> =
         sec2.screenings || {};
@@ -36,9 +37,7 @@ export function transformToGeneralData(
         เขตสุขภาพ: translateRegion(submission.region),
 
         วิธีเก็บข้อมูล: part1.surveyMethod || "",
-        ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
-            patient?.lastName || ""
-        }`.trim(),
+        ผู้ให้ข้อมูล: snapshot.respondentName || "",
         ผู้สัมภาษณ์: part1.interviewerName || "",
 
         // Part 1
@@ -49,9 +48,9 @@ export function transformToGeneralData(
         เหตุผลไม่พบแพทย์: part1.notVisitReason || "",
 
         // Demographics
-        เพศ: sec2.gender || patient?.gender || "",
+        เพศ: snapshot.gender || "",
         อายุ: sec2.age || "",
-        วันเกิด: formatBirthDateThai(sec2.birthDate),
+        วันเกิด: formatBirthDateThai(snapshot.birthDate),
         การศึกษา:
             formatWithOther(sec2.education, sec2.educationOther, "อื่น ๆ") ||
             formatWithOther(
@@ -147,8 +146,7 @@ export function transformToGeneralData(
 export function transformToPromsData(submission: SubmissionData): PromsDataRow {
     const raw: RawAnswers = asRawAnswers(submission.rawAnswers);
     const report = (raw.reportData || {}) as ReportData;
-    const sec2: Partial<SectionTwoData> = raw.sectionTwo || {};
-    const patient = submission.patient;
+    const snapshot = getSubmissionSnapshot(submission);
     const dateObj = new Date(submission.createdAt);
 
     // Extract additionalInfo from reportData
@@ -174,10 +172,8 @@ export function transformToPromsData(submission: SubmissionData): PromsDataRow {
         วันที่: dateObj.toLocaleDateString("th-TH"),
         เวลา: dateObj.toLocaleTimeString("th-TH"),
         ID: submission.id,
-        ผู้ให้ข้อมูล: `${patient?.firstName || ""} ${
-            patient?.lastName || ""
-        }`.trim(),
-        เพศ: sec2.gender || patient?.gender || "",
+        ผู้ให้ข้อมูล: snapshot.respondentName || "",
+        เพศ: snapshot.gender || "",
         เขตสุขภาพ: translateRegion(submission.region),
 
         "มิติที่ 1 (การทำงานของร่างกาย)": dim1,

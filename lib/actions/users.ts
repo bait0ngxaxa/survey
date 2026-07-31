@@ -4,6 +4,7 @@ import { clerkClient, auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { ERROR_UNAUTHORIZED, ERROR_GENERIC } from "@/lib/constants/errors";
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants/submissionsConstants";
+import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
 
 export interface StaffUser {
     id: string;
@@ -169,9 +170,7 @@ export async function getUserSubmissionsList(
         const userSubmissions: UserSubmission[] = submissions.map((s) => ({
             id: s.id,
             patientName:
-                `${s.patient.firstName || ""} ${
-                    s.patient.lastName || ""
-                }`.trim() || "ไม่ระบุชื่อ",
+                getSubmissionSnapshot(s).respondentName || "ไม่ระบุชื่อ",
             region: s.region,
             createdAt: s.createdAt,
             totalScore: s.totalScorePart4,

@@ -1,8 +1,7 @@
 import { formatDateFull } from "@/lib/utils/formatDate";
 
 interface PatientInfoCardProps {
-    patientFirstName?: string | null;
-    patientLastName?: string | null;
+    respondentName?: string | null;
     patientHN?: string | null;
     submissionDate: Date;
     region: string;
@@ -10,8 +9,7 @@ interface PatientInfoCardProps {
 }
 
 export function PatientInfoCard({
-    patientFirstName,
-    patientLastName,
+    respondentName,
     patientHN,
     submissionDate,
     region,
@@ -28,7 +26,7 @@ export function PatientInfoCard({
                         ชื่อผู้ให้ข้อมูล
                     </span>
                     <span className="font-semibold text-slate-900 thai-text break-words">
-                        {patientFirstName} {patientLastName}
+                        {respondentName || "-"}
                     </span>
                 </div>
                 <div className="min-w-0">

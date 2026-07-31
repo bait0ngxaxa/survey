@@ -75,6 +75,28 @@ describe("Export Transformers", () => {
             expect(result["ทราบระดับน้ำตาล"]).toBe("");
             expect(result["อาชีพ"]).toBe("");
         });
+
+        it("should prefer submission snapshots over raw answers and patient data", () => {
+            const snapshotSubmission: SubmissionData = {
+                ...mockSubmission,
+                respondentNameSnapshot: "Snapshot Name",
+                genderSnapshot: "Snapshot Gender",
+                birthDateSnapshot: new Date("1990-01-01"),
+                rawAnswers: {
+                    sectionTwo: {
+                        respondentName: "Raw Name",
+                        gender: "Raw Gender",
+                        birthDate: "1980-01-01",
+                    },
+                },
+            };
+
+            const result = transformToGeneralData(snapshotSubmission);
+
+            expect(result["ผู้ให้ข้อมูล"]).toBe("Snapshot Name");
+            expect(result["เพศ"]).toBe("Snapshot Gender");
+            expect(result["วันเกิด"]).toBe("01/01/2533");
+        });
     });
 
     describe("transformToPromsData", () => {

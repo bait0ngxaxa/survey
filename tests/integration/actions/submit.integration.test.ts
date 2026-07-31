@@ -24,38 +24,31 @@ vi.mock("next/cache", () => ({
 
 describe("Survey Submission Integration", () => {
     const testNationalId = "0000000000000";
+    const testUserId = "integration-test-user-id";
 
-    beforeEach(async () => {
-        // Clean up test data before each run
+    async function cleanupTestData(): Promise<void> {
         await prisma.surveySubmission.deleteMany({
-            where: {
-                patient: {
-                    nationalId: testNationalId,
-                },
-            },
+            where: { submittedByUserId: testUserId },
         });
         await prisma.patient.deleteMany({
             where: {
-                nationalId: testNationalId,
+                OR: [
+                    { nationalId: testNationalId },
+                    { firstName: "No-ID" },
+                ],
             },
         });
+    }
+
+    beforeEach(async () => {
+        // Clean up test data before each run
+        await cleanupTestData();
         vi.clearAllMocks();
     });
 
     afterAll(async () => {
         // Final cleanup
-        await prisma.surveySubmission.deleteMany({
-            where: {
-                patient: {
-                    nationalId: testNationalId,
-                },
-            },
-        });
-        await prisma.patient.deleteMany({
-            where: {
-                nationalId: testNationalId,
-            },
-        });
+        await cleanupTestData();
         await prisma.$disconnect();
     });
 
@@ -76,6 +69,41 @@ describe("Survey Submission Integration", () => {
         },
         nationalId: testNationalId,
     };
+
+    it("should save the current flow without creating a patient", async () => {
+        const result = await submitSurvey({
+            ...mockValidData,
+            nationalId: undefined,
+            sectionTwo: {
+                ...mockValidData.sectionTwo,
+                respondentName: "No-ID Integration Test User",
+            },
+        });
+
+        expect(result.success).toBe(true);
+
+        const createdSubmission = await prisma.surveySubmission.findUnique({
+            where: { id: result.submissionId },
+            select: {
+                patientId: true,
+                respondentNameSnapshot: true,
+                genderSnapshot: true,
+                birthDateSnapshot: true,
+            },
+        });
+
+        expect(createdSubmission).toEqual({
+            patientId: null,
+            respondentNameSnapshot: "No-ID Integration Test User",
+            genderSnapshot: "ชาย",
+            birthDateSnapshot: new Date("1980-05-15"),
+        });
+
+        const createdPatients = await prisma.patient.count({
+            where: { firstName: "No-ID" },
+        });
+        expect(createdPatients).toBe(0);
+    });
 
     it("should write a new patient and submission to the database", async () => {
         // 1. Verify patient does not exist yet
@@ -108,6 +136,14 @@ describe("Survey Submission Integration", () => {
             "integration-test-user-id",
         );
         expect(createdSubmission?.totalScorePart4).toBe(145);
+        expect(createdSubmission?.patientId).toBe(createdPatient?.id);
+        expect(createdSubmission?.respondentNameSnapshot).toBe(
+            "Integration Test User",
+        );
+        expect(createdSubmission?.genderSnapshot).toBe("ชาย");
+        expect(createdSubmission?.birthDateSnapshot).toEqual(
+            new Date("1980-05-15"),
+        );
 
         // Check JSON payload was stored
         const rawAnswers = createdSubmission?.rawAnswers as any;
@@ -154,5 +190,25 @@ describe("Survey Submission Integration", () => {
         expect(submissions[1].id).toBe(result2.submissionId);
         expect(submissions[0].totalScorePart4).toBe(145);
         expect(submissions[1].totalScorePart4).toBe(87);
+        expect(submissions[0].respondentNameSnapshot).toBe(
+            "Integration Test User",
+        );
+        expect(submissions[1].respondentNameSnapshot).toBe(
+            "Integration Test User",
+        );
+
+        await prisma.patient.update({
+            where: { nationalId: testNationalId },
+            data: { firstName: "Changed" },
+        });
+
+        const historicalSubmission = await prisma.surveySubmission.findUnique(
+            {
+                where: { id: result1.submissionId },
+            },
+        );
+        expect(historicalSubmission?.respondentNameSnapshot).toBe(
+            "Integration Test User",
+        );
     });
 });

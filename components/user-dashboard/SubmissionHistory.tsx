@@ -150,12 +150,7 @@ export default function SubmissionHistory({
                                         submission.region,
                                     );
                                     const patientName =
-                                        [
-                                            submission.patient?.firstName,
-                                            submission.patient?.lastName,
-                                        ]
-                                            .filter(Boolean)
-                                            .join(" ") || "-";
+                                        submission.respondent || "-";
 
                                     return (
                                         <tr
@@ -207,13 +202,7 @@ export default function SubmissionHistory({
                     <div className="divide-y divide-slate-100 md:hidden">
                         {submissions.map((submission) => {
                             const regionInfo = getRegionInfo(submission.region);
-                            const patientName =
-                                [
-                                    submission.patient?.firstName,
-                                    submission.patient?.lastName,
-                                ]
-                                    .filter(Boolean)
-                                    .join(" ") || "-";
+                            const patientName = submission.respondent || "-";
 
                             return (
                                 <article

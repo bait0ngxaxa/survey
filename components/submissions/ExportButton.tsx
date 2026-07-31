@@ -79,6 +79,9 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     region: s.region,
                     createdAt: s.createdAt,
                     rawAnswers: s.rawAnswers,
+                    respondentNameSnapshot: s.respondentNameSnapshot,
+                    genderSnapshot: s.genderSnapshot,
+                    birthDateSnapshot: s.birthDateSnapshot,
                     patient: s.patient as PatientData | null,
                 }),
             );
@@ -89,6 +92,9 @@ export function ExportButton({ regionFilter = "" }: ExportButtonProps) {
                     region: s.region,
                     createdAt: s.createdAt,
                     rawAnswers: s.rawAnswers,
+                    respondentNameSnapshot: s.respondentNameSnapshot,
+                    genderSnapshot: s.genderSnapshot,
+                    birthDateSnapshot: s.birthDateSnapshot,
                     patient: s.patient as PatientData | null,
                 }),
             );

@@ -19,6 +19,11 @@ function parseDateSafely(dateString: string | undefined | null): Date | null {
     return isNaN(date.getTime()) ? null : date;
 }
 
+function normalizeNationalId(value: string | undefined): string | null {
+    const normalized = value?.trim();
+    return normalized || null;
+}
+
 function splitFullName(fullName: string): {
     firstName: string | null;
     lastName: string | null;
@@ -62,6 +67,10 @@ export async function submitSurvey(
         const { firstName, lastName } = splitFullName(
             data.sectionTwo.respondentName,
         );
+        const normalizedNationalId = normalizeNationalId(data.nationalId);
+        const respondentNameSnapshot = data.sectionTwo.respondentName.trim();
+        const genderSnapshot = data.sectionTwo.gender || null;
+        const birthDateSnapshot = parseDateSafely(data.sectionTwo.birthDate);
 
         // Patient data ที่ใช้ทั้ง create และ update
         const patientData = {
@@ -87,19 +96,29 @@ export async function submitSurvey(
         );
 
         const submission = await prisma.$transaction(async (tx) => {
-            // สร้างหรืออัปเดต Patient
-            const patient = data.nationalId
-                ? await tx.patient.upsert({
-                      where: { nationalId: data.nationalId },
-                      update: patientData,
-                      create: { nationalId: data.nationalId, ...patientData },
-                  })
-                : await tx.patient.create({ data: patientData });
+            let patientId: string | null = null;
+
+            // Resolve Patient เฉพาะเมื่อมี stable identifier เท่านั้น
+            if (normalizedNationalId) {
+                const patient = await tx.patient.upsert({
+                    where: { nationalId: normalizedNationalId },
+                    update: patientData,
+                    create: {
+                        nationalId: normalizedNationalId,
+                        ...patientData,
+                    },
+                });
+
+                patientId = patient.id;
+            }
 
             // บันทึก Survey Submission
             return tx.surveySubmission.create({
                 data: {
-                    patientId: patient.id,
+                    patientId,
+                    respondentNameSnapshot,
+                    genderSnapshot,
+                    birthDateSnapshot,
                     region: data.region,
                     hospital: data.hospital || null,
                     submittedByUserId: userId || null,

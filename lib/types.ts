@@ -150,6 +150,7 @@ export interface PatientData {
     lastName?: string | null;
     nationalId?: string | null;
     gender?: string | null;
+    birthDate?: Date | null;
 }
 
 // ===== Admin Submission Types (SSOT for table/card/list views) =====
@@ -158,6 +159,9 @@ export interface AdminSubmission {
     id: string;
     createdAt: Date;
     region: string;
+    respondentNameSnapshot?: string | null;
+    genderSnapshot?: string | null;
+    birthDateSnapshot?: Date | null;
     patient: {
         id?: string;
         firstName: string | null;

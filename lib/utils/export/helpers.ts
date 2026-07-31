@@ -10,7 +10,21 @@ export function translateRegion(value: string): string {
     return map[value] || value || "";
 }
 
-export function formatBirthDateThai(dateStr: string | undefined): string {
+export function formatBirthDateThai(
+    dateValue: string | Date | null | undefined,
+): string {
+    if (!dateValue) return "";
+
+    if (dateValue instanceof Date) {
+        if (Number.isNaN(dateValue.getTime())) return "";
+
+        const year = dateValue.getUTCFullYear();
+        const month = String(dateValue.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(dateValue.getUTCDate()).padStart(2, "0");
+        return `${day}/${month}/${year + 543}`;
+    }
+
+    const dateStr = dateValue.trim();
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
     if (!year || !month || !day) return dateStr;

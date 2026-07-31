@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
+    "backfill:submission-snapshots": "tsx prisma/scripts/backfillSubmissionSnapshots.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

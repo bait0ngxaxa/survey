@@ -5,6 +5,9 @@ export interface SubmissionData {
     region: string;
     createdAt: Date;
     rawAnswers: unknown;
+    respondentNameSnapshot?: string | null;
+    genderSnapshot?: string | null;
+    birthDateSnapshot?: Date | null;
     patient: PatientData | null;
 }
 

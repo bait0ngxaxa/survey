@@ -6,6 +6,7 @@ import { cache } from "react";
 import { GetSubmissionsParamsSchema } from "@/lib/schemas";
 import type { RawAnswers } from "@/lib/types";
 import { ERROR_UNAUTHORIZED } from "@/lib/constants/errors";
+import { getSubmissionSnapshot } from "@/lib/utils/submissionSnapshot";
 
 // Check if user is admin (deduplicated per request via React.cache)
 const checkAdmin = cache(async (): Promise<void> => {
@@ -86,6 +87,12 @@ const getCachedSubmissionsData = unstable_cache(
                                     string_contains: searchQuery,
                                 },
                             },
+                            {
+                                respondentNameSnapshot: {
+                                    contains: searchQuery,
+                                    mode: "insensitive",
+                                },
+                            },
                         ],
                     }),
                 },
@@ -115,6 +122,12 @@ const getCachedSubmissionsData = unstable_cache(
                                 rawAnswers: {
                                     path: ["sectionTwo", "respondentName"],
                                     string_contains: searchQuery,
+                                },
+                            },
+                            {
+                                respondentNameSnapshot: {
+                                    contains: searchQuery,
+                                    mode: "insensitive",
                                 },
                             },
                         ],
@@ -161,7 +174,7 @@ export async function getSubmissions(params?: unknown) {
     const submissionsWithInterviewer = submissions.map((s) => {
         const rawAnswers = s.rawAnswers as unknown as RawAnswers;
         const interviewerName = rawAnswers?.part1?.interviewerName || null;
-        const respondentName = rawAnswers?.sectionTwo?.respondentName || null;
+        const respondentName = getSubmissionSnapshot(s).respondentName;
 
         return {
             ...s,

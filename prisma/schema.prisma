@@ -27,8 +27,13 @@ model Patient {
 
 model SurveySubmission {
   id                   String   @id @default(uuid())
-  patientId            String
-  patient              Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId            String?
+  patient              Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
+
+  // Snapshot ของข้อมูลผู้ตอบ ณ เวลาที่ส่งแบบสอบถาม
+  respondentNameSnapshot String?
+  genderSnapshot        String?
+  birthDateSnapshot     DateTime?
   
   // Context การเก็บข้อมูล
   region               String   // "phetchabun" | "satun" | "lopburi" | "central"

@@ -2,15 +2,13 @@ import { formatDate } from "@/lib/utils/formatDate";
 
 interface ReportPrintHeaderProps {
     submissionDate: Date;
-    patientFirstName?: string | null;
-    patientLastName?: string | null;
+    respondentName?: string | null;
     patientHN?: string | null;
 }
 
 export function ReportPrintHeader({
     submissionDate,
-    patientFirstName,
-    patientLastName,
+    respondentName,
     patientHN,
 }: ReportPrintHeaderProps) {
     return (
@@ -21,8 +19,7 @@ export function ReportPrintHeader({
             <div className="mt-2 text-sm text-gray-600 flex flex-wrap justify-center gap-6">
                 <span>วันที่: {formatDate(submissionDate)}</span>
                 <span>
-                    ชื่อ-นามสกุล: {patientFirstName || "-"}{" "}
-                    {patientLastName || ""}
+                    ชื่อ-นามสกุล: {respondentName || "-"}
                 </span>
                 <span>HN: {patientHN || "-"}</span>
             </div>

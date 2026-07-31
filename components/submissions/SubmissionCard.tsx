@@ -9,10 +9,7 @@ interface SubmissionCardProps {
 }
 
 export function SubmissionCard({ submission }: SubmissionCardProps) {
-    const patientName =
-        `${submission.patient?.firstName || ""} ${
-            submission.patient?.lastName || ""
-        }`.trim() || "-";
+    const patientName = submission.respondent || "-";
 
     return (
         <Link

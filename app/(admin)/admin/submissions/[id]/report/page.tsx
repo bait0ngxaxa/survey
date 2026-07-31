@@ -2,6 +2,10 @@ import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { notFound } from "next/navigation";
 import { asRawAnswers, type ReportData } from "@/lib/types";
 import {
+    getSubmissionNationalId,
+    getSubmissionSnapshot,
+} from "@/lib/utils/submissionSnapshot";
+import {
     ReportNotFound,
     ReportPrintHeader,
     ReportScreenHeader,
@@ -24,6 +28,8 @@ export default async function SubmissionReportPage({
     // Parse report data from rawAnswers
     const rawAnswers = asRawAnswers(submission.rawAnswers);
     const reportData: ReportData | undefined = rawAnswers?.reportData;
+    const snapshot = getSubmissionSnapshot(submission);
+    const patientNationalId = getSubmissionNationalId(submission);
 
     // Fallback if no report data (e.g. old submissions)
     if (!reportData) {
@@ -37,9 +43,8 @@ export default async function SubmissionReportPage({
             {/* Print Header - Hidden on Screen */}
             <ReportPrintHeader
                 submissionDate={submissionDate}
-                patientFirstName={submission.patient?.firstName}
-                patientLastName={submission.patient?.lastName}
-                patientHN={submission.patient?.nationalId}
+                respondentName={snapshot.respondentName}
+                patientHN={patientNationalId}
             />
 
             {/* Screen Header */}
@@ -47,9 +52,8 @@ export default async function SubmissionReportPage({
 
             {/* Patient Info Card (Screen Only) */}
             <PatientInfoCard
-                patientFirstName={submission.patient?.firstName}
-                patientLastName={submission.patient?.lastName}
-                patientHN={submission.patient?.nationalId}
+                respondentName={snapshot.respondentName}
+                patientHN={patientNationalId}
                 submissionDate={submissionDate}
                 region={submission.region}
                 interviewerName={rawAnswers?.part1?.interviewerName}

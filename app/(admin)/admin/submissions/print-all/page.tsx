@@ -2,6 +2,10 @@ import { getSubmissions } from "@/lib/actions/admin";
 import { getSurveySubmission } from "@/lib/actions/survey/queries";
 import { redirect } from "next/navigation";
 import { asRawAnswers, type ReportData } from "@/lib/types";
+import {
+    getSubmissionNationalId,
+    getSubmissionSnapshot,
+} from "@/lib/utils/submissionSnapshot";
 import { ReportPrintHeader, ReportTable } from "@/components/report";
 import { currentUser } from "@clerk/nextjs/server";
 import { FileText } from "lucide-react";
@@ -37,10 +41,13 @@ export default async function PrintAllReportsPage() {
 
             if (!reportData) return null;
 
+            const snapshot = getSubmissionSnapshot(fullData.data);
+
             return {
                 id: submission.id,
                 createdAt: new Date(submission.createdAt),
-                patient: fullData.data.patient,
+                respondentName: snapshot.respondentName,
+                patientHN: getSubmissionNationalId(fullData.data),
                 reportData,
                 rawAnswers,
             };
@@ -116,9 +123,8 @@ export default async function PrintAllReportsPage() {
                     >
                         <ReportPrintHeader
                             submissionDate={submission.createdAt}
-                            patientFirstName={submission.patient?.firstName}
-                            patientLastName={submission.patient?.lastName}
-                            patientHN={submission.patient?.nationalId}
+                            respondentName={submission.respondentName}
+                            patientHN={submission.patientHN}
                         />
                         <ReportTable reportData={submission.reportData} />
                     </div>
