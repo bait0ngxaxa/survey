@@ -312,30 +312,27 @@ describe("Server Action: submitSurvey", () => {
         );
     });
 
-    it("should store null for an invalid birth date snapshot", async () => {
-        vi.mocked(prisma.patient.upsert).mockResolvedValue({
-            id: "patient-id",
-        } as unknown as Awaited<ReturnType<typeof prisma.patient.upsert>>);
-        vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
-            id: "submission-id",
-        } as unknown as Awaited<
-            ReturnType<typeof prisma.surveySubmission.create>
-        >);
-
+    it("should reject an invalid birth date before opening a transaction", async () => {
+        const consoleSpy = vi
+            .spyOn(console, "error")
+            .mockImplementation(() => {});
         const result = await submitSurvey({
             ...mockValidData,
             sectionTwo: {
                 ...mockValidData.sectionTwo,
-                birthDate: "not-a-date",
+                birthDate: "2023-02-31",
             },
         });
 
-        expect(result.success).toBe(true);
-        expect(prisma.surveySubmission.create).toHaveBeenCalledWith(
-            expect.objectContaining({
-                data: expect.objectContaining({ birthDateSnapshot: null }),
-            }),
-        );
+        expect(result).toEqual({
+            success: false,
+            error: "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่อีกครั้ง",
+        });
+        expect(prisma.$transaction).not.toHaveBeenCalled();
+        expect(prisma.patient.upsert).not.toHaveBeenCalled();
+        expect(prisma.surveySubmission.create).not.toHaveBeenCalled();
+
+        consoleSpy.mockRestore();
     });
 
     it("should return a sanitized error when the transaction fails", async () => {

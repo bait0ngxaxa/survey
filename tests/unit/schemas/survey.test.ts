@@ -250,4 +250,63 @@ describe("SurveySubmissionInputSchema cross-field validation", () => {
 
         expect(result.success).toBe(false);
     });
+
+    it.each(["age", "diabetesDuration", "diabetesAge"] as const)(
+        "rejects trailing characters in integer field %s",
+        (field) => {
+            const data = createValidSurveySubmission();
+            data.sectionTwo = {
+                ...data.sectionTwo,
+                [field]: "12abc",
+            };
+
+            const result = SurveySubmissionInputSchema.safeParse(data);
+
+            expect(result.success).toBe(false);
+        },
+    );
+
+    it("rejects malformed decimal measurements", () => {
+        const data = createValidSurveySubmission();
+        data.part1 = {
+            ...data.part1,
+            bloodSugarKnown: "ทราบ",
+            fastingLevel: "100abc",
+            hba1cLevel: "6.5",
+        };
+
+        const result = SurveySubmissionInputSchema.safeParse(data);
+
+        expect(result.success).toBe(false);
+    });
+
+    it.each([
+        "2023-02-29",
+        "2023-04-31",
+        "2023-13-01",
+        "2023-1-01",
+        "2023-02-28T00:00:00Z",
+    ])("rejects invalid birth date %s", (birthDate) => {
+        const data = createValidSurveySubmission();
+        data.sectionTwo = {
+            ...data.sectionTwo,
+            birthDate,
+        };
+
+        const result = SurveySubmissionInputSchema.safeParse(data);
+
+        expect(result.success).toBe(false);
+    });
+
+    it("accepts a leap-day birth date when the year is valid", () => {
+        const data = createValidSurveySubmission();
+        data.sectionTwo = {
+            ...data.sectionTwo,
+            birthDate: "2024-02-29",
+        };
+
+        const result = SurveySubmissionInputSchema.safeParse(data);
+
+        expect(result.success).toBe(true);
+    });
 });

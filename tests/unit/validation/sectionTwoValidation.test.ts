@@ -106,6 +106,18 @@ describe("Section Two Validation", () => {
                 "กรุณาระบุตัวเลขอายุที่เริ่มเป็นเบาหวานให้ถูกต้อง (ข้อ 9)",
             );
         });
+
+        it("should reject trailing characters in numeric fields", () => {
+            const data = createValidData();
+            data.diabetesDuration = "12abc";
+
+            const result = validateSectionTwo(data);
+
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContain(
+                "กรุณาระบุตัวเลขระยะเวลาการเป็นเบาหวานให้ถูกต้อง (ข้อ 9)",
+            );
+        });
     });
 
     describe("Conditional Fields", () => {

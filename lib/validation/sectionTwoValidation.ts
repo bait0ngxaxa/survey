@@ -3,6 +3,10 @@ import {
     getScreeningsValidationIssues,
     getSectionTwoValidationIssues,
 } from "./surveyCrossFieldRules";
+import {
+    isStrictDateString,
+    isStrictIntegerString,
+} from "./strictValueValidation";
 
 export interface ValidationResult {
     isValid: boolean;
@@ -19,10 +23,16 @@ function validateDemographics(formData: SectionTwoData): string[] {
 
     // 2. Age format
     if (formData.age) {
-        const ageNum = parseInt(formData.age, 10);
-        if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+        const ageNum = isStrictIntegerString(formData.age)
+            ? Number(formData.age)
+            : Number.NaN;
+        if (Number.isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
             errors.push("อายุต้องอยู่ระหว่าง 1-120 ปี (ข้อ 2)");
         }
+    }
+
+    if (formData.birthDate && !isStrictDateString(formData.birthDate)) {
+        errors.push("กรุณาระบุวันเกิดให้ถูกต้อง (ข้อ 2)");
     }
 
     // 3. Education
@@ -56,16 +66,20 @@ function validateDiabetesInfo(formData: SectionTwoData): string[] {
 
     // 9. Diabetes Duration and age formats
     if (formData.diabetesDuration) {
-        const duration = parseInt(formData.diabetesDuration, 10);
-        if (isNaN(duration) || duration < 1 || duration >= 100) {
+        const duration = isStrictIntegerString(formData.diabetesDuration)
+            ? Number(formData.diabetesDuration)
+            : Number.NaN;
+        if (Number.isNaN(duration) || duration < 1 || duration >= 100) {
             errors.push(
                 "กรุณาระบุตัวเลขระยะเวลาการเป็นเบาหวานให้ถูกต้อง (ข้อ 9)",
             );
         }
     }
     if (formData.diabetesAge) {
-        const age = parseInt(formData.diabetesAge, 10);
-        if (isNaN(age) || age < 1 || age >= 100) {
+        const age = isStrictIntegerString(formData.diabetesAge)
+            ? Number(formData.diabetesAge)
+            : Number.NaN;
+        if (Number.isNaN(age) || age < 1 || age >= 100) {
             errors.push(
                 "กรุณาระบุตัวเลขอายุที่เริ่มเป็นเบาหวานให้ถูกต้อง (ข้อ 9)",
             );

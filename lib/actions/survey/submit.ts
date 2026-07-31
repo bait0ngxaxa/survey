@@ -5,6 +5,7 @@ import { SurveySubmissionInputSchema } from "@/lib/schemas";
 import { revalidatePath } from "next/cache";
 import { generateReportData } from "@/lib/utils/reportGenerator";
 import { requireAuthenticatedUser } from "@/lib/auth/guards";
+import { parseStrictDate } from "@/lib/validation/strictValueValidation";
 
 // ============================================================
 // HELPER FUNCTIONS
@@ -12,12 +13,6 @@ import { requireAuthenticatedUser } from "@/lib/auth/guards";
 
 function calculateTotalScore(answers: Record<number, number>): number {
     return Object.values(answers).reduce((sum, score) => sum + score, 0);
-}
-
-function parseDateSafely(dateString: string | undefined | null): Date | null {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? null : date;
 }
 
 function normalizeNationalId(value: string | undefined): string | null {
@@ -146,14 +141,14 @@ export async function submitSurvey(
         const normalizedNationalId = normalizeNationalId(data.nationalId);
         const respondentNameSnapshot = data.sectionTwo.respondentName.trim();
         const genderSnapshot = data.sectionTwo.gender || null;
-        const birthDateSnapshot = parseDateSafely(data.sectionTwo.birthDate);
+        const birthDateSnapshot = parseStrictDate(data.sectionTwo.birthDate);
 
         // Patient data ที่ใช้ทั้ง create และ update
         const patientData = {
             firstName,
             lastName,
             gender: data.sectionTwo.gender || null,
-            birthDate: parseDateSafely(data.sectionTwo.birthDate),
+            birthDate: birthDateSnapshot,
             addressData: {
                 livingArrangement: data.sectionTwo.livingArrangement,
                 livingMembers: data.sectionTwo.livingMembers,
