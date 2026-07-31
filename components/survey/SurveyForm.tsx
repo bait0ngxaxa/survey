@@ -14,8 +14,10 @@ const ConfirmExitModal = dynamic(
     { ssr: false },
 );
 import { useSurveyForm } from "@/hooks/useSurveyForm";
-import { type SurveyConfig } from "@/config/surveyData";
-import { REGION_ID } from "@/lib/constants/submissionsConstants";
+import {
+    getSurveyNavigationSteps,
+    type SurveyConfig,
+} from "@/config/surveyData";
 import {
     LoadingOverlay,
     SurveyBackground,
@@ -33,6 +35,7 @@ interface SurveyFormProps {
 
 export default function SurveyForm({ config, region }: SurveyFormProps) {
     const survey = useSurveyForm({ region });
+    const navigationSteps = getSurveyNavigationSteps(config);
 
     if (survey.submitSuccess) {
         return <SubmitSuccessModal isOpen={true} redirectTo="/dashboard" />;
@@ -83,12 +86,14 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                         <SectionTwoForm
                             formData={survey.sectionTwoData}
                             onChange={survey.setSectionTwoData}
-                            onNext={() => survey.goTo(4)}
+                            onNext={() =>
+                                survey.goTo(navigationSteps.afterSectionTwo)
+                            }
                             onBack={() => survey.goTo(1)}
                         />
                     )}
 
-                    {survey.step === 3 && (
+                    {config.enableMedicalRecord && survey.step === 3 && (
                         <MedicalRecordForm
                             formData={survey.medicalRecordData}
                             onChange={survey.setMedicalRecordData}
@@ -103,9 +108,7 @@ export default function SurveyForm({ config, region }: SurveyFormProps) {
                             answers={survey.sectionFourAnswers}
                             onAnswer={survey.handleSectionFourAnswer}
                             onBack={() =>
-                                survey.goTo(
-                                    region === REGION_ID.CENTRAL ? 2 : 3,
-                                )
+                                survey.goTo(navigationSteps.beforeSectionFour)
                             }
                             onSubmit={survey.handleSubmitSurvey}
                             region={region}
