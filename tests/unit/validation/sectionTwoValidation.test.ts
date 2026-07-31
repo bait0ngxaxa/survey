@@ -109,6 +109,17 @@ describe("Section Two Validation", () => {
     });
 
     describe("Conditional Fields", () => {
+        it("should error if both age and birth date are missing", () => {
+            const data = createValidData();
+            data.age = "";
+            data.birthDate = "";
+            const result = validateSectionTwo(data);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContain(
+                "กรุณากรอกอายุหรือวันเกิด (ข้อ 2)",
+            );
+        });
+
         it("should leave other diseases unanswered initially", () => {
             expect(initialSectionTwoData.otherDiseases).toBe("");
 
@@ -147,6 +158,17 @@ describe("Section Two Validation", () => {
             expect(result.isValid).toBe(false);
             expect(result.errors).toContain(
                 "กรุณาเลือกความถี่การตรวจตา (ข้อ 21)",
+            );
+        });
+
+        it("should error if a custom screening frequency has no detail", () => {
+            const data = createValidData();
+            data.screenings.physical = "อื่น ๆ";
+            data.screenings.physicalOther = "";
+            const result = validateSectionTwo(data);
+            expect(result.isValid).toBe(false);
+            expect(result.errors).toContain(
+                "กรุณาระบุรายละเอียดความถี่การตรวจร่างกาย (ข้อ 21)",
             );
         });
     });

@@ -81,6 +81,31 @@ describe("Server Action: submitSurvey", () => {
         consoleSpy.mockRestore();
     });
 
+    it("should reject cross-field invalid input before opening a transaction", async () => {
+        const consoleSpy = vi
+            .spyOn(console, "error")
+            .mockImplementation(() => {});
+
+        const result = await submitSurvey({
+            ...mockValidData,
+            sectionTwo: {
+                ...mockValidData.sectionTwo,
+                age: "",
+                birthDate: "",
+            },
+        });
+
+        expect(result).toEqual({
+            success: false,
+            error: "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบและลองใหม่อีกครั้ง",
+        });
+        expect(prisma.$transaction).not.toHaveBeenCalled();
+        expect(prisma.patient.upsert).not.toHaveBeenCalled();
+        expect(prisma.surveySubmission.create).not.toHaveBeenCalled();
+
+        consoleSpy.mockRestore();
+    });
+
     it("should successfully submit survey and call Prisma methods", async () => {
         // Mock Prisma responses
         vi.mocked(prisma.patient.upsert).mockResolvedValue({

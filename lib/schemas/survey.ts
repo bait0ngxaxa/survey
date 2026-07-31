@@ -19,6 +19,11 @@ import {
     WORK_SUPPORT_OPTIONS,
 } from "@/config/sectionTwoData";
 import { centralPart4Data } from "@/config/part4";
+import {
+    getPart1ValidationIssues,
+    getScreeningsValidationIssues,
+    getSectionTwoValidationIssues,
+} from "@/lib/validation/surveyCrossFieldRules";
 
 const requiredText = z.string().trim().min(1, "จำเป็นต้องระบุข้อมูล");
 const optionalText = z.string();
@@ -32,35 +37,55 @@ const centralQuestionIds = centralPart4Data.flatMap((section) =>
 const centralQuestionIdSet = new Set(centralQuestionIds);
 
 // Part 1 Schema
-export const Part1DataSchema = z.object({
-    bloodSugarKnown: bloodSugarKnownSchema,
-    fastingLevel: optionalText,
-    hba1cLevel: optionalText,
-    visitDoctor: visitDoctorSchema,
-    notVisitReason: optionalText,
-    surveyMethod: surveyMethodSchema.optional(),
-    interviewerName: optionalText.optional(),
-});
+export const Part1DataSchema = z
+    .object({
+        bloodSugarKnown: bloodSugarKnownSchema,
+        fastingLevel: optionalText,
+        hba1cLevel: optionalText,
+        visitDoctor: visitDoctorSchema,
+        notVisitReason: optionalText,
+        surveyMethod: surveyMethodSchema.optional(),
+        interviewerName: optionalText.optional(),
+    })
+    .superRefine((part1Data, context) => {
+        for (const issue of getPart1ValidationIssues(part1Data)) {
+            context.addIssue({
+                code: "custom",
+                path: issue.path,
+                message: issue.message,
+            });
+        }
+    });
 
 // Screenings Schema
-export const ScreeningsSchema = z.object({
-    physical: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    physicalOther: z.string(),
-    foot: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    footOther: z.string(),
-    eye: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    eyeOther: z.string(),
-    urine: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    urineOther: z.string(),
-    lipid: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    lipidOther: z.string(),
-    dental: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    dentalOther: z.string(),
-    hba1c: z.enum(SCREENING_FREQUENCY_OPTIONS),
-    hba1cOther: z.string(),
-    other: z.string(),
-    otherText: z.string(),
-});
+export const ScreeningsSchema = z
+    .object({
+        physical: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        physicalOther: z.string(),
+        foot: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        footOther: z.string(),
+        eye: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        eyeOther: z.string(),
+        urine: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        urineOther: z.string(),
+        lipid: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        lipidOther: z.string(),
+        dental: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        dentalOther: z.string(),
+        hba1c: z.enum(SCREENING_FREQUENCY_OPTIONS),
+        hba1cOther: z.string(),
+        other: z.string(),
+        otherText: z.string(),
+    })
+    .superRefine((screenings, context) => {
+        for (const issue of getScreeningsValidationIssues(screenings)) {
+            context.addIssue({
+                code: "custom",
+                path: issue.path,
+                message: issue.message,
+            });
+        }
+    });
 
 // Section Two Schema
 export const SectionTwoDataSchema = z.object({
@@ -136,6 +161,14 @@ export const SectionTwoDataSchema = z.object({
     admissions: z.string(),
     admissionCount: z.string(),
     admissionReason: z.string(),
+}).superRefine((sectionTwoData, context) => {
+    for (const issue of getSectionTwoValidationIssues(sectionTwoData)) {
+        context.addIssue({
+            code: "custom",
+            path: issue.path,
+            message: issue.message,
+        });
+    }
 });
 
 // Medical Record Schema
