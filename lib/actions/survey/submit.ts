@@ -34,7 +34,16 @@ function splitFullName(fullName: string): {
 // SUBMIT SURVEY
 // ============================================================
 
-export async function submitSurvey(input: unknown) {
+type SubmitSurveyResult = {
+    success: boolean;
+    error?: string;
+    submissionId?: string;
+    totalScore?: number;
+};
+
+export async function submitSurvey(
+    input: unknown,
+): Promise<SubmitSurveyResult> {
     // Validate input
     const parsed = SurveySubmissionInputSchema.safeParse(input);
     if (!parsed.success) {
@@ -66,15 +75,6 @@ export async function submitSurvey(input: unknown) {
             },
         };
 
-        // สร้างหรืออัปเดต Patient
-        const patient = data.nationalId
-            ? await prisma.patient.upsert({
-                  where: { nationalId: data.nationalId },
-                  update: patientData,
-                  create: { nationalId: data.nationalId, ...patientData },
-              })
-            : await prisma.patient.create({ data: patientData });
-
         // สร้าง rawAnswers
         const rawAnswers = JSON.parse(
             JSON.stringify({
@@ -86,16 +86,27 @@ export async function submitSurvey(input: unknown) {
             }),
         );
 
-        // บันทึก Survey Submission
-        const submission = await prisma.surveySubmission.create({
-            data: {
-                patientId: patient.id,
-                region: data.region,
-                hospital: data.hospital || null,
-                submittedByUserId: userId || null,
-                totalScorePart4: totalScore,
-                rawAnswers,
-            },
+        const submission = await prisma.$transaction(async (tx) => {
+            // สร้างหรืออัปเดต Patient
+            const patient = data.nationalId
+                ? await tx.patient.upsert({
+                      where: { nationalId: data.nationalId },
+                      update: patientData,
+                      create: { nationalId: data.nationalId, ...patientData },
+                  })
+                : await tx.patient.create({ data: patientData });
+
+            // บันทึก Survey Submission
+            return tx.surveySubmission.create({
+                data: {
+                    patientId: patient.id,
+                    region: data.region,
+                    hospital: data.hospital || null,
+                    submittedByUserId: userId || null,
+                    totalScorePart4: totalScore,
+                    rawAnswers,
+                },
+            });
         });
 
         revalidatePath("/admin/submissions");

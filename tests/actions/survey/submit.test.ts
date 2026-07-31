@@ -8,15 +8,25 @@ import {
 
 // Mock dependencies
 vi.mock("@/lib/prisma", () => ({
-    default: {
-        patient: {
-            upsert: vi.fn(),
-            create: vi.fn(),
-        },
-        surveySubmission: {
-            create: vi.fn(),
-        },
-    },
+    default: (() => {
+        const mockPrisma = {
+            patient: {
+                upsert: vi.fn(),
+                create: vi.fn(),
+            },
+            surveySubmission: {
+                create: vi.fn(),
+            },
+            $transaction: vi.fn(),
+        };
+
+        mockPrisma.$transaction.mockImplementation(
+            async (callback: (tx: typeof mockPrisma) => Promise<unknown>) =>
+                callback(mockPrisma),
+        );
+
+        return mockPrisma;
+    })(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({
@@ -75,11 +85,13 @@ describe("Server Action: submitSurvey", () => {
         // Mock Prisma responses
         vi.mocked(prisma.patient.upsert).mockResolvedValue({
             id: "patient-id",
-        } as any);
+        } as unknown as Awaited<ReturnType<typeof prisma.patient.upsert>>);
 
         vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
             id: "submission-id",
-        } as any);
+        } as unknown as Awaited<
+            ReturnType<typeof prisma.surveySubmission.create>
+        >);
 
         const result = await submitSurvey(mockValidData);
 
@@ -93,6 +105,7 @@ describe("Server Action: submitSurvey", () => {
         expect(result.totalScore).toBe(145);
 
         // Check if DB was called
+        expect(prisma.$transaction).toHaveBeenCalledTimes(1);
         expect(prisma.patient.upsert).toHaveBeenCalledWith(
             expect.objectContaining({
                 where: { nationalId: "1234567890123" },
@@ -107,6 +120,35 @@ describe("Server Action: submitSurvey", () => {
                     submittedByUserId: "mock-user-id",
                     totalScorePart4: 145,
                 }),
+            }),
+        );
+    });
+
+    it("should create patient and submission in one transaction without national ID", async () => {
+        vi.mocked(prisma.patient.create).mockResolvedValue({
+            id: "patient-id",
+        } as unknown as Awaited<ReturnType<typeof prisma.patient.create>>);
+
+        vi.mocked(prisma.surveySubmission.create).mockResolvedValue({
+            id: "submission-id",
+        } as unknown as Awaited<
+            ReturnType<typeof prisma.surveySubmission.create>
+        >);
+
+        const result = await submitSurvey({
+            ...mockValidData,
+            nationalId: undefined,
+        });
+
+        expect(result.success).toBe(true);
+        expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+        expect(prisma.patient.create).toHaveBeenCalledWith(
+            expect.objectContaining({ data: expect.any(Object) }),
+        );
+        expect(prisma.patient.upsert).not.toHaveBeenCalled();
+        expect(prisma.surveySubmission.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                data: expect.objectContaining({ patientId: "patient-id" }),
             }),
         );
     });
